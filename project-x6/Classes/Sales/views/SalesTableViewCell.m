@@ -14,15 +14,13 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-//        self.backgroundColor = [UIColor whiteColor];
-        self.backgroundView = nil;
         //初始化子视图
-        _label = [[UILabel alloc] initWithFrame:CGRectMake(20 + (KScreenWidth - 80) / 2.0, 20, 80, 40)];
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(20 + (KScreenWidth - 90) / 2.0, 15, 90, 30)];
         _label.textAlignment = NSTextAlignmentCenter;
-        _label.font = [UIFont boldSystemFontOfSize:16];
+        _label.font = [UIFont boldSystemFontOfSize:18];
         [self.contentView addSubview:_label];
         
-        _imageview = [[UIImageView alloc] initWithFrame:CGRectMake(_label.left - 60, 20, 40, 40)];
+        _imageview = [[UIImageView alloc] initWithFrame:CGRectMake(_label.left - 50, 10, 40, 40)];
         [self.contentView addSubview:_imageview];
     }
     return self;

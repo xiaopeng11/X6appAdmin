@@ -7,10 +7,12 @@
 //
 
 #import "SalesViewController.h"
-#import "TodayinventoryViewController.h"
-#import "MySalesViewController.h"
-#import "AllSalesViewController.h"
+
 #import "SalesTableViewCell.h"
+#import "SpeSalesTableViewCell.h"
+
+#import "MykucunViewController.h"
+
 @interface SalesViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,copy)NSArray *datalist;
 @end
@@ -36,15 +38,18 @@
 #pragma mark - initWithSubViews
 - (void)initWithSubViews
 {
-    _datalist = @[@{@"text":@"今日库存",@"image":@"btn_kucun_n"},
-                  @{@"text":@"我的销量",@"image":@"btn_xiaoliang_n"},
-                  @{@"text":@"我的排名",@"image":@"btn_paiming_n"}];
+    _datalist = @[@{@"text":@"我的库存",@"image":@"btn_kucun_n"},
+                  @{@"text":@"今日战报",@"image":@"btn_xiaoliang_n"},
+                  @{@"text":@"今日销量",@"image":@"btn_xiaoliang_n"},
+                  @{@"text":@"今日营业款",@"image":@"btn_xiaoliang_n"},
+                  @{@"text":@"今日付款",@"image":@"btn_xiaoliang_n"},
+                  @{@"text":@"我的提醒",@"image":@"btn_xiaoliang_n"},
+                  @{@"text":@"我的帐户",@"image":@"btn_xiaoliang_n"}];
  
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 80 * _datalist.count) style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 60 * (_datalist.count - 1) + 80) style:UITableViewStylePlain];
     tableView.dataSource = self;
     tableView.delegate = self;
-    tableView.showsHorizontalScrollIndicator = NO;
-    tableView.scrollEnabled = NO;
+    tableView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:tableView];
 
 
@@ -58,33 +63,45 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *ident = @"SalesID";
-    SalesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
-    if (cell == nil) {
-        cell = [[SalesTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ident];
+    if (indexPath.row == 5) {
+        static NSString *specident = @"SpecSalesID";
+        SpeSalesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:specident];
+        if (cell == nil) {
+            cell = [[SpeSalesTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:specident];
+        }
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.dic = _datalist[indexPath.row];
+        return cell;
+    } else {
+        static NSString *ident = @"SalesID";
+        SalesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
+        if (cell == nil) {
+            cell = [[SalesTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ident];
+        }
+        cell.dic = _datalist[indexPath.row];
+        return cell;
     }
-    cell.dic = _datalist[indexPath.row];
-    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 80;
+    if (indexPath.row == 5) {
+        return 80;
+    } else {
+        return 60;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSLog(@"%ld",(long)indexPath.row);
     if (indexPath.row == 0) {
-        TodayinventoryViewController *todayVC = [[TodayinventoryViewController alloc] init];
-        [self.navigationController pushViewController:todayVC animated:YES];
+        MykucunViewController *mykucunVC = [[MykucunViewController alloc] init];
+        [self.navigationController pushViewController:mykucunVC animated:YES];
     } else if (indexPath.row == 1) {
-        MySalesViewController *mySalesVC = [[MySalesViewController alloc] init];
-        [self.navigationController pushViewController:mySalesVC animated:YES];
+
     } else {
-        AllSalesViewController *allSalesVC = [[AllSalesViewController alloc] init];
-        [self.navigationController pushViewController:allSalesVC animated:YES];
+
     }
     
 }

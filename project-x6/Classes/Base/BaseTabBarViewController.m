@@ -7,26 +7,19 @@
 //
 
 #import "BaseTabBarViewController.h"
+
 #import "AllDynamicViewController.h"
 #import "StockViewController.h"
+#import "BusinessViewController.h"
 #import "SalesViewController.h"
 #import "PersonViewController.h"
+
 #import "BaseNavigationController.h"
-
-#import "ChatViewController.h"
-
-#import "ConversationListController.h"
 
 #import "AppDelegate.h"
 @interface BaseTabBarViewController ()
 
-{
-    NSString    *nssVersionName;
-    NSString    *nssVersionNewName;
-    NSString    *nssVersionUrl;
-    NSString    *nssOldVersion;
-    
-}
+
 @end
 
 @implementation BaseTabBarViewController
@@ -109,6 +102,9 @@
     StockViewController *stockVC = [[StockViewController alloc] init];
     [self addOneChildVC:stockVC title:@"联系人" selectedImageName:@"tarbar_lianxiren_h" unselectedImageName:@"tarbar_lianxiren_n"];
     
+    //业务
+    BusinessViewController *BusinessVC = [[BusinessViewController alloc] init];
+    [self addOneChildVC:BusinessVC title:@"业务" selectedImageName:@"tabbar_yewu_h" unselectedImageName:@"tabbar_yewu_n"];
     
     //销量
     SalesViewController *salesVC = [[SalesViewController alloc] init];

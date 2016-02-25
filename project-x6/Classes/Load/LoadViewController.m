@@ -138,7 +138,7 @@
             } else {
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
                     NSString *leaderurl = [responseObject objectForKey:@"message"];
-                    NSString *mainURL = [NSString stringWithFormat:@"%@/ygLogin.action",leaderurl];
+                    NSString *mainURL = [NSString stringWithFormat:@"%@%@",leaderurl,X6_API_load];
 
                     NSMutableDictionary *paramsload = [NSMutableDictionary dictionary];
                     [paramsload setObject:company.text forKey:@"gsdm"];

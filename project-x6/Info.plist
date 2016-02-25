@@ -10,11 +10,11 @@
 		<string>appicon@3x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.xiaopeng.X6ptdemo</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>X6</string>
+	<string>X6管理端</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

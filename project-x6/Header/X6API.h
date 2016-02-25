@@ -14,13 +14,13 @@
 #define APP_URL @"http://itunes.apple.com/lookup?id=com.xiaopeng.X6ptdemo"
 
 //主服务器上线地址和测试地址
-//#define X6basemain_API @"http://192.168.1.111:8080"
-#define X6basemain_API @"http://www.x6pt.cn"
+#define X6basemain_API @"http://192.168.1.199:8080"
+//#define X6basemain_API @"http://www.x6pt.cn"
 
 //登陆接口
 #define X6_API_loadmain [NSString stringWithFormat:@"%@/yxmain/getAppUrl.action",X6basemain_API]
 
-#define X6_API_load [NSString stringWithFormat:@"ygLogin.action",X6basemain_API]
+#define X6_API_load @"/manageLogin.action"
 
 //1.首页数据
 //个人的消息图片和url + 公司代码 ＋ 登陆返回数据对应的接口
@@ -77,18 +77,31 @@
 
 
 //4.报表页面
-//今日库存接口
-#define X6_today @"/report/reportKcRb_doSearch.action"
+//我的库存
+#define X6_mykucun @"/report/reportKcRb_doSearchManage.action"
+//我的库存详情
+#define X6_mykucunDetail @"/report/reportKcRb_kcDetail.action"
 
-//我的销量接口
-#define X6_MySales @"/report/reportMySell_doSearch.action"
+//今日战报
+#define X6_today @"/report/reportMySell_Jrzb.action"
+//今日战报详情
+#define X6_todayDetail @"/report/reportMySell_JrzbDetail.action"
 
-//销量排名接口
-#define X6_allSales @"/report/reportMySell_sellSort.action"
+//今日销量
+#define X6_todaySales @"/report/reportMySell_Jrxs.action"
+//今日销量详情
+#define X6_todaySalesDetail @"/report/reportMySell_JrxsDetail.action"
 
+//今日营业款
+#define X6_todayMoney @"/report/reportMySell_JrYjk.action"
+//今日营业款详情
+#define X6_todayMoneyDetail @"/report/reportMySell_JrYjkDetail.action"
 
+//今日付款
+#define X6_todayPay @""
 
-
+//我的帐户
+#define X6_myAcount @""
 
 
 #endif /* X6API_h */
