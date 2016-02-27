@@ -19,10 +19,10 @@
  }
  */
 
-@property(nonatomic,copy)NSNumber *col0;
-@property(nonatomic,copy)NSString *col1;
-@property(nonatomic,copy)NSNumber *col2;
-@property(nonatomic,copy)NSNumber *col3;
-@property(nonatomic,copy)NSNumber *col4;
+@property(nonatomic,copy)NSNumber *col0;  //门店编码
+@property(nonatomic,copy)NSString *col1;  //门店名称
+@property(nonatomic,copy)NSNumber *col2;  //数量
+@property(nonatomic,copy)NSNumber *col3;  //金额
+@property(nonatomic,copy)NSNumber *col4;  //毛利
 
 @end

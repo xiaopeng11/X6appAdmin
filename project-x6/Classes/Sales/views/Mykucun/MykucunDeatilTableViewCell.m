@@ -8,6 +8,7 @@
 
 #import "MykucunDeatilTableViewCell.h"
 
+#define KucunScreenWith (KScreenWidth - 20)
 @implementation MykucunDeatilTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -17,17 +18,18 @@
         for (int i = 0; i < 8; i++) {
             _label = [[UILabel alloc] init];
             _label.textColor = [UIColor grayColor];
-            _label.textAlignment = NSTextAlignmentCenter; 
             _label.font = [UIFont systemFontOfSize:16];
             _label.tag = 4100 + i;
             if (i < 2) {
+                _label.textAlignment = NSTextAlignmentCenter;
                 _label.font = [UIFont systemFontOfSize:18];
                _label.frame = CGRectMake(((KScreenWidth / 2.0 - 150) / 2.0) + (i * (KScreenWidth / 2.0)), 5, 150, 20);
             } else {
                 _label.font = [UIFont systemFontOfSize:14];
                 int withnum = (i - 2) / 3;
                 int lonnum = (i - 2) % 3;
-                _label.frame = CGRectMake(((KScreenWidth / 3.0 - 100) / 2.0) + (lonnum * (KScreenWidth / 3.0)),  30 + 30 * withnum, 100, 20);
+//                _label.backgroundColor = [UIColor yellowColor];
+                _label.frame = CGRectMake(20 + ((KucunScreenWith / 3.0 - 100) / 2.0) + (lonnum * (KucunScreenWith / 3.0)),  30 + 30 * withnum, 100, 20);
             } 
             [self.contentView addSubview:_label];
         }

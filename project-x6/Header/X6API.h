@@ -64,10 +64,10 @@
 
 //2.个人页面数据
 //修改头像接口
-#define X6_changeHeaderView @"/jcxx/dmYgAction_updatePhoto.action"
+#define X6_changeHeaderView @"/xtgl/xtuserAction_updatePhoto.action"
 
 //修改密码接口
-#define X6_changePassword @"/jcxx/dmYgAction_modifyPwd.action"
+#define X6_changePassword @"/xtgl/xtuserAction_modifyPwd.action"
 
 //知识库接口
 #define X6_collectionView @"/msg/msgAction_getMyKnowledge.action"

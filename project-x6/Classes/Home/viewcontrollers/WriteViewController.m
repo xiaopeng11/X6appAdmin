@@ -407,7 +407,6 @@
 
     NSString *sendMessgaeURL = [NSString stringWithFormat:@"%@%@",baseurl,X6_sendMessage];
     //创建线程组－－等待上传图片完成再发布动态
-    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     dispatch_group_t grouped = dispatch_group_create();
     if (enableFile == YES) {
         //先上传文件
@@ -421,11 +420,8 @@
             //上传图片
             NSString *filename = [NSString stringWithFormat:@"fileImage%d.png",i];
             [self saveImage:image withName:filename];
-            dispatch_group_async(grouped, queue, ^{
-                NSString *filepath = [ImageFile stringByAppendingPathComponent:filename];
-                [self unloadFileWithUuid:uuid Filepath:filepath FileName:filename];
-                [NSThread sleepForTimeInterval:1];
-            });
+             NSString *filepath = [ImageFile stringByAppendingPathComponent:filename];
+            [self unloadFileWithUuid:uuid Filepath:filepath FileName:filename group:grouped];
             //添加到发送列表
             NSMutableDictionary *dic = [NSMutableDictionary dictionary];
             [dic setObject:filename forKey:@"name"];

@@ -14,8 +14,7 @@
     UIImageView *_imageView;
     UILabel *_titleLabel;
     UILabel *_numberLabel;
-    UIImageView *_leadView;
 }
-
+@property(nonatomic,strong)UIImageView *leadView;
 @property(nonatomic,copy)NSDictionary *dic;
 @end

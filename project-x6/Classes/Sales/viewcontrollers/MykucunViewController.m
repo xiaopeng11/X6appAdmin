@@ -19,8 +19,8 @@
 @property(nonatomic,strong)NoDataView *NokucunView;                     //没有库存
 @property(nonatomic,copy)NSMutableArray *Kucundatalist;                 //库存数据
 @property(nonatomic,copy)NSMutableArray *TableviewDatalist;             //表示图的数据
-@property(nonatomic,copy)NSMutableArray *KucunNames;                    //数据名的集合
 
+@property(nonatomic,copy)NSMutableArray *KucunNames;                    //数据名的集合
 @property(nonatomic,strong)NSMutableArray *KucunSearchNames;
 @property(nonatomic, strong)UISearchController *KucunSearchController;
 
@@ -176,6 +176,7 @@
     if (_TableviewDatalist.count != 0) {
         if ([[_TableviewDatalist[indexPath.row] valueForKey:@"cell"] isEqualToString:@"Maincell"]) {
             path = [NSIndexPath indexPathForRow:(indexPath.row + 1) inSection:0];
+            
         } else {
             path = indexPath;
         }
@@ -219,6 +220,11 @@
             
             [_Kucundatalist removeObjectAtIndex:path.row];
             [_KucunSearchNames removeLastObject];
+            
+            NSIndexPath *positioned = [NSIndexPath indexPathForRow:(path.row -1) inSection:0];
+            MykucunTableViewCell *cell = (MykucunTableViewCell *)[_KucunTableview cellForRowAtIndexPath:positioned];
+            cell.leadView.image = [UIImage imageNamed:@"btn_jiantou_h"];
+            
             [_KucunTableview beginUpdates];
             [_KucunTableview deleteRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationTop];
             [_KucunTableview endUpdates];
@@ -256,6 +262,9 @@
         
         [_KucunSearchNames addObject:@""];
 
+        NSIndexPath *positioned = [NSIndexPath indexPathForRow:(poistion.row -1) inSection:0];
+        MykucunTableViewCell *cell = (MykucunTableViewCell *)[_KucunTableview cellForRowAtIndexPath:positioned];
+        cell.leadView.image = [UIImage imageNamed:@"btn_jiantou_n"];
         dispatch_async(dispatch_get_main_queue(), ^{
             [_KucunTableview beginUpdates];
             [_KucunTableview insertRowsAtIndexPaths:@[poistion] withRowAnimation:UITableViewRowAnimationTop];

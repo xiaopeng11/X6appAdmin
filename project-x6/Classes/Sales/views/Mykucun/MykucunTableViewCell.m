@@ -27,6 +27,7 @@
         [self.contentView addSubview:_numberLabel];
         
         _leadView = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 30, 12.5, 15, 15)];
+        _leadView.image = [UIImage imageNamed:@"btn_jiantou_h"];
         [self.contentView addSubview:_leadView];
         
     }
@@ -42,15 +43,7 @@
     
     _numberLabel.text = [NSString stringWithFormat:@"%@个",[_dic valueForKey:@"col2"]];
     
-    
-    BOOL isopen = [_dic valueForKey:@"isopen"];
-    if (isopen) {
-        _leadView.image = [UIImage imageNamed:@"btn_zhankai-_h1"];
-    } else {
-        _leadView.image = [UIImage imageNamed:@"btn_zhankai-_h1"];
-    }
-    
-    
+ 
 }
 
 @end

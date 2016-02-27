@@ -80,7 +80,9 @@
     
     //改变textField的值
     
-    self.text=[NSString stringWithString:[self.dateFormatter stringFromDate:self.date]];
+    self.text = [NSString stringWithString:[self.dateFormatter stringFromDate:self.date]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTodayData" object:[self.dateFormatter stringFromDate:self.date]];
 }
 
 #pragma mark textField delegate method
@@ -106,7 +108,7 @@
 {
     if(self.subView != nil){
         
-        self.subView.tag=0;
+        self.subView.tag = 0;
         
         [self.subView removeFromSuperview];
         

@@ -64,7 +64,10 @@
  *
  *  @param uuid uuid
  */
-- (void)unloadFileWithUuid:(NSString *)uuid Filepath:(NSString *)filepath FileName:(NSString *)fileName
+- (void)unloadFileWithUuid:(NSString *)uuid
+                  Filepath:(NSString *)filepath
+                  FileName:(NSString *)fileName
+                    group:(dispatch_group_t)group
 {
     NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
     NSDictionary *usemessage = [userdefault objectForKey:X6_UserMessage];
@@ -75,14 +78,23 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:uuid forKey:@"uuid"];
     [params setObject:userId forKey:@"userId"];
+    if (group != nil) {
+        dispatch_group_enter(group);
+    }
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
     [manager POST:urlString parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:[NSData dataWithContentsOfFile:filepath] name:name fileName:fileName mimeType:@"image/png"];
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"上传成功");
+        if (group != nil) {
+            dispatch_group_leave(group);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"上传失败");
+        if (group != nil) {
+            dispatch_group_leave(group);
+        }
     }];
 
 }

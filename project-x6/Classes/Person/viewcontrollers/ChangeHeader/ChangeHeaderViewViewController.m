@@ -110,7 +110,7 @@
     //上传图片
     _uuid = [[NSUUID UUID] UUIDString];
     NSString *Path = [ImageFile stringByAppendingPathComponent:@"image.png"];
-    [self unloadFileWithUuid:_uuid Filepath:Path FileName:@"image.png"];
+    [self unloadFileWithUuid:_uuid Filepath:Path FileName:@"image.png" group:nil];
     
 
 }

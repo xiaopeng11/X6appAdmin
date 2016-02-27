@@ -15,7 +15,7 @@
  *
  *  @param uuid UUID
  */
-- (void)unloadFileWithUuid:(NSString *)uuid Filepath:(NSString *)filepath FileName:(NSString *)fileName;
+- (void)unloadFileWithUuid:(NSString *)uuid Filepath:(NSString *)filepath FileName:(NSString *)fileName group:(dispatch_group_t)group;
 
 /**
  *  提示
