@@ -22,6 +22,7 @@
         [self.contentView addSubview:_titleLabel];
         
         _numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 100, 5, 60, 30)];
+        _numberLabel.textAlignment = NSTextAlignmentCenter;
         _numberLabel.font = [UIFont systemFontOfSize:18];
         [self.contentView addSubview:_numberLabel];
         
@@ -39,7 +40,7 @@
     
     _titleLabel.text =  [_dic valueForKey:@"col1"];
     
-    _numberLabel.text = [NSString stringWithFormat:@"%@台",[_dic valueForKey:@"col2"]];
+    _numberLabel.text = [NSString stringWithFormat:@"%@个",[_dic valueForKey:@"col2"]];
     
     
     BOOL isopen = [_dic valueForKey:@"isopen"];

@@ -9,15 +9,18 @@
 #import "MykucunViewController.h"
 
 #import "KucunModel.h"
+#import "KucunDeatilModel.h"
 #import "MykucunTableViewCell.h"
 #import "MykucunDeatilTableViewCell.h"
 @interface MykucunViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchResultsUpdating,UISearchBarDelegate>
 
 
-@property(nonatomic,strong)UITableView *KucunTableview;
-@property(nonatomic,strong)NoDataView *NokucunView;  //没有库存
-@property(nonatomic,copy)NSMutableArray *Kucundatalist;
-@property(nonatomic,copy)NSMutableArray *KucunNames;
+@property(nonatomic,strong)UITableView *KucunTableview;                 //库存表示图
+@property(nonatomic,strong)NoDataView *NokucunView;                     //没有库存
+@property(nonatomic,copy)NSMutableArray *Kucundatalist;                 //库存数据
+@property(nonatomic,copy)NSMutableArray *TableviewDatalist;             //表示图的数据
+@property(nonatomic,copy)NSMutableArray *KucunNames;                    //数据名的集合
+
 @property(nonatomic,strong)NSMutableArray *KucunSearchNames;
 @property(nonatomic, strong)UISearchController *KucunSearchController;
 
@@ -54,7 +57,7 @@
     [self naviTitleWhiteColorWithText:@"我的库存"];
     _KucunNames = [NSMutableArray array];
     _KucunSearchNames = [NSMutableArray array];
-    
+    _TableviewDatalist = [NSMutableArray array];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -108,32 +111,34 @@
     if (self.KucunSearchController.active) {
         return _KucunSearchNames.count;
     } else {
-        return _KucunNames.count;
+        return _Kucundatalist.count;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSMutableArray *tableviewdatalist = [NSMutableArray array];
-    if (self.KucunSearchController.active && self.KucunSearchController.searchBar.text.length != 0) {
+    NSMutableArray *tableDatalist = [NSMutableArray array];
+    if (self.KucunSearchController.active && _TableviewDatalist == nil) {
         for (NSString *title in _KucunSearchNames) {
-            for (NSMutableDictionary *dic in _Kucundatalist) {
+            for (NSDictionary *dic in _Kucundatalist) {
                 if ([title isEqualToString:[dic valueForKey:@"col1"]]) {
-                    [tableviewdatalist addObject:dic];
+                    [tableDatalist addObject:dic];
                 }
             }
         }
+        _TableviewDatalist = tableDatalist;
     } else {
-        tableviewdatalist = _Kucundatalist;
+        tableDatalist = _Kucundatalist;
+        
     }
     
-    if ([[tableviewdatalist[indexPath.row] objectForKey:@"cell"] isEqualToString:@"Maincell"]) {
+    if ([[tableDatalist[indexPath.row] objectForKey:@"cell"] isEqualToString:@"Maincell"]) {
         static NSString *MyKucunident = @"MyKucunident";
         MykucunTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyKucunident];
         if (cell == nil) {
             cell = [[MykucunTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyKucunident];
         }
-        cell.dic = tableviewdatalist[indexPath.row];
+        cell.dic = tableDatalist[indexPath.row];
         return cell;
     } else {
         static NSString *MykucunDetailIdent = @"MykucunDetailIdent";
@@ -141,7 +146,7 @@
         if (cell == nil) {
             cell = [[MykucunDeatilTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MykucunDetailIdent];
         }
-        cell.dic = tableviewdatalist[indexPath.row];
+        cell.dic = tableDatalist[indexPath.row];
         return cell;
     }
     return nil;
@@ -150,7 +155,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *dic = [_Kucundatalist objectAtIndex:indexPath.item];
+    NSDictionary *dic = [NSDictionary dictionary];
+    if (_TableviewDatalist.count != 0) {
+        dic = [_TableviewDatalist objectAtIndex:indexPath.row];
+    } else {
+        dic = [_Kucundatalist objectAtIndex:indexPath.row];
+    }
     if ([[dic valueForKey:@"cell"] isEqualToString:@"Maincell"]) {
         return 40;
     } else {
@@ -162,48 +172,96 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     NSIndexPath *path = nil;
-    if ([[_Kucundatalist[indexPath.row] valueForKey:@"cell"] isEqualToString:@"Maincell"]) {
-        path = [NSIndexPath indexPathForRow:(indexPath.row + 1) inSection:0];
-    } else {
-        path = indexPath;
-    }
-
-    if ([_Kucundatalist[indexPath.row] valueForKey:@"isopen"] == NO) {
-        //获取指定单元格数据
-        [self getkucunDetailWithPoistion:indexPath];
-        
-    } else {
-        NSMutableDictionary *dic = _Kucundatalist[path.row - 1];
-        [dic setObject:@NO forKey:@"isopen"];
-        _Kucundatalist[path.row - 1] = dic;
-        
-        [_Kucundatalist removeObjectAtIndex:path.row];
-        
-        [_KucunTableview beginUpdates];
-        [_KucunTableview deleteRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationTop];
-        [_KucunTableview endUpdates];
-    }
     
-    
+    if (_TableviewDatalist.count != 0) {
+        if ([[_TableviewDatalist[indexPath.row] valueForKey:@"cell"] isEqualToString:@"Maincell"]) {
+            path = [NSIndexPath indexPathForRow:(indexPath.row + 1) inSection:0];
+        } else {
+            path = indexPath;
+        }
+        
+        
+        if ([[_TableviewDatalist[indexPath.row] valueForKey:@"isopen"] boolValue] == NO) {
+            //获取指定单元格数据
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [self getkucunDetailWithPoistion:path Datalist:_TableviewDatalist];
+            });
+            
+        } else {
+            NSMutableDictionary *dic = _Kucundatalist[path.row - 1];
+            [dic setObject:@NO forKey:@"isopen"];
+            _TableviewDatalist[path.row - 1] = dic;
+            
+            [_TableviewDatalist removeObjectAtIndex:path.row];
+            [_KucunSearchNames removeLastObject];
+            [_KucunTableview beginUpdates];
+            [_KucunTableview deleteRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationTop];
+            [_KucunTableview endUpdates];
+        }
+    } else {
+        if ([[_Kucundatalist[indexPath.row] valueForKey:@"cell"] isEqualToString:@"Maincell"]) {
+            path = [NSIndexPath indexPathForRow:(indexPath.row + 1) inSection:0];
+        } else {
+            path = indexPath;
+        }
+        
+        
+        if ([[_Kucundatalist[indexPath.row] valueForKey:@"isopen"] boolValue] == NO) {
+            //获取指定单元格数据
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [self getkucunDetailWithPoistion:path Datalist:_Kucundatalist];
+            });
+            
+        } else {
+            NSMutableDictionary *dic = _Kucundatalist[path.row - 1];
+            [dic setObject:@NO forKey:@"isopen"];
+            _Kucundatalist[path.row - 1] = dic;
+            
+            [_Kucundatalist removeObjectAtIndex:path.row];
+            [_KucunSearchNames removeLastObject];
+            [_KucunTableview beginUpdates];
+            [_KucunTableview deleteRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationTop];
+            [_KucunTableview endUpdates];
+        }
+    }
+   
+  
 }
 
 #pragma mark -获取指定单元格的详情数据
-- (void)getkucunDetailWithPoistion:(NSIndexPath *)poistion
+- (void)getkucunDetailWithPoistion:(NSIndexPath *)poistion Datalist:(NSMutableArray *)datalist
 {
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *mykucunDetailURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_mykucunDetail];
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:[_Kucundatalist[poistion.row] objectForKey:@"col0"] forKey:@"spdm"];
+    [params setObject:[datalist[poistion.row] objectForKey:@"col0"] forKey:@"spdm"];
     [XPHTTPRequestTool requestMothedWithPost:mykucunDetailURL params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
+        //更新主单元格数据
+        NSMutableDictionary *kucundic = [NSMutableDictionary dictionaryWithDictionary:datalist[poistion.row - 1]];
+        [kucundic setObject:@YES forKey:@"isopen"];
+        datalist[poistion.row - 1] = kucundic;
         //制作详情数据
-        NSMutableDictionary *kucundetaildic = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"",@"",@"",@"",@"",@"",@"",@"", nil];
+        NSMutableDictionary *kucundetaildic = [NSMutableDictionary dictionaryWithDictionary:responseObject[@"vo"]];
+        [kucundetaildic setObject:@YES forKey:@"isopen"];
+        //将主单元格中的均价和金额设置到详情单元格中
+        NSNumber *jine = [kucundic valueForKey:@"col3"];
+        NSNumber *numb = [kucundic valueForKey:@"col2"];
+        long junjia = [jine longLongValue] / [numb longLongValue];
         
+        [kucundetaildic setObject:@(junjia) forKey:@"zongjunjia"];
+        [kucundetaildic setObject:jine forKey:@"zongjine"];
+        [kucundetaildic setObject:@"attavcell" forKey:@"cell"];
+        [datalist insertObject:kucundetaildic atIndex:poistion.row];
         
-        [_KucunTableview beginUpdates];
-        [_KucunTableview insertRowsAtIndexPaths:@[poistion] withRowAnimation:UITableViewRowAnimationTop];
-        [_KucunTableview endUpdates];
+        [_KucunSearchNames addObject:@""];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_KucunTableview beginUpdates];
+            [_KucunTableview insertRowsAtIndexPaths:@[poistion] withRowAnimation:UITableViewRowAnimationTop];
+            [_KucunTableview endUpdates];
+        });
+       
         
     } failure:^(NSError *error) {
         NSLog(@"库存详情获取失败");
@@ -251,17 +309,29 @@
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.KucunSearchNames removeAllObjects];
-  
+    
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.KucunSearchController.searchBar.text];
     self.KucunSearchNames = [[self.KucunNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
     
-    
+    for (int i = 0; i < _Kucundatalist.count; i++) {
+        NSMutableDictionary *dic = _Kucundatalist[i];
+        if ([[dic valueForKey:@"cell"] isEqualToString:@"attavcell"]) {
+            [_Kucundatalist removeObject:dic];
+            NSMutableDictionary *diclast = _Kucundatalist[i - 1];
+            [diclast setObject:@NO forKey:@"isopen"];
+            [_Kucundatalist replaceObjectAtIndex:(i - 1) withObject:diclast];
+        }
+    }
+
     [_KucunTableview reloadData];
  
 }
 
 
-
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+{
+    [_TableviewDatalist removeAllObjects];
+}
 
 
 

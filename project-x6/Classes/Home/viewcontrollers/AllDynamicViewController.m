@@ -210,12 +210,11 @@
     //获取表示图
     HomeTableView *tableview = (HomeTableView *)[_scrollView viewWithTag:100 + searchType];
     NoDataView *nodataView = (NoDataView *)[_scrollView viewWithTag:110 + searchType];
-    if (!tableview.header.isRefreshing) {
+    if (!tableview.header.isRefreshing && !tableview.footer.isRefreshing) {
           [GiFHUD show];
     }
     [XPHTTPRequestTool requestMothedWithPost:homeURL params:params success:^(id responseObject) {
         //将刷新参数保存在本地
-       NSLog(@"%@",responseObject);
         [userDefaults setObject:@(1) forKey:X6_refresh];
         [userDefaults synchronize];
         if (tableview.header.isRefreshing || tableview.footer.isRefreshing) {

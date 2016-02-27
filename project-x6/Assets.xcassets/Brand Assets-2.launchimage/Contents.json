@@ -5,6 +5,13 @@
       "idiom" : "ipad",
       "minimum-system-version" : "7.0",
       "extent" : "full-screen",
+      "scale" : "1x"
+    },
+    {
+      "orientation" : "portrait",
+      "idiom" : "ipad",
+      "minimum-system-version" : "7.0",
+      "extent" : "full-screen",
       "scale" : "2x"
     },
     {
@@ -24,22 +31,17 @@
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
+      "filename" : "Default@2x.png",
       "minimum-system-version" : "7.0",
       "scale" : "2x"
     },
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
+      "filename" : "Default-568h@2x.png",
       "minimum-system-version" : "7.0",
       "subtype" : "retina4",
       "scale" : "2x"
-    },
-    {
-      "orientation" : "portrait",
-      "idiom" : "ipad",
-      "minimum-system-version" : "7.0",
-      "extent" : "full-screen",
-      "scale" : "1x"
     }
   ],
   "info" : {

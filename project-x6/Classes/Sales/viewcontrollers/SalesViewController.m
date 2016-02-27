@@ -12,6 +12,8 @@
 #import "SpeSalesTableViewCell.h"
 
 #import "MykucunViewController.h"
+#import "TodayViewController.h"
+
 
 @interface SalesViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,copy)NSArray *datalist;
@@ -99,7 +101,8 @@
         MykucunViewController *mykucunVC = [[MykucunViewController alloc] init];
         [self.navigationController pushViewController:mykucunVC animated:YES];
     } else if (indexPath.row == 1) {
-
+        TodayViewController *todayVC = [[TodayViewController alloc] init];
+        [self.navigationController pushViewController:todayVC animated:YES];
     } else {
 
     }

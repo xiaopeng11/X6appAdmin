@@ -14,6 +14,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = [UIColor clearColor];
+        
         //默认日期格式为yyyy-MM-dd
         self.dateFormatter = [[NSDateFormatter alloc] init];
         
@@ -23,16 +25,18 @@
         
         self.date = [self.dateFormatter dateFromString:dateString];
         
+        self.font = [UIFont systemFontOfSize:11];
+        self.textColor = [UIColor whiteColor];
         self.text = dateString;
         //半透明背景
         self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(10, 30, KScreenWidth, 200)];
         self.datePicker.layer.cornerRadius = 20;
         self.datePicker.datePickerMode = UIDatePickerModeDate;
         self.datePicker.maximumDate = [NSDate date];
-        self.datePicker.backgroundColor = [UIColor whiteColor];
+        self.datePicker.backgroundColor = [UIColor clearColor];
         [self.datePicker addTarget:self action:@selector(dateChange:) forControlEvents:UIControlEventValueChanged];
         
-        self.subView = [[UIView alloc] initWithFrame:CGRectMake(0, 149, KScreenWidth, KScreenHeight  - 64 - 49 - 40)];
+        self.subView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, KScreenWidth, KScreenHeight  - 64)];
         self.subView.backgroundColor = [UIColor whiteColor];
         self.subView.tag = 0;
         
