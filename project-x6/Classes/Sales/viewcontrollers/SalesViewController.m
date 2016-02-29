@@ -13,6 +13,9 @@
 
 #import "MykucunViewController.h"
 #import "TodayViewController.h"
+#import "TodaySalesViewController.h"
+#import "TodayMoneyViewController.h"
+#import "TodayPayViewController.h"
 
 
 @interface SalesViewController ()<UITableViewDataSource,UITableViewDelegate>
@@ -48,12 +51,11 @@
                   @{@"text":@"我的提醒",@"image":@"btn_xiaoliang_n"},
                   @{@"text":@"我的帐户",@"image":@"btn_xiaoliang_n"}];
  
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 60 * (_datalist.count - 1) + 80) style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64 - 49) style:UITableViewStylePlain];
     tableView.dataSource = self;
     tableView.delegate = self;
     tableView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:tableView];
-
 
 }
 
@@ -103,8 +105,16 @@
     } else if (indexPath.row == 1) {
         TodayViewController *todayVC = [[TodayViewController alloc] init];
         [self.navigationController pushViewController:todayVC animated:YES];
-    } else {
-
+    } else if (indexPath.row == 2) {
+        TodaySalesViewController *todaySalesVC = [[TodaySalesViewController alloc] init];
+        [self.navigationController pushViewController:todaySalesVC animated:YES];
+    } else if (indexPath.row == 3) {
+        TodayMoneyViewController *todayMoneyVC = [[TodayMoneyViewController alloc] init];
+        [self.navigationController pushViewController:todayMoneyVC animated:YES];
+    } else if (indexPath.row == 4) {
+        TodayPayViewController *todayPayVC = [[TodayPayViewController alloc] init];
+        [self.navigationController pushViewController:todayPayVC animated:YES];
+        
     }
     
 }

@@ -14,6 +14,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.backgroundColor = GrayColor;
         _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 20)];
         [self.contentView addSubview:_imageView];
         

@@ -109,7 +109,6 @@
     NSDate *date = [NSDate date];
     _dateString = [NSString stringWithFormat:@"%@",date];
     _dateString = [_dateString substringToIndex:10];
-    NSLog(@"%@",_dateString);
     
     //导航栏按钮
     [self creatRightNaviButton];
@@ -174,6 +173,7 @@
         [_companySearchController.searchBar resignFirstResponder];
     }
 }
+
 #pragma mark - 导航栏按钮
 - (void)creatRightNaviButton
 {

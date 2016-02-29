@@ -14,6 +14,7 @@
 		18171CD51C814A12001FD54D /* btn_jiantou_h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18171CD11C814A12001FD54D /* btn_jiantou_h@3x.png */; };
 		18171CD61C814A12001FD54D /* btn_jiantou_n@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18171CD21C814A12001FD54D /* btn_jiantou_n@2x.png */; };
 		18171CD71C814A12001FD54D /* btn_jiantou_n@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18171CD31C814A12001FD54D /* btn_jiantou_n@3x.png */; };
+		18171CDA1C81A41E001FD54D /* TodaySalesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18171CD91C81A41E001FD54D /* TodaySalesViewController.m */; };
 		182F2C6F1BFEAB8E0068DC4E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 182F2C6E1BFEAB8E0068DC4E /* main.m */; };
 		182F2C721BFEAB8E0068DC4E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 182F2C711BFEAB8E0068DC4E /* AppDelegate.m */; };
 		183929F01C7EA288007133AB /* BusinessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183929EF1C7EA288007133AB /* BusinessViewController.m */; };
@@ -333,6 +334,12 @@
 		188A82A41C7B098100CACAFA /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 188A82901C7B098100CACAFA /* icon@2x.png */; };
 		188A82A51C7B098100CACAFA /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 188A82911C7B098100CACAFA /* iTunesArtwork.png */; };
 		188A82A61C7B098100CACAFA /* itunesartwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 188A82921C7B098100CACAFA /* itunesartwork@2x.png */; };
+		1891877B1C83D5D100223CF8 /* TodaySalesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891877A1C83D5D100223CF8 /* TodaySalesTableViewCell.m */; };
+		189187811C83E3DF00223CF8 /* TodaySalesDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187801C83E3DF00223CF8 /* TodaySalesDetailModel.m */; };
+		189187841C8412DB00223CF8 /* TodayMoneyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187831C8412DB00223CF8 /* TodayMoneyViewController.m */; };
+		189187881C84153D00223CF8 /* TodayMoneyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187871C84153D00223CF8 /* TodayMoneyTableViewCell.m */; };
+		1891878B1C8417C800223CF8 /* TodayMoneyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891878A1C8417C800223CF8 /* TodayMoneyModel.m */; };
+		189187991C84205000223CF8 /* TodayPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187981C84205000223CF8 /* TodayPayViewController.m */; };
 		1899DB1A1C7FE4F900FEB7E3 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */; };
 		1899DB1D1C7FEECC00FEB7E3 /* TodayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB1C1C7FEECC00FEB7E3 /* TodayModel.m */; };
 		1899DB201C7FF31E00FEB7E3 /* KucunDeatilModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB1F1C7FF31E00FEB7E3 /* KucunDeatilModel.m */; };
@@ -499,12 +506,14 @@
 		18118FBE1C4F91FB008FCF86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		18171CCA1C813C31001FD54D /* TodayTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayTableViewCell.h; sourceTree = "<group>"; };
 		18171CCB1C813C31001FD54D /* TodayTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayTableViewCell.m; sourceTree = "<group>"; };
-		18171CCD1C81469A001FD54D /* TodaydetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodaydetailModel.h; sourceTree = "<group>"; };
-		18171CCE1C81469A001FD54D /* TodaydetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodaydetailModel.m; sourceTree = "<group>"; };
+		18171CCD1C81469A001FD54D /* TodaydetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodaydetailModel.h; path = "project-x6/Classes/Sales/models/TodaydetailModel.h"; sourceTree = SOURCE_ROOT; };
+		18171CCE1C81469A001FD54D /* TodaydetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodaydetailModel.m; path = "project-x6/Classes/Sales/models/TodaydetailModel.m"; sourceTree = SOURCE_ROOT; };
 		18171CD01C814A12001FD54D /* btn_jiantou_h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_jiantou_h@2x.png"; sourceTree = "<group>"; };
 		18171CD11C814A12001FD54D /* btn_jiantou_h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_jiantou_h@3x.png"; sourceTree = "<group>"; };
 		18171CD21C814A12001FD54D /* btn_jiantou_n@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_jiantou_n@2x.png"; sourceTree = "<group>"; };
 		18171CD31C814A12001FD54D /* btn_jiantou_n@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_jiantou_n@3x.png"; sourceTree = "<group>"; };
+		18171CD81C81A41E001FD54D /* TodaySalesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodaySalesViewController.h; path = "project-x6/Classes/Sales/viewcontrollers/TodaySalesViewController.h"; sourceTree = SOURCE_ROOT; };
+		18171CD91C81A41E001FD54D /* TodaySalesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodaySalesViewController.m; path = "project-x6/Classes/Sales/viewcontrollers/TodaySalesViewController.m"; sourceTree = SOURCE_ROOT; };
 		182F2C6A1BFEAB8E0068DC4E /* project-x6.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "project-x6.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		182F2C6E1BFEAB8E0068DC4E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		182F2C701BFEAB8E0068DC4E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -1172,12 +1181,24 @@
 		188A82901C7B098100CACAFA /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
 		188A82911C7B098100CACAFA /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		188A82921C7B098100CACAFA /* itunesartwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "itunesartwork@2x.png"; sourceTree = "<group>"; };
-		1899DB181C7FE4F900FEB7E3 /* TodayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
-		1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
-		1899DB1B1C7FEECC00FEB7E3 /* TodayModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayModel.h; sourceTree = "<group>"; };
-		1899DB1C1C7FEECC00FEB7E3 /* TodayModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayModel.m; sourceTree = "<group>"; };
-		1899DB1E1C7FF31E00FEB7E3 /* KucunDeatilModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KucunDeatilModel.h; sourceTree = "<group>"; };
-		1899DB1F1C7FF31E00FEB7E3 /* KucunDeatilModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KucunDeatilModel.m; sourceTree = "<group>"; };
+		189187791C83D5D100223CF8 /* TodaySalesTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodaySalesTableViewCell.h; sourceTree = "<group>"; };
+		1891877A1C83D5D100223CF8 /* TodaySalesTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodaySalesTableViewCell.m; sourceTree = "<group>"; };
+		1891877F1C83E3DF00223CF8 /* TodaySalesDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodaySalesDetailModel.h; path = "project-x6/Classes/Sales/models/TodaySalesDetailModel.h"; sourceTree = SOURCE_ROOT; };
+		189187801C83E3DF00223CF8 /* TodaySalesDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodaySalesDetailModel.m; path = "project-x6/Classes/Sales/models/TodaySalesDetailModel.m"; sourceTree = SOURCE_ROOT; };
+		189187821C8412DB00223CF8 /* TodayMoneyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayMoneyViewController.h; path = "project-x6/Classes/Sales/viewcontrollers/TodayMoneyViewController.h"; sourceTree = SOURCE_ROOT; };
+		189187831C8412DB00223CF8 /* TodayMoneyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayMoneyViewController.m; path = "project-x6/Classes/Sales/viewcontrollers/TodayMoneyViewController.m"; sourceTree = SOURCE_ROOT; };
+		189187861C84153D00223CF8 /* TodayMoneyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodayMoneyTableViewCell.h; sourceTree = "<group>"; };
+		189187871C84153D00223CF8 /* TodayMoneyTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodayMoneyTableViewCell.m; sourceTree = "<group>"; };
+		189187891C8417C800223CF8 /* TodayMoneyModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayMoneyModel.h; path = "project-x6/Classes/Sales/models/TodayMoneyModel.h"; sourceTree = SOURCE_ROOT; };
+		1891878A1C8417C800223CF8 /* TodayMoneyModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayMoneyModel.m; path = "project-x6/Classes/Sales/models/TodayMoneyModel.m"; sourceTree = SOURCE_ROOT; };
+		189187971C84205000223CF8 /* TodayPayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayPayViewController.h; path = ../../views/TodayPay/TodayPayViewController.h; sourceTree = "<group>"; };
+		189187981C84205000223CF8 /* TodayPayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayPayViewController.m; path = ../../views/TodayPay/TodayPayViewController.m; sourceTree = "<group>"; };
+		1899DB181C7FE4F900FEB7E3 /* TodayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayViewController.h; path = "project-x6/Classes/Sales/viewcontrollers/TodayViewController.h"; sourceTree = SOURCE_ROOT; };
+		1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayViewController.m; path = "project-x6/Classes/Sales/viewcontrollers/TodayViewController.m"; sourceTree = SOURCE_ROOT; };
+		1899DB1B1C7FEECC00FEB7E3 /* TodayModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayModel.h; path = "project-x6/Classes/Sales/models/TodayModel.h"; sourceTree = SOURCE_ROOT; };
+		1899DB1C1C7FEECC00FEB7E3 /* TodayModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayModel.m; path = "project-x6/Classes/Sales/models/TodayModel.m"; sourceTree = SOURCE_ROOT; };
+		1899DB1E1C7FF31E00FEB7E3 /* KucunDeatilModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KucunDeatilModel.h; path = ../KucunDeatilModel.h; sourceTree = "<group>"; };
+		1899DB1F1C7FF31E00FEB7E3 /* KucunDeatilModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KucunDeatilModel.m; path = ../KucunDeatilModel.m; sourceTree = "<group>"; };
 		1899DB611C8043FD00FEB7E3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		1899DB621C8043FD00FEB7E3 /* Default-Portrait-ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait-ios7@2x.png"; sourceTree = "<group>"; };
 		1899DB631C8043FD00FEB7E3 /* Default@.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@.png"; sourceTree = "<group>"; };
@@ -1332,12 +1353,12 @@
 		18B05A7D1C7EB53600883878 /* VoiceSearchFeedback019@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "VoiceSearchFeedback019@2x.png"; sourceTree = "<group>"; };
 		18B05A7E1C7EB53600883878 /* VoiceSearchFeedback020@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "VoiceSearchFeedback020@2x.png"; sourceTree = "<group>"; };
 		18B05A7F1C7EB53600883878 /* user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user@2x.png"; sourceTree = "<group>"; };
-		18B05ABB1C7ECB5500883878 /* MykucunViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MykucunViewController.h; sourceTree = "<group>"; };
-		18B05ABC1C7ECB5500883878 /* MykucunViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MykucunViewController.m; sourceTree = "<group>"; };
+		18B05ABB1C7ECB5500883878 /* MykucunViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MykucunViewController.h; path = "project-x6/Classes/Sales/viewcontrollers/MykucunViewController.h"; sourceTree = SOURCE_ROOT; };
+		18B05ABC1C7ECB5500883878 /* MykucunViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MykucunViewController.m; path = "project-x6/Classes/Sales/viewcontrollers/MykucunViewController.m"; sourceTree = SOURCE_ROOT; };
 		18B05ABF1C7ECD0300883878 /* MykucunTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MykucunTableViewCell.h; sourceTree = "<group>"; };
 		18B05AC01C7ECD0300883878 /* MykucunTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MykucunTableViewCell.m; sourceTree = "<group>"; };
-		18B05AC21C7ED0D500883878 /* KucunModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KucunModel.h; sourceTree = "<group>"; };
-		18B05AC31C7ED0D500883878 /* KucunModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KucunModel.m; sourceTree = "<group>"; };
+		18B05AC21C7ED0D500883878 /* KucunModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KucunModel.h; path = ../KucunModel.h; sourceTree = "<group>"; };
+		18B05AC31C7ED0D500883878 /* KucunModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KucunModel.m; path = ../KucunModel.m; sourceTree = "<group>"; };
 		18B05AC91C7EDBD300883878 /* MykucunDeatilTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MykucunDeatilTableViewCell.h; sourceTree = "<group>"; };
 		18B05ACA1C7EDBD300883878 /* MykucunDeatilTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MykucunDeatilTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1696,14 +1717,11 @@
 		1856B8CD1C7E96540051A0CB /* models */ = {
 			isa = PBXGroup;
 			children = (
-				18B05AC21C7ED0D500883878 /* KucunModel.h */,
-				18B05AC31C7ED0D500883878 /* KucunModel.m */,
-				1899DB1E1C7FF31E00FEB7E3 /* KucunDeatilModel.h */,
-				1899DB1F1C7FF31E00FEB7E3 /* KucunDeatilModel.m */,
-				1899DB1B1C7FEECC00FEB7E3 /* TodayModel.h */,
-				1899DB1C1C7FEECC00FEB7E3 /* TodayModel.m */,
-				18171CCD1C81469A001FD54D /* TodaydetailModel.h */,
-				18171CCE1C81469A001FD54D /* TodaydetailModel.m */,
+				189187961C84202100223CF8 /* TodayPay */,
+				189187931C841FD000223CF8 /* Mykucun */,
+				189187911C841FA500223CF8 /* Today */,
+				1891878F1C841F8600223CF8 /* TodaySales */,
+				1891878D1C841F7500223CF8 /* TodayMoney */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -1713,10 +1731,11 @@
 			children = (
 				1856B8D91C7E96540051A0CB /* SalesViewController.h */,
 				1856B8DA1C7E96540051A0CB /* SalesViewController.m */,
-				18B05ABB1C7ECB5500883878 /* MykucunViewController.h */,
-				18B05ABC1C7ECB5500883878 /* MykucunViewController.m */,
-				1899DB181C7FE4F900FEB7E3 /* TodayViewController.h */,
-				1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */,
+				189187951C84201E00223CF8 /* TodayPay */,
+				189187921C841FC800223CF8 /* Mykucun */,
+				189187901C841F9E00223CF8 /* Today */,
+				1891878E1C841F8200223CF8 /* TodaySales */,
+				1891878C1C841F6D00223CF8 /* TodayMoney */,
 			);
 			path = viewcontrollers;
 			sourceTree = "<group>";
@@ -1728,6 +1747,9 @@
 				1856B8E51C7E96540051A0CB /* SalesTableViewCell.m */,
 				18B059141C7EA85E00883878 /* SpeSalesTableViewCell.h */,
 				18B059151C7EA85E00883878 /* SpeSalesTableViewCell.m */,
+				189187941C84201900223CF8 /* TodayPay */,
+				189187851C84152900223CF8 /* TodayMoney */,
+				189187781C83D5A500223CF8 /* TodaySales */,
 				18171CC91C813C1E001FD54D /* Today */,
 				18B05ABE1C7ECCE200883878 /* Mykucun */,
 			);
@@ -3111,6 +3133,123 @@
 			path = icon;
 			sourceTree = "<group>";
 		};
+		189187781C83D5A500223CF8 /* TodaySales */ = {
+			isa = PBXGroup;
+			children = (
+				189187791C83D5D100223CF8 /* TodaySalesTableViewCell.h */,
+				1891877A1C83D5D100223CF8 /* TodaySalesTableViewCell.m */,
+			);
+			path = TodaySales;
+			sourceTree = "<group>";
+		};
+		189187851C84152900223CF8 /* TodayMoney */ = {
+			isa = PBXGroup;
+			children = (
+				189187861C84153D00223CF8 /* TodayMoneyTableViewCell.h */,
+				189187871C84153D00223CF8 /* TodayMoneyTableViewCell.m */,
+			);
+			path = TodayMoney;
+			sourceTree = "<group>";
+		};
+		1891878C1C841F6D00223CF8 /* TodayMoney */ = {
+			isa = PBXGroup;
+			children = (
+				189187821C8412DB00223CF8 /* TodayMoneyViewController.h */,
+				189187831C8412DB00223CF8 /* TodayMoneyViewController.m */,
+			);
+			path = TodayMoney;
+			sourceTree = "<group>";
+		};
+		1891878D1C841F7500223CF8 /* TodayMoney */ = {
+			isa = PBXGroup;
+			children = (
+				189187891C8417C800223CF8 /* TodayMoneyModel.h */,
+				1891878A1C8417C800223CF8 /* TodayMoneyModel.m */,
+			);
+			path = TodayMoney;
+			sourceTree = "<group>";
+		};
+		1891878E1C841F8200223CF8 /* TodaySales */ = {
+			isa = PBXGroup;
+			children = (
+				18171CD81C81A41E001FD54D /* TodaySalesViewController.h */,
+				18171CD91C81A41E001FD54D /* TodaySalesViewController.m */,
+			);
+			path = TodaySales;
+			sourceTree = "<group>";
+		};
+		1891878F1C841F8600223CF8 /* TodaySales */ = {
+			isa = PBXGroup;
+			children = (
+				1891877F1C83E3DF00223CF8 /* TodaySalesDetailModel.h */,
+				189187801C83E3DF00223CF8 /* TodaySalesDetailModel.m */,
+			);
+			path = TodaySales;
+			sourceTree = "<group>";
+		};
+		189187901C841F9E00223CF8 /* Today */ = {
+			isa = PBXGroup;
+			children = (
+				1899DB181C7FE4F900FEB7E3 /* TodayViewController.h */,
+				1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */,
+			);
+			path = Today;
+			sourceTree = "<group>";
+		};
+		189187911C841FA500223CF8 /* Today */ = {
+			isa = PBXGroup;
+			children = (
+				1899DB1B1C7FEECC00FEB7E3 /* TodayModel.h */,
+				1899DB1C1C7FEECC00FEB7E3 /* TodayModel.m */,
+				18171CCD1C81469A001FD54D /* TodaydetailModel.h */,
+				18171CCE1C81469A001FD54D /* TodaydetailModel.m */,
+			);
+			path = Today;
+			sourceTree = "<group>";
+		};
+		189187921C841FC800223CF8 /* Mykucun */ = {
+			isa = PBXGroup;
+			children = (
+				18B05ABB1C7ECB5500883878 /* MykucunViewController.h */,
+				18B05ABC1C7ECB5500883878 /* MykucunViewController.m */,
+			);
+			path = Mykucun;
+			sourceTree = "<group>";
+		};
+		189187931C841FD000223CF8 /* Mykucun */ = {
+			isa = PBXGroup;
+			children = (
+				18B05AC21C7ED0D500883878 /* KucunModel.h */,
+				18B05AC31C7ED0D500883878 /* KucunModel.m */,
+				1899DB1E1C7FF31E00FEB7E3 /* KucunDeatilModel.h */,
+				1899DB1F1C7FF31E00FEB7E3 /* KucunDeatilModel.m */,
+			);
+			path = Mykucun;
+			sourceTree = "<group>";
+		};
+		189187941C84201900223CF8 /* TodayPay */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = TodayPay;
+			sourceTree = "<group>";
+		};
+		189187951C84201E00223CF8 /* TodayPay */ = {
+			isa = PBXGroup;
+			children = (
+				189187971C84205000223CF8 /* TodayPayViewController.h */,
+				189187981C84205000223CF8 /* TodayPayViewController.m */,
+			);
+			path = TodayPay;
+			sourceTree = "<group>";
+		};
+		189187961C84202100223CF8 /* TodayPay */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = TodayPay;
+			sourceTree = "<group>";
+		};
 		1899DB601C8043FD00FEB7E3 /* Default */ = {
 			isa = PBXGroup;
 			children = (
@@ -3729,6 +3868,7 @@
 				1856BCAD1C7E96550051A0CB /* PSTCollectionViewUpdateItem.m in Sources */,
 				1856BD351C7E974D0051A0CB /* GiFHUD.m in Sources */,
 				1856BC7E1C7E96550051A0CB /* EMAlertView.m in Sources */,
+				189187881C84153D00223CF8 /* TodayMoneyTableViewCell.m in Sources */,
 				1856BCFB1C7E96550051A0CB /* MLEmojiLabel.m in Sources */,
 				1856BBC51C7E96540051A0CB /* BaseViewController.m in Sources */,
 				1856BC741C7E96550051A0CB /* ContactView.m in Sources */,
@@ -3792,6 +3932,7 @@
 				1856BC851C7E96550051A0CB /* EMAudioRecorderUtil.m in Sources */,
 				1856BCA11C7E96550051A0CB /* MWPhotoBrowser.m in Sources */,
 				1856BC9A1C7E96550051A0CB /* UIScrollView+MJExtension.m in Sources */,
+				189187991C84205000223CF8 /* TodayPayViewController.m in Sources */,
 				1856BBC11C7E96540051A0CB /* UIView+EventLink.m in Sources */,
 				1856BBD51C7E96540051A0CB /* KnowledgesViewController.m in Sources */,
 				1856BC961C7E96550051A0CB /* MJRefreshGifHeader.m in Sources */,
@@ -3835,6 +3976,7 @@
 				1856BCF31C7E96550051A0CB /* MJProperty.m in Sources */,
 				1856BC641C7E96540051A0CB /* AFHTTPRequestOperation.m in Sources */,
 				1856BCA51C7E96550051A0CB /* NSIndexPath+PSTCollectionViewAdditions.m in Sources */,
+				189187811C83E3DF00223CF8 /* TodaySalesDetailModel.m in Sources */,
 				1856BD1A1C7E96550051A0CB /* ZLPhotoPickerBrowserPhotoImageView.m in Sources */,
 				1856BCFD1C7E96550051A0CB /* Reachability.m in Sources */,
 				1856BCC21C7E96550051A0CB /* EaseEmotionEscape.m in Sources */,
@@ -3866,10 +4008,12 @@
 				1856BCA61C7E96550051A0CB /* PSTCollectionView.m in Sources */,
 				1856BC771C7E96550051A0CB /* GroupSettingViewController.m in Sources */,
 				1856BBC61C7E96540051A0CB /* HomeModel.m in Sources */,
+				189187841C8412DB00223CF8 /* TodayMoneyViewController.m in Sources */,
 				1856BD031C7E96550051A0CB /* SDWebImageDownloader.m in Sources */,
 				1856BC881C7E96550051A0CB /* EMCDDeviceManager+ProximitySensor.m in Sources */,
 				1856BCC11C7E96550051A0CB /* EaseEmojiEmoticons.m in Sources */,
 				1856BBEC1C7E96540051A0CB /* SalesTableViewCell.m in Sources */,
+				18171CDA1C81A41E001FD54D /* TodaySalesViewController.m in Sources */,
 				1856BC061C7E96540051A0CB /* XPDatePicker.m in Sources */,
 				1856BCDA1C7E96550051A0CB /* EaseFacialView.m in Sources */,
 				1856BCC91C7E96550051A0CB /* EaseViewController.m in Sources */,
@@ -3879,6 +4023,7 @@
 				183929F01C7EA288007133AB /* BusinessViewController.m in Sources */,
 				1856BC991C7E96550051A0CB /* MJRefreshLegendHeader.m in Sources */,
 				1856BD121C7E96550051A0CB /* ZLCamera.m in Sources */,
+				1891877B1C83D5D100223CF8 /* TodaySalesTableViewCell.m in Sources */,
 				1856BC7B1C7E96550051A0CB /* CustomMessageCell.m in Sources */,
 				1856BCEF1C7E96550051A0CB /* JSONKit.m in Sources */,
 				1856BD1E1C7E96550051A0CB /* ZLPhotoAssets.m in Sources */,
@@ -3921,6 +4066,7 @@
 				1856BD081C7E96550051A0CB /* UIImage+GIF.m in Sources */,
 				1856BC9B1C7E96550051A0CB /* UIScrollView+MJRefresh.m in Sources */,
 				1856BCB51C7E96550051A0CB /* EaseMessageModel.m in Sources */,
+				1891878B1C8417C800223CF8 /* TodayMoneyModel.m in Sources */,
 				1856BC891C7E96550051A0CB /* EMCDDeviceManager+Remind.m in Sources */,
 				18B05ABD1C7ECB5500883878 /* MykucunViewController.m in Sources */,
 				1856BC941C7E96550051A0CB /* MJRefreshFooter.m in Sources */,
