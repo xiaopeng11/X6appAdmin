@@ -19,7 +19,7 @@
             _label = [[UILabel alloc] init];
             _label.textColor = [UIColor grayColor];
             _label.font = [UIFont systemFontOfSize:16];
-            _label.tag = 4100 + i;
+            _label.tag = 4110 + i;
             if (i < 2) {
                 _label.textAlignment = NSTextAlignmentCenter;
                 _label.font = [UIFont systemFontOfSize:18];
@@ -28,7 +28,6 @@
                 _label.font = [UIFont systemFontOfSize:14];
                 int withnum = (i - 2) / 3;
                 int lonnum = (i - 2) % 3;
-//                _label.backgroundColor = [UIColor yellowColor];
                 _label.frame = CGRectMake(20 + ((KucunScreenWith / 3.0 - 100) / 2.0) + (lonnum * (KucunScreenWith / 3.0)),  30 + 30 * withnum, 100, 20);
             } 
             [self.contentView addSubview:_label];
@@ -41,7 +40,7 @@
 {
     [super layoutSubviews];
     for (int i = 0; i < 8; i++) {
-        UILabel *label = [self.contentView viewWithTag:4100 + i];
+        UILabel *label = [self.contentView viewWithTag:4110 + i];
         if (i == 0) {
             label.text = [NSString stringWithFormat:@"均价:%@",[_dic valueForKey:@"zongjunjia"]];
         } else if (i == 1) {

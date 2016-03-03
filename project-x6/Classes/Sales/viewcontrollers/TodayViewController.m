@@ -42,7 +42,7 @@
 - (NoDataView *)NotodayView
 {
     if (!_NotodayView) {
-        _NotodayView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 40, KScreenWidth, KScreenHeight - 64 - 40 - 40)];
+        _NotodayView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 40)];
         _NotodayView.text = @"没有数据";
         _NotodayView.hidden = YES;
         [self.view addSubview:_NotodayView];
@@ -53,7 +53,7 @@
 - (UITableView *)TodayTableView
 {
     if (!_TodayTableView) {
-        _TodayTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, KScreenWidth, KScreenHeight - 64 - 40 - 40) style:UITableViewStylePlain];
+        _TodayTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 40) style:UITableViewStylePlain];
         _TodayTableView.hidden = YES;
         _TodayTableView.delegate = self;
         _TodayTableView.dataSource = self;
@@ -135,9 +135,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
     
-
-    
-  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -190,6 +187,9 @@
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.companSearchNames removeAllObjects];
+    [self.detailDic removeAllObjects];
+    [_selectSectionArray removeAllObjects];
+    
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.companySearchController.searchBar.text];
     self.companSearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];

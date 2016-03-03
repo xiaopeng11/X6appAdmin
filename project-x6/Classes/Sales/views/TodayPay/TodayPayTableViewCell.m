@@ -74,7 +74,7 @@
         
         if (i == 0) {
             _headerLabel.text = @"供应商:";
-            _imageView.image = [UIImage imageNamed:@"btn_zhanghu_h"];
+            _imageView.image = [UIImage imageNamed:@"btn_zhanghu_n"];
             _label.text = @" 帐户:";
             _textLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col1"]];
             

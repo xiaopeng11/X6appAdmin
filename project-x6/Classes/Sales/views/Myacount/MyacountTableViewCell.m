@@ -65,7 +65,7 @@
 {
     [super layoutSubviews];
     
-    _imageView.image = [UIImage imageNamed:@""];
+    _imageView.image = [UIImage imageNamed:@"btn_tongqian_h"];
     
     _bankLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col0"]];
     
@@ -79,6 +79,7 @@
             _myacountLabel.text = @"余额: ";
         } else if (i == 1) {
             _myacountLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col2"]];
+        
         } else if (i == 3) {
             _myacountLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col3"]];
         } else if (i == 5) {

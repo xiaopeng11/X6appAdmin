@@ -27,7 +27,7 @@
 @property(nonatomic,strong)UIView *totalTodayMoneyView;        //总计
 
 @property(nonatomic,copy)NSArray *todayMoneyDatalist;          //门店销量数据
-@property(nonatomic,copy)NSDictionary *todayMoneydetailDic;       //指定门店销量
+//@property(nonatomic,copy)NSDictionary *todayMoneydetailDic;       //指定门店销量
 @property(nonatomic,copy)NSMutableDictionary *todayMoneyDic;
 @property(nonatomic,copy)NSMutableArray *selectTodayMoneySection;
 
@@ -268,6 +268,8 @@
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.companysearchNames removeAllObjects];
+    [self.selectTodayMoneySection removeAllObjects];
+    [self.todayMoneyDic removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.todayMoneySearchController.searchBar.text];
     self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
@@ -427,10 +429,11 @@
     
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
         NSLog(@"%@",responseObject);
-        _todayMoneydetailDic = responseObject[@"vo"];
+        NSDictionary *todayMoneydetailDic = [NSDictionary dictionary];
+        todayMoneydetailDic = responseObject[@"vo"];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
+        [_todayMoneyDic setObject:todayMoneydetailDic forKey:idnex];
         dispatch_group_leave(group);
-        [_todayMoneyDic setObject:_todayMoneydetailDic forKey:idnex];
     } failure:^(NSError *error) {
         NSLog(@"今日战报数据获取失败");
         dispatch_group_leave(group);

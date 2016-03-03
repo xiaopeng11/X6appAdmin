@@ -27,7 +27,7 @@
         _image = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth - 130) / 2.0, 15, 30, 30)];
         [self.contentView addSubview:_image];
         
-        _label = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 130) / 2.0 + 30, 15, 100, 30)];
+        _label = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 130) / 2.0 + 40, 15, 90, 30)];
         _label.font = [UIFont systemFontOfSize:18];
         [self.contentView addSubview:_label];
     }

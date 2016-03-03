@@ -65,7 +65,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    [self.todayPaySearchController.searchBar setHidden:NO];
     //绘制UI
     [self initTodayPay];
 
@@ -74,12 +74,19 @@
  
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.todayPaySearchController.searchBar setHidden:YES];
+    if ([self.todayPaySearchController.searchBar isFirstResponder]) {
+        [self.todayPaySearchController.searchBar resignFirstResponder];
+    }
+}
 
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.companysearchNames removeAllObjects];
-    
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.todayPaySearchController.searchBar.text];
     self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
     _newtodayPayDatalist = [NSMutableArray array];

@@ -11,7 +11,7 @@
 #import "SalesTableViewCell.h"
 #import "SpeSalesTableViewCell.h"
 
-#import "MykucunViewController.h"
+#import "MyKucunViewController.h"
 #import "TodayViewController.h"
 #import "TodaySalesViewController.h"
 #import "TodayMoneyViewController.h"
@@ -102,7 +102,7 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.row == 0) {
-        MykucunViewController *mykucunVC = [[MykucunViewController alloc] init];
+        MyKucunViewController *mykucunVC = [[MyKucunViewController alloc] init];
         [self.navigationController pushViewController:mykucunVC animated:YES];
     } else if (indexPath.row == 1) {
         TodayViewController *todayVC = [[TodayViewController alloc] init];

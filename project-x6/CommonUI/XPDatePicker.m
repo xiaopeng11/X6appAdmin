@@ -27,7 +27,6 @@
         self.textColor = [UIColor whiteColor];
         self.text = dateString;
         
-        //半透明背景
         self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 200)];
         self.datePicker.layer.cornerRadius = 20;
         self.datePicker.datePickerMode = UIDatePickerModeDate;
@@ -37,8 +36,9 @@
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 240 - 64, KScreenWidth, 200)];
         view.backgroundColor = [UIColor whiteColor];
         
+         //半透明背景
         self.subView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, KScreenWidth, KScreenHeight - 64)];
-        self.subView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.3];
+        self.subView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.4];
         self.subView.tag = 0;
         
         label = [[UILabel alloc] initWithFrame:CGRectMake(0, KScreenHeight - 240 - 64 - 30, KScreenWidth, 30)];

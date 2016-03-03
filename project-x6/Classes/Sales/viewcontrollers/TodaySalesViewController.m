@@ -240,13 +240,12 @@
 }
 
 
-
-
-
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.companysearchNames removeAllObjects];
+    [self.selectTodaySalesSection removeAllObjects];
+    [self.todaySalesDic removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.todaySalesSearchController.searchBar.text];
     self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];

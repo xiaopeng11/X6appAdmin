@@ -13,10 +13,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 20, 20)];
-        [self.contentView addSubview:_imageView];
-        
+    if (self) {        
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 5, 40, 20)];
         [self.contentView addSubview:_titleLabel];
         
@@ -38,9 +35,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
-    _imageView.image = [UIImage imageNamed:@"btn_mendian_h"];
-    
+        
     _titleLabel.text = [_dic valueForKey:@"col0"];
     
     long long junmao = [[_dic valueForKey:@"col3"] longLongValue] / [[_dic valueForKey:@"col1"] longLongValue];

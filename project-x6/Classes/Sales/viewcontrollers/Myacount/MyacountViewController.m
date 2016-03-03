@@ -95,13 +95,23 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    [self.MyacountSearchController.searchBar setHidden:NO];
+
     //绘制UI
     [self initWithMyacountView];
     
     //获取数据
     [self getMyacountDataWithDate:_dateString];
     
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.MyacountSearchController.searchBar setHidden:YES];
+    if ([self.MyacountSearchController.searchBar isFirstResponder]) {
+        [self.MyacountSearchController.searchBar resignFirstResponder];
+    }
 }
 
 #pragma mark - 导航栏按钮
