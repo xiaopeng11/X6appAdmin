@@ -9,6 +9,8 @@
 #import "LoadViewController.h"
 #import "BaseTabBarViewController.h"
 #import "AppDelegate.h"
+
+#import "JPUSHService.h"
 @interface LoadViewController ()<UITextFieldDelegate>
 
 @end
@@ -152,6 +154,7 @@
         [manager POST:X6_API_loadmain parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             //继续网络请求
             if ([[responseObject objectForKey:@"type"] isEqualToString:@"error"]) {
+                [GiFHUD dismiss];
                 [self writeWithName:@"该公司未开通"];
             } else {
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
@@ -168,6 +171,7 @@
                     [managerload POST:mainURL parameters:paramsload success:^(AFHTTPRequestOperation *operation, id responseObject) {
                         //登陆成功
                         if ([[responseObject objectForKey:@"type"] isEqualToString:@"error"]) {
+                            [GiFHUD dismiss];
                             [self writeWithName:[responseObject objectForKey:@"message"]];
                         } else {
                             //保存cookie
@@ -189,15 +193,26 @@
                             [userdefaults setObject:@(0) forKey:X6_refresh];
                             [userdefaults synchronize];
                             
+                            //设置极光tags
+                            
+                            
+                            NSSet *set = [[NSSet alloc] initWithObjects:@"001_0001",@"XJXC",@"LSXJ",@"CGJJ", nil];
+                            [JPUSHService setTags:set alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+                                NSLog(@"极光的tags：%@,返回的状态吗：%d",iTags,iResCode);
+                            }];
+                            
                             //注册环信账号(后期添加参数判断是否已经登陆过)
                             NSString *EaseID = [NSString stringWithFormat:@"%@%@",company.text,[[responseObject valueForKey:@"vo"] valueForKey:@"phone"]];
                             NSString *password = @"yjxx&*()";
+                            
+                            if (![[EaseMob sharedInstance].chatManager loginWithUsername:EaseID password:password error:nil]) {
                                 [[EaseMob sharedInstance].chatManager asyncRegisterNewAccount:EaseID password:password withCompletion:^(NSString *username, NSString *password, EMError *error) {
                                     NSLog(@"环信注册完成");
-                                   
+                                    
                                 } onQueue:nil];
+                            }
                             
-                            //登录
+                                //登录
                             [[EaseMob sharedInstance].chatManager asyncLoginWithUsername:EaseID password:password completion:^(NSDictionary *loginInfo, EMError *error) {
                                 //设置成自动登录
                                 NSLog(@"自动登录成功");
@@ -231,6 +246,7 @@
               }
          }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            [GiFHUD dismiss];
         }];
     }
 }

@@ -25,6 +25,7 @@
 @property(nonatomic,copy)NSMutableDictionary *detailDic;
 @property(nonatomic,copy)NSArray *todayDetailDatalist;    //今日战报门店详情数据
 
+
 @property(nonatomic,strong)NoDataView *NotodayView;       //今日战报为空
 @property(nonatomic,strong)UITableView *TodayTableView;   //今日战报
 @property(nonatomic,strong)UIView *totalView;
@@ -33,8 +34,9 @@
 @property(nonatomic,copy)NSMutableArray *companyNames;    //门店名数组
 @property(nonatomic,strong)NSMutableArray *companSearchNames; //搜索的门店名
 @property(nonatomic,strong)UISearchController *companySearchController;
-
 @property(nonatomic,copy)NSMutableArray *newtodayDatlist;
+
+
 @end
 
 @implementation TodayViewController
@@ -344,9 +346,9 @@
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
         NSLog(@"%@",responseObject);
         _todayDetailDatalist = [TodaydetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
-       NSString *idnex = [NSString stringWithFormat:@"%ld",section];
-        dispatch_group_leave(group);
+        NSString *idnex = [NSString stringWithFormat:@"%ld",section];
         [_detailDic setObject:_todayDetailDatalist forKey:idnex];
+        dispatch_group_leave(group);
     } failure:^(NSError *error) {
         NSLog(@"今日战报数据获取失败");
         dispatch_group_leave(group);

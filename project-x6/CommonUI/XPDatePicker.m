@@ -80,7 +80,6 @@
         
         self.borderStyle=UITextBorderStyleRoundedRect;
         
-        self.text=[self.dateFormatter stringFromDate:self.date];
         
 
         

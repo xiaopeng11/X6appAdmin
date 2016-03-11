@@ -63,6 +63,9 @@
     _companysearchNames = [NSMutableArray array];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
+    
+    //绘制UI
+    [self initWithMyacountView];
 
 }
 
@@ -96,9 +99,6 @@
 {
     [super viewWillAppear:animated];
     [self.MyacountSearchController.searchBar setHidden:NO];
-
-    //绘制UI
-    [self initWithMyacountView];
     
     //获取数据
     [self getMyacountDataWithDate:_dateString];
@@ -179,7 +179,7 @@
 #pragma mark - 绘制UI
 - (void)initWithMyacountView
 {
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 130)];
+    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 150)];
     headerView.image = [UIImage imageNamed:@"btn_wodezhanghu_h"];
     
     _myacountTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];

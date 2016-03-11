@@ -38,7 +38,7 @@
     NSString *gsdm = [userInformation objectForKey:@"gsdm"];
     //员工头像地址
     NSString *ygImageUrl = [userdefaults objectForKey:X6_UserHeaderView];
-    [_HeaderView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_ygURL,gsdm,ygImageUrl]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
+    [_HeaderView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,ygImageUrl]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
     [self.view addSubview:_HeaderView];
     
     //按钮

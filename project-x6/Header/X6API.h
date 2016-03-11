@@ -103,6 +103,31 @@
 //我的帐户
 #define X6_myAcount @"/report/reportCwAction_myzh.action"
 
+//我的提醒
+//出库异常
+#define X6_Outbound @"/report/reportXttxAction_lsckyc.action"
+//出库异常详情
+#define X6_Outbounddetail @"/report/reportXttxAction_lsckycDetail.action"
+//出库异常明细
+#define X6_OutboundMoredetail @"/report/reportXttxAction_lsckycMx.action"
+//门店负责人
+#define X6_MDPersondetail @"/xtgl/appSelectPersonAction_getMdFzr.action"
+
+
+//库龄逾期
+#define X6_Oldlibrary @"/report/reportXttxAction_klyj.action"
+//库龄逾期详细
+#define X6_Oldlibrarydetail @"/report/reportXttxAction_klyjDetail.action"
+
+//采购异常
+#define X6_Purchase @"/report/reportXttxAction_cgjgyc.action"
+
+//零售异常
+#define X6_Retail @"/report/reportXttxAction_lsjgyc.action"
+
+#define X6_ignore @"/report/reportXttxAction_txpass.action"
+
+
 
 #endif /* X6API_h */
 

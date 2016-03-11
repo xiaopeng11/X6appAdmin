@@ -5,7 +5,7 @@
 //  Created by diudiu on 15/9/1.
 //  Copyright (c) 2015年 diudiu. All rights reserved.
 //
-#define HMNewfeatureImageCount 2
+#define HMNewfeatureImageCount 4
 
 #import "StartCarouselViewController.h"
 #import "AppDelegate.h"
@@ -105,10 +105,9 @@
     startButton.center_Y = self.view.height * 0.86;
     startButton.width = 140;
     startButton.height = 40;
-    [startButton setBackgroundColor:[UIColor clearColor]];
     
     // 4.设置文字
-    [startButton setTitle:@"" forState:UIControlStateNormal];
+    [startButton setBackgroundImage:[UIImage imageNamed:@"btn_anniu_h"] forState:UIControlStateNormal];
     [startButton addTarget:self action:@selector(start) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -135,7 +134,5 @@
     // 设置页码
     self.pageControl.currentPage = intPage;
 }
-
-
 
 @end

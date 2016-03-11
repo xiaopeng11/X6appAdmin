@@ -122,8 +122,7 @@
             
             [params setObject:messgeid forKey:@"msgId"];
             [XPHTTPRequestTool requestMothedWithPost:deleteString params:params success:^(id responseObject) {
-//                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"删除成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//                [alertView show];
+
             } failure:^(NSError *error) {
                 NSLog(@"删除失败");
                 

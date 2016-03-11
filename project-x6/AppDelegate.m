@@ -14,6 +14,8 @@
 #import "Reachability.h"
 #import "BasicControls.h"
 #import "ConversationListController.h"
+
+#import "JPUSHService.h"
 @interface AppDelegate ()<EMChatManagerDelegate>
 
 @end
@@ -36,6 +38,9 @@
     //检查网络
     [self checkNetWorkState];
     
+    //设置极光推送
+    [self settingJpushMothed:launchOptions];
+    
     //设置加载动画
     [GiFHUD setGifWithImageName:@"pika.gif"];
     
@@ -51,14 +56,13 @@
         _window.rootViewController = loadVC;
     } else {
         //重新登录环信号
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            NSString *EaseID = [NSString stringWithFormat:@"%@%@",[[userdefaults objectForKey:X6_UserMessage] valueForKey:@"gsdm"],[[userdefaults objectForKey:X6_UserMessage] valueForKey:@"phone"]];
-            NSString *password = @"yjxx&*()";
-            [[EaseMob sharedInstance].chatManager asyncLoginWithUsername:EaseID password:password completion:^(NSDictionary *loginInfo, EMError *error) {
-                [[EaseMob sharedInstance].chatManager setIsAutoLoginEnabled:YES];
-                NSLog(@"环信号登录成功");
-            } onQueue:nil];
-        });
+        NSString *EaseID = [NSString stringWithFormat:@"%@%@",[[userdefaults objectForKey:X6_UserMessage] valueForKey:@"gsdm"],[[userdefaults objectForKey:X6_UserMessage] valueForKey:@"phone"]];
+        NSString *password = @"yjxx&*()";
+        [[EaseMob sharedInstance].chatManager asyncLoginWithUsername:EaseID password:password completion:^(NSDictionary *loginInfo, EMError *error) {
+            [[EaseMob sharedInstance].chatManager setIsAutoLoginEnabled:YES];
+            NSLog(@"环信号登录成功");
+        } onQueue:nil];
+      
                 
         BaseTabBarViewController *baseTBVC = [[BaseTabBarViewController alloc] init];
         _window.rootViewController = baseTBVC;
@@ -132,15 +136,39 @@
     [[EaseMob sharedInstance].chatManager removeDelegate:self];
 }
 
-//将得到的devicetoken传给sdk
+#pragma mark - 设置极光推送
+- (void)settingJpushMothed:(NSDictionary *)launchOptions
+{
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        //可以添加自定义categories
+        [JPUSHService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
+                                                       UIUserNotificationTypeSound |
+                                                       UIUserNotificationTypeAlert)
+                                           categories:nil];
+    } else {
+        //categories 必须为nil
+        [JPUSHService registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                       UIRemoteNotificationTypeSound |
+                                                       UIRemoteNotificationTypeAlert)
+                                           categories:nil];
+    }
+    
+    // Required
+    [JPUSHService setupWithOption:launchOptions appKey:@"2a34962b1321290c7871d136" channel:@"Publish channel" apsForProduction:NO];
+}
+
+//设置极光推送和环信推送
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
     [[EaseMob sharedInstance] application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    
+    [JPUSHService registerDeviceToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
     [[EaseMob sharedInstance] application:application didFailToRegisterForRemoteNotificationsWithError:error];
+    NSLog(@"极光推送获取失败");
 }
 
 // 网络状态变化回调
@@ -150,19 +178,42 @@
     [self.stockVC networkChanged:connectionState];
 }
 
-//离线通知
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [JPUSHService handleRemoteNotification:userInfo];
+    [self handleNotifacation:userInfo];
+    BaseTabBarViewController *baseTar = (BaseTabBarViewController *)self.window.rootViewController;
+
+    [baseTar writeWithName:@"收到离线消息"];
+}
+
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler
 {
-    NSLog(@"收到离线通知");
+    
+    [JPUSHService handleRemoteNotification:userInfo];
     NSDictionary *alert = [userInfo objectForKey:@"aps"];
     NSString *string = [alert objectForKey:@"alert"];
     BaseTabBarViewController *baseTar = (BaseTabBarViewController *)self.window.rootViewController;
-    completionHandler(UIBackgroundFetchResultNewData);
     if ([string isEqualToString:@"您有一条新消息"]) {
         baseTar.selectedIndex = 1;
     } else {
-        baseTar.selectedIndex = 2;
+        baseTar.selectedIndex = 3;
     }
+    [UIApplication sharedApplication].applicationIconBadgeNumber += 1;
+    
+    
+    if (application.applicationState == UIApplicationStateActive) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SamllPoint" object:nil userInfo:nil];
+        //操作时间
+        NSLog(@"程序收到一条离线推送%@",alert);
+        NSLog(@"%@",userInfo);
+    } else if (application.applicationState == UIApplicationStateInactive) {
+        completionHandler(UIBackgroundFetchResultNewData);
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"openMessagePage" object:nil userInfo:nil];
+        NSLog(@"程序活跃状态");
+    }
+    [self handleNotifacation:userInfo];
 }
 
 
@@ -172,6 +223,8 @@
     //        [_mainController didReceiveLocalNotification:notification];
     //    }
     NSLog(@"收到本地通知");
+    [JPUSHService showLocalNotificationAtFront:notification identifierKey:nil];
+
 }
 
 
@@ -191,17 +244,20 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [[EaseMob sharedInstance] applicationDidEnterBackground:application];
-    
-    
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+  
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     [[EaseMob sharedInstance] applicationWillEnterForeground:application];
+    [application setApplicationIconBadgeNumber:0];
+    [application cancelAllLocalNotifications];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [JPUSHService resetBadge];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -209,6 +265,26 @@
     [[EaseMob sharedInstance] applicationWillTerminate:application];
 }
 
+#pragma mark - 处理推送信息
+- (void)handleNotifacation:(NSDictionary *)dic
+{
+    NSString *from = [dic objectForKey:@"from"];
+    if ([from isEqualToString:@"JPush"])
+    {
+        NSString *text = dic[@"aps"][@"alert"];
+        if (!text) {
+            text = @"推送格式出错";
+        }
+
+        UIAlertView *alterView = [[UIAlertView alloc]initWithTitle:nil message:text delegate:self cancelButtonTitle:@"稍后再看！" otherButtonTitles:@"查看", nil];
+        alterView.tag = 2001;
+        [alterView show];
+        
+        
+    }
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [JPUSHService setBadge:0];
+}
 
 
 @end

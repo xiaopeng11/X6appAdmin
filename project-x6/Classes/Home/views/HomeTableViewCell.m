@@ -254,8 +254,9 @@
                 //获取图片url,截取拼接
                 NSDictionary *diced = [fileprop objectAtIndex:i];
                 NSString *imageurlString = [diced objectForKey:@"name"];
-                NSString *imageUrl = [NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString];
-                [x6imageView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"moren_tupian_"]];
+                [x6imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString]] placeholderImage:nil];
+                x6imageView.bgImageURL = [NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString];
+                
                 
             }
         }

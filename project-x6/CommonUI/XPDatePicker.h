@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface XPDatePicker : UITextField<UITextFieldDelegate>
+
 {
     UILabel *label;
 }

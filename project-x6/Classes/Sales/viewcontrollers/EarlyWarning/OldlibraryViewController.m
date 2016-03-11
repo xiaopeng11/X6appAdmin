@@ -8,7 +8,19 @@
 
 #import "OldlibraryViewController.h"
 
-@interface OldlibraryViewController ()
+#import "OldlibraryModel.h"
+#import "OldlibraryDetailModel.h"
+
+#import "OldlibraryTabelView.h"
+
+#import "NoDataView.h"
+@interface OldlibraryViewController ()<UITableViewDelegate,UITableViewDataSource>
+
+{
+    NoDataView *_noOldlibraryView;
+    UITableView *_OldlibraryTabelView;
+    NSArray *_OldlibraryDatalist;
+}
 
 @end
 
@@ -18,6 +30,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self naviTitleWhiteColorWithText:@"库龄预警"];
+    
+    [self initOldlibraryUI];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -25,14 +39,75 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self getOldlibraryData];
 }
-*/
+
+#pragma mark - UITableViewDelegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _OldlibraryDatalist.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 170;
+}
+
+#pragma mark - UITableViewDataSource
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *Oldlibraryindet = @"Oldlibraryindet";
+    OldlibraryTabelView *cell = [tableView dequeueReusableCellWithIdentifier:Oldlibraryindet];
+    if (cell == nil) {
+        cell = [[OldlibraryTabelView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:Oldlibraryindet];
+    }
+    cell.dic = _OldlibraryDatalist[indexPath.row];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
+}
+
+#pragma mark - 绘制UI
+- (void)initOldlibraryUI
+{
+    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 150)];
+    headerView.image = [UIImage imageNamed:@"btn_kulinyuqitu_h"];
+    
+    _OldlibraryTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
+    _OldlibraryTabelView.delegate = self;
+    _OldlibraryTabelView.dataSource = self;
+    _OldlibraryTabelView.hidden = YES;
+    _OldlibraryTabelView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    _OldlibraryTabelView.tableHeaderView = headerView;
+    [self.view addSubview:_OldlibraryTabelView];
+    
+    _noOldlibraryView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
+    _noOldlibraryView.text = @"没有库龄预警";
+    _noOldlibraryView.hidden = YES;
+    [self.view addSubview:_noOldlibraryView];
+}
+
+#pragma mark - 
+- (void)getOldlibraryData
+{
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *OldlibraryURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Oldlibrary];
+    [XPHTTPRequestTool requestMothedWithPost:OldlibraryURL params:nil success:^(id responseObject) {
+        _OldlibraryDatalist = [OldlibraryModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
+        if (_OldlibraryDatalist.count == 0) {
+            _OldlibraryTabelView.hidden = YES;
+            _noOldlibraryView.hidden = NO;
+        } else {
+            _noOldlibraryView.hidden = YES;
+            _OldlibraryTabelView.hidden = NO;
+            [_OldlibraryTabelView reloadData];
+        }
+    } failure:^(NSError *error) {
+        NSLog(@"库龄预警获取失败");
+    }];
+}
 
 @end
