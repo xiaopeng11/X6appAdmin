@@ -120,26 +120,23 @@
     UITableViewRowAction *ignore = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"忽略" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         UIAlertController *alertcontroller = [UIAlertController alertControllerWithTitle:@"确定忽略吗" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         UIAlertAction *okaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [_OutboundDetaildatalist removeObjectAtIndex:indexPath.row];
-            [_OutboundDetailTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
-                NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-                NSString *ignoreURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_ignore];
-                NSMutableDictionary *params = [NSMutableDictionary dictionary];
-                NSNumber *djid = [_OutboundDetaildatalist[indexPath.row] valueForKey:@"col0"];
-                NSNumber *djh = [_OutboundDetaildatalist[indexPath.row] valueForKey:@"col1"];
-                [params setObject:djid forKey:@"djid"];
-                [params setObject:djh forKey:@"djh"];
-                [params setObject:@"CKYC" forKey:@"txlx"];
-                [XPHTTPRequestTool requestMothedWithPost:ignoreURL params:params success:^(id responseObject) {
-                    NSLog(@"出库异常忽略成功");
-                } failure:^(NSError *error) {
-                    NSLog(@"出库异常忽略失败");
-                }];
-                
-            });
+        NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+        NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+        NSString *ignoreURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_ignore];
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        NSNumber *djid = [_OutboundDetaildatalist[indexPath.row] valueForKey:@"col0"];
+        NSNumber *djh = [_OutboundDetaildatalist[indexPath.row] valueForKey:@"col1"];
+        [params setObject:djid forKey:@"djid"];
+        [params setObject:djh forKey:@"djh"];
+        [params setObject:@"CKYC" forKey:@"txlx"];
+        [XPHTTPRequestTool requestMothedWithPost:ignoreURL params:params success:^(id responseObject) {
+            NSLog(@"出库异常忽略成功");
+        } failure:^(NSError *error) {
+            NSLog(@"出库异常忽略失败");
+        }];
             
+        [_OutboundDetaildatalist removeObjectAtIndex:indexPath.row];
+        [_OutboundDetailTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }];
         UIAlertAction *cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
         [alertcontroller addAction:okaction];
@@ -194,11 +191,15 @@
     
     [XPHTTPRequestTool requestMothedWithPost:myOutboundDetailURL params:params success:^(id responseObject) {
         _OutboundDetaildatalist = [OutboundMoredetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
+        
+        NSMutableArray *disItems = [NSMutableArray array];
         for (NSDictionary *dic in _OutboundDetaildatalist) {
             if ([[dic valueForKey:@"col8"] boolValue] == 1) {
-                [_OutboundDetaildatalist removeObject:dic];
+                [disItems addObject:dic];
             }
         }
+        [_OutboundDetaildatalist removeObjectsInArray:disItems];
+        
         [_OutboundDetailTableView reloadData];
     } failure:^(NSError *error) {
         NSLog(@"出库异常明细获取失败");

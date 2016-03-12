@@ -274,6 +274,7 @@
         NSArray *array = [_detailDic objectForKey:indexStr];
         cell.dic = array[indexPath.row];
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 

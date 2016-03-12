@@ -25,7 +25,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        self.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+        self.backgroundColor = GrayColor;
         
         _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 100)];
         _bgView.backgroundColor = [UIColor whiteColor];

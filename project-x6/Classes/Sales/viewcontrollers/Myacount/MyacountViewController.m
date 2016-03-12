@@ -24,10 +24,12 @@
 }
 
 @property(nonatomic,strong)NoDataView *noacountView;
-@property(nonatomic,copy)NSMutableArray *companyNames;         //门店名集合
+
+@property(nonatomic,copy)NSMutableArray *bankNames;         //门店名集合
 @property(nonatomic,copy)NSMutableArray *newmyacountDatalist;
-@property(nonatomic,strong)NSMutableArray *companysearchNames;
+@property(nonatomic,strong)NSMutableArray *banksearchNames;
 @property(nonatomic,strong)UISearchController *MyacountSearchController;
+
 @end
 
 @implementation MyacountViewController
@@ -59,9 +61,10 @@
     //导航栏按钮
     [self creatRightNaviButton];
     
-    _companyNames = [NSMutableArray array];
-    _companysearchNames = [NSMutableArray array];
-    
+    _bankNames = [NSMutableArray array];
+    _banksearchNames = [NSMutableArray array];
+    _newmyacountDatalist = [NSMutableArray array];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
     
     //绘制UI
@@ -72,15 +75,15 @@
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    [self.companysearchNames removeAllObjects];
+    [self.banksearchNames removeAllObjects];
+    [self.newmyacountDatalist removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.MyacountSearchController.searchBar.text];
-    self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
-    _newmyacountDatalist = [NSMutableArray array];
+    self.banksearchNames = [[self.bankNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
     
-    for (NSString *title in self.companysearchNames) {
+    for (NSString *title in self.banksearchNames) {
         for (NSDictionary *dic in _myacountDatalist) {
-            if ([title isEqualToString:[dic valueForKey:@"col2"]]) {
+            if ([title isEqualToString:[dic valueForKey:@"col0"]]) {
                 [_newmyacountDatalist addObject:dic];
             }
         }
@@ -153,7 +156,11 @@
 #pragma mark - UITableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _myacountDatalist.count;
+    if (self.MyacountSearchController.active) {
+        return _newmyacountDatalist.count;
+    } else {
+        return _myacountDatalist.count;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -169,7 +176,11 @@
     if (cell == nil) {
         cell = [[MyacountTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:myacountCell];
     }
-    cell.dic = _myacountDatalist[indexPath.row];
+    if (self.MyacountSearchController.active) {
+        cell.dic = _newmyacountDatalist[indexPath.row];
+    } else {
+        cell.dic = _myacountDatalist[indexPath.row];
+    }
     return cell;
 }
 
@@ -179,14 +190,22 @@
 #pragma mark - 绘制UI
 - (void)initWithMyacountView
 {
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 150)];
-    headerView.image = [UIImage imageNamed:@"btn_wodezhanghu_h"];
+    //搜索框
+    _MyacountSearchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    _MyacountSearchController.searchBar.frame = CGRectMake(0, 0, KScreenWidth, 44);
+    _MyacountSearchController.searchResultsUpdater = self;
+    _MyacountSearchController.searchBar.delegate = self;
+    _MyacountSearchController.dimsBackgroundDuringPresentation = NO;
+    _MyacountSearchController.hidesNavigationBarDuringPresentation = NO;
+    _MyacountSearchController.searchBar.placeholder = @"搜索";
+    [_MyacountSearchController.searchBar sizeToFit];
+    [self.view addSubview:_MyacountSearchController.searchBar];
     
-    _myacountTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
+    
+    _myacountTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44) style:UITableViewStylePlain];
     _myacountTableView.delegate = self;
     _myacountTableView.dataSource = self;
     _myacountTableView.hidden = YES;
-    _myacountTableView.tableHeaderView = headerView;
     _myacountTableView.allowsSelection = NO;
     _myacountTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _myacountTableView.showsVerticalScrollIndicator = NO;
@@ -217,6 +236,12 @@
             }
             _myacountTableView.hidden = NO;
             [_myacountTableView reloadData];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                for (NSDictionary *dic in _myacountDatalist) {
+                    [_bankNames addObject:[dic valueForKey:@"col0"]];
+                }
+            });
+            
         }
     } failure:^(NSError *error) {
         NSLog(@"我的帐户数据失败");

@@ -159,6 +159,7 @@
         NSDictionary *mukucundic = [_mykucunDic objectForKey:indexStr];
         cell.dic = mukucundic;
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
     
 }

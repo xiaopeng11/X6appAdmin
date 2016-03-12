@@ -34,7 +34,7 @@
         _dhImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 11, 20, 16)];
         [_bgView addSubview:_dhImageView];
         
-        _dhLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, KScreenWidth - 40 - 130 - 30, 20)];
+        _dhLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, KScreenWidth - 40 - 130, 20)];
         _dhLabel.font = [UIFont systemFontOfSize:16];
         [_bgView addSubview:_dhLabel];
         
@@ -78,6 +78,8 @@
 
 - (void)layoutSubviews
 {
+    [super layoutSubviews];
+    
     _dhImageView.image = [UIImage imageNamed:@"bth_danhao_n"];
     
     _dhLabel.text = [NSString stringWithFormat:@"出库单号:%@",[_dic valueForKey:@"col1"]];
@@ -93,7 +95,7 @@
     _chuanhaoLabel.text = @"串号:";
     
     for (int i = 0; i < 5; i++) {
-        _messageLabel = [self.contentView viewWithTag:4640 + i];
+        _messageLabel = [_bgView viewWithTag:4640 + i];
         double lowPrice = [[_dic valueForKey:@"col9"] doubleValue] - [[_dic valueForKey:@"col8"] doubleValue];
         NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14]};
         CGRect rect = [[_dic valueForKey:@"col6"] boundingRectWithSize:CGSizeMake(KScreenWidth - 120, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesFontLeading attributes:attributes context:nil];

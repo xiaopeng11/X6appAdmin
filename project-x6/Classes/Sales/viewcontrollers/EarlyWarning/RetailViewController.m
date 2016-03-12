@@ -25,8 +25,6 @@
     
 }
 
-
-
 @property(nonatomic,copy)NSMutableArray *ReatilNames;                    //数据名的集合
 @property(nonatomic,strong)NSMutableArray *ReatilSearchNames;
 @property(nonatomic,copy)NSMutableArray *NewReatilDatalist;
@@ -121,31 +119,31 @@
         UIAlertAction *okaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             NSMutableArray *array = [NSMutableArray array];
             if (_ReatilSearchController.active) {
-                [_NewReatilDatalist removeObjectAtIndex:indexPath.row];
                 array = _NewReatilDatalist;
             } else {
-                [_ReatilDatalist removeObjectAtIndex:indexPath.row];
                 array = _ReatilDatalist;
             }
-            [_RetailTabelView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
-                NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-                NSString *ignoreURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_ignore];
-                NSMutableDictionary *params = [NSMutableDictionary dictionary];
+            NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+            NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+            NSString *ignoreURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_ignore];
+            NSMutableDictionary *params = [NSMutableDictionary dictionary];
 
-                NSNumber *djid = [array[indexPath.row] valueForKey:@"col0"];
-                NSNumber *djh = [array[indexPath.row] valueForKey:@"col1"];
-                [params setObject:djid forKey:@"djid"];
-                [params setObject:djh forKey:@"djh"];
-                [params setObject:@"LSYC" forKey:@"txlx"];
-                [XPHTTPRequestTool requestMothedWithPost:ignoreURL params:params success:^(id responseObject) {
-                    NSLog(@"零售异常忽略成功");
-                } failure:^(NSError *error) {
-                    NSLog(@"零售异常忽略失败");
-                }];
-                
-            });
+            NSNumber *djid = [array[indexPath.row] valueForKey:@"col0"];
+            NSNumber *djh = [array[indexPath.row] valueForKey:@"col1"];
+            [params setObject:djid forKey:@"djid"];
+            [params setObject:djh forKey:@"djh"];
+            [params setObject:@"LSYC" forKey:@"txlx"];
+            [XPHTTPRequestTool requestMothedWithPost:ignoreURL params:params success:^(id responseObject) {
+                NSLog(@"零售异常忽略成功");
+            } failure:^(NSError *error) {
+                NSLog(@"零售异常忽略失败");
+            }];
+            if (_ReatilSearchController.active) {
+                [_NewReatilDatalist removeObjectAtIndex:indexPath.row];
+            } else {
+                [_ReatilDatalist removeObjectAtIndex:indexPath.row];
+            }
+            [_RetailTabelView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             
         }];
         UIAlertAction *cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
@@ -238,28 +236,27 @@
             _ReatilSearchController.searchBar.hidden = YES;
             _noRetailView.hidden = NO;
         } else {
-            for (NSDictionary *dic in _ReatilDatalist)
-            {
-                if ([[dic valueForKey:@"col10"] integerValue] == 1) {
-                    [_ReatilDatalist removeObject:dic];
+            NSMutableArray *array = [NSMutableArray array];
+            for (NSDictionary *dic in _ReatilDatalist) {
+                if ([[dic valueForKey:@"col10"] boolValue] == 1) {
+                    [array addObject:dic];
                 }
             }
+            [_ReatilDatalist removeObjectsInArray:array];
+            
             _noRetailView.hidden = YES;
             _RetailTabelView.hidden = NO;
             _ReatilSearchController.searchBar.hidden = NO;
             [_RetailTabelView reloadData];
             
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                for (NSDictionary *dic in _ReatilDatalist) {
-                    [_ReatilNames addObject:[dic valueForKey:@"col1"]];
-                    [_ReatilNames addObject:[dic valueForKey:@"col3"]];
-                    [_ReatilNames addObject:[dic valueForKey:@"col4"]];
+            for (NSDictionary *dic in _ReatilDatalist) {
+                [_ReatilNames addObject:[dic valueForKey:@"col1"]];
+                [_ReatilNames addObject:[dic valueForKey:@"col3"]];
+                [_ReatilNames addObject:[dic valueForKey:@"col4"]];
 
-                }
-                for (NSString *str in _ReatilNames) {
-                    NSLog(@"%@",str);
-                }
-            });
+            }
+
+            
         }
         
     } failure:^(NSError *error) {

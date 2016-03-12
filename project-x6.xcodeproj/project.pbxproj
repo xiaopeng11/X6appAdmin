@@ -572,6 +572,8 @@
 		18B05ABA1C7EB53600883878 /* user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B05A7F1C7EB53600883878 /* user@2x.png */; };
 		18B05AC41C7ED0D500883878 /* KucunModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B05AC31C7ED0D500883878 /* KucunModel.m */; };
 		18B05ACB1C7EDBD300883878 /* MykucunDeatilTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B05ACA1C7EDBD300883878 /* MykucunDeatilTableViewCell.m */; };
+		18EECEAC1C93AEB100F66FEB /* PurchaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EECEAB1C93AEB100F66FEB /* PurchaseModel.m */; };
+		18EECEAF1C93AF7600F66FEB /* PurchaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EECEAE1C93AF7600F66FEB /* PurchaseTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1531,6 +1533,10 @@
 		18B05AC31C7ED0D500883878 /* KucunModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KucunModel.m; path = ../KucunModel.m; sourceTree = "<group>"; };
 		18B05AC91C7EDBD300883878 /* MykucunDeatilTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MykucunDeatilTableViewCell.h; sourceTree = "<group>"; };
 		18B05ACA1C7EDBD300883878 /* MykucunDeatilTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MykucunDeatilTableViewCell.m; sourceTree = "<group>"; };
+		18EECEAA1C93AEB100F66FEB /* PurchaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PurchaseModel.h; sourceTree = "<group>"; };
+		18EECEAB1C93AEB100F66FEB /* PurchaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PurchaseModel.m; sourceTree = "<group>"; };
+		18EECEAD1C93AF7600F66FEB /* PurchaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PurchaseTableViewCell.h; sourceTree = "<group>"; };
+		18EECEAE1C93AF7600F66FEB /* PurchaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PurchaseTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1726,6 +1732,8 @@
 		18544A761C91467500F1BD1F /* Purchase */ = {
 			isa = PBXGroup;
 			children = (
+				18EECEAD1C93AF7600F66FEB /* PurchaseTableViewCell.h */,
+				18EECEAE1C93AF7600F66FEB /* PurchaseTableViewCell.m */,
 			);
 			path = Purchase;
 			sourceTree = "<group>";
@@ -1784,6 +1792,8 @@
 		18544A7C1C9149F900F1BD1F /* Purchase */ = {
 			isa = PBXGroup;
 			children = (
+				18EECEAA1C93AEB100F66FEB /* PurchaseModel.h */,
+				18EECEAB1C93AEB100F66FEB /* PurchaseModel.m */,
 			);
 			path = Purchase;
 			sourceTree = "<group>";
@@ -4323,6 +4333,7 @@
 				1856BCB71C7E96550051A0CB /* NSDate+Category.m in Sources */,
 				1856BCD31C7E96550051A0CB /* EaseBubbleView+Voice.m in Sources */,
 				1856BCD71C7E96550051A0CB /* EaseImageView.m in Sources */,
+				18EECEAC1C93AEB100F66FEB /* PurchaseModel.m in Sources */,
 				1856BCCE1C7E96550051A0CB /* EaseBubbleView+File.m in Sources */,
 				1856BCBD1C7E96550051A0CB /* EaseChineseToPinyin.m in Sources */,
 				1856BBC71C7E96540051A0CB /* ReplyModel.m in Sources */,
@@ -4447,6 +4458,7 @@
 				1856BC651C7E96540051A0CB /* AFHTTPRequestOperationManager.m in Sources */,
 				1856BCAC1C7E96550051A0CB /* PSTCollectionViewLayout.m in Sources */,
 				1856BC9E1C7E96550051A0CB /* MWGridCell.m in Sources */,
+				18EECEAF1C93AF7600F66FEB /* PurchaseTableViewCell.m in Sources */,
 				1856BCB81C7E96550051A0CB /* NSDateFormatter+Category.m in Sources */,
 				1856BC711C7E96550051A0CB /* BaseTableViewCell.m in Sources */,
 				1856BCC41C7E96550051A0CB /* EaseConversationListViewController.m in Sources */,
