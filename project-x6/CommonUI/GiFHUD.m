@@ -214,8 +214,6 @@ static GiFHUD *instance;
 + (void)dismiss {
     if (![[self instance] shown])
         return;
-    
-//    [[[self instance] overlay] removeFromSuperview];
     [[self instance] fadeOut];
 }
 
@@ -224,7 +222,6 @@ static GiFHUD *instance;
         return complated ();
     
     [[self instance] fadeOutComplate:^{
-//        [[[self instance] overlay] removeFromSuperview];
         complated ();
     }];
 }

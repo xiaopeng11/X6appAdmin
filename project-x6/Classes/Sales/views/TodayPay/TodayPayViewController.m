@@ -152,10 +152,6 @@
 #pragma mark - 日期选择响应事件
 - (void)changeData
 {
-    if (_datePicker.subView != nil) {
-        _datePicker.subView.tag = 0;
-        [_datePicker.subView removeFromSuperview];
-    }
     [self gettodayPayDataWithDate:_datePicker.text];
 }
 

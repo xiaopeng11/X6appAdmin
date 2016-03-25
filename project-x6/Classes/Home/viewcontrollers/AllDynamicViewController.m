@@ -7,7 +7,6 @@
 //
 
 #import "AllDynamicViewController.h"
-#import "UIBarButtonItem+Extension.h"
 
 #import "LoadViewController.h"
 #import "WJItemsControlView.h"
@@ -278,16 +277,16 @@
     }];
 }
 
-#pragma mark - 网络错误
-- (void)errorView:(Error *)errorView reloadViewWithMessage:(NSString *)message
-{
-    if (_scrollView.contentOffset.x == 0) {
-        [self requestdata];
-    } else {
-        [_tableView reloadData];
-
-    }
-}
+//#pragma mark - 网络错误
+//- (void)errorView:(Error *)errorView reloadViewWithMessage:(NSString *)message
+//{
+//    if (_scrollView.contentOffset.x == 0) {
+//        [self requestdata];
+//    } else {
+//        [_tableView reloadData];
+//
+//    }
+//}
 
 
 

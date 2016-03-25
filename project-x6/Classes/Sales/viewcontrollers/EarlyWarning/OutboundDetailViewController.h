@@ -10,7 +10,6 @@
 
 @interface OutboundDetailViewController : BaseViewController
 
-@property(nonatomic,strong)NSString *dateString;  //年月
-@property(nonatomic,strong)NSString *ssgs;        //门店代码
-@property(nonatomic,copy)NSString *ssgsName;      //门店名
+
+
 @end

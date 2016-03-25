@@ -8,6 +8,7 @@
 
 #import "XPDatePicker.h"
 
+
 @implementation XPDatePicker
 
 - (instancetype)initWithFrame:(CGRect)frame Date:(NSString *)dateString
@@ -15,6 +16,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
+        
         
         //默认日期格式为yyyy-MM-dd
         self.dateFormatter = [[NSDateFormatter alloc] init];
@@ -104,6 +106,8 @@
     //改变textField的值
     
     self.text = [NSString stringWithString:[self.dateFormatter stringFromDate:self.date]];
+    
+    [self cancledateChange];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTodayData" object:[self.dateFormatter stringFromDate:self.date]];
 }

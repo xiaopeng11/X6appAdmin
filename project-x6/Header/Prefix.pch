@@ -39,6 +39,7 @@
 #import "BasicControls.h"
 //类目
 #import "UIViewController+ThemeNavigationController.h"
+#import "UIBarButtonItem+Extension.h"
 
 //下拉刷新更多
 #import "MJRefresh.h"
@@ -73,13 +74,14 @@
 #import "XPHTTPRequestTool.h"
 
 //网络错误
-#import "Error.h"
+//#import "Error.h"
 
 //没有纪录
 #import "NoDataView.h"
 
 //用户信息
 #define X6_UserMessage @"X6_UserMessage"       //用户信息——字典
+#define X6_UserQXList @"X6_UserQXList"         //权限列表
 #define X6_UseUrl @"X6_UseUrl"                 //应用服务器
 #define X6_Cookie @"X6_Cookie"                 //cookie
 #define X6_UserHeaderView @"X6_UserHeaderView" //用户头像

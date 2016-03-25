@@ -8,6 +8,7 @@
 
 #import "BaseViewController.h"
 #import <objc/runtime.h>
+#import "IQKeyboardManager.h"
 
 @interface BaseViewController ()<UIGestureRecognizerDelegate,UINavigationControllerDelegate>
 
@@ -33,6 +34,16 @@
     // 判断导航控制器是否只有一个子控制器，如果只有一个子控制器，肯定是根控制器
     return  self.childViewControllers.count != 1;
 }
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[IQKeyboardManager sharedManager] setShouldToolbarUsesTextFieldTintColor:YES];
+}
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[IQKeyboardManager sharedManager] setShouldToolbarUsesTextFieldTintColor:NO];
+}
 
 @end

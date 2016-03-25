@@ -15,7 +15,6 @@
 
 #import "OutboundTableViewCell.h"
 
-#import "OutboundDetailViewController.h"
 @interface OutboundViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchResultsUpdating,UISearchBarDelegate,UITextFieldDelegate>
 {
     NSMutableArray *_selectOutboundArray;                 //标题被选中数组
@@ -202,25 +201,11 @@
         NSArray *array = [_OutboundDic objectForKey:indexStr];
         cell.dic = array[indexPath.row];
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
     
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    OutboundDetailViewController *outboundDetailVC = [[OutboundDetailViewController alloc] init];
-    outboundDetailVC.dateString = _datepicker.text;
-    if (_OutboundSearchController.active) {
-        outboundDetailVC.ssgs = [_NewOutboundDatalist[indexPath.section] objectForKey:@"col0"];
-        outboundDetailVC.ssgsName = [_NewOutboundDatalist[indexPath.section] objectForKey:@"col1"];
-    } else {
-        outboundDetailVC.ssgs = [_Outbounddatalist[indexPath.section] objectForKey:@"col0"];
-        outboundDetailVC.ssgsName = [_Outbounddatalist[indexPath.section] objectForKey:@"col1"];
-    }
-    [self.navigationController pushViewController:outboundDetailVC animated:YES];
-}
 
 
 
@@ -404,11 +389,6 @@
 #pragma mark - 日期选择响应事件
 - (void)changeOutboundData
 {
-    NSLog(@"改变了日期");
-    if (_datepicker.subView != nil) {
-        _datepicker.subView.tag = 0;
-        [_datepicker.subView removeFromSuperview];
-    }
     [self getMyOutboundDataWithDate:_datepicker.text];
 }
 

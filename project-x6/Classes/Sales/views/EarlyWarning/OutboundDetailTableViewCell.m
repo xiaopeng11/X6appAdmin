@@ -25,21 +25,20 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 40, 40)];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
         [self.contentView addSubview:_imageView];
         
-        _cornView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 40, 40)];
+        _cornView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
         [self.contentView addSubview:_cornView];
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50, 60, 20)];
-        _nameLabel.font = [UIFont systemFontOfSize:14];
-        _nameLabel.textAlignment = NSTextAlignmentCenter;
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 20, 100, 20)];
+        _nameLabel.font = [UIFont systemFontOfSize:17];
         [self.contentView addSubview:_nameLabel];
         
         for (int i = 0; i < 4; i++) {
-            _fourlabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10 + 15 * i, KScreenWidth - 60, 15)];
+            _fourlabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 50 + 30 * i, KScreenWidth - 60, 25)];
             _fourlabel.tag = 4610 + i;
-            _fourlabel.font = [UIFont systemFontOfSize:15];
+            _fourlabel.font = [UIFont systemFontOfSize:17];
             [self.contentView addSubview:_fourlabel];
         }
         

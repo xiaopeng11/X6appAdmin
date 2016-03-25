@@ -20,8 +20,6 @@
     
     NSMutableArray *_ReatilDatalist;
     
-    NSInteger _yearString;
-    NSInteger _monthString;
     
 }
 
@@ -39,10 +37,7 @@
     // Do any additional setup after loading the view.
     [self naviTitleWhiteColorWithText:@"零售异常"];
     
-    NSDate *date = [NSDate date];
-    NSString *dateString = [NSString stringWithFormat:@"%@",date];
-    _yearString = [[dateString substringToIndex:4] doubleValue];
-    _monthString = [[dateString substringWithRange:NSMakeRange(5, 2)] doubleValue];
+
     
     _ReatilNames = [NSMutableArray array];
     _ReatilSearchNames = [NSMutableArray array];
@@ -60,7 +55,11 @@
     [_ReatilSearchController.searchBar setHidden:NO];
     
     
-    [self getRetailDatalistWithYear:_yearString Month:_monthString];
+    [self getRetailDatalist];
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self cleanRetailWarningNumber];
+    });
     
     
 }
@@ -115,8 +114,6 @@
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
      UITableViewRowAction *ignore = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"忽略" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        UIAlertController *alertcontroller = [UIAlertController alertControllerWithTitle:@"确定忽略吗" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *okaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             NSMutableArray *array = [NSMutableArray array];
             if (_ReatilSearchController.active) {
                 array = _NewReatilDatalist;
@@ -146,11 +143,7 @@
             [_RetailTabelView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             
         }];
-        UIAlertAction *cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
-        [alertcontroller addAction:okaction];
-        [alertcontroller addAction:cancelaction];
-        [self presentViewController:alertcontroller animated:YES completion:nil];
-    }];
+
     return @[ignore];
 }
 
@@ -176,7 +169,6 @@
     _RetailTabelView.dataSource = self;
     _RetailTabelView.hidden = YES;
     _RetailTabelView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [_RetailTabelView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(getLastMonthData)];
     [self.view addSubview:_RetailTabelView];
     
     _noRetailView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
@@ -201,36 +193,30 @@
             }
         }
     }
-    
     [_RetailTabelView reloadData];
     
 }
 
 
 #pragma mark - 获取数据
-- (void)getRetailDatalistWithYear:(NSInteger)year Month:(NSInteger)month
+/**
+ *  获取零售异常数据
+ *
+ *  @param year  年
+ *  @param month 月
+ */
+- (void)getRetailDatalist
 {
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *RetailURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Retail];
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(year) forKey:@"uyear"];
-    [params setObject:@(month) forKey:@"accper"];
-    if (!_RetailTabelView.footer.isRefreshing) {
-        [GiFHUD show];
-    }
+
     
-    [XPHTTPRequestTool requestMothedWithPost:RetailURL params:params success:^(id responseObject) {
+    [XPHTTPRequestTool requestMothedWithPost:RetailURL params:nil success:^(id responseObject) {
         NSLog(@"零售异常数据%@",responseObject);
-        if (_RetailTabelView.footer.isRefreshing) {
-            [_RetailTabelView.footer endRefreshing];
-            _ReatilDatalist = [[_ReatilDatalist arrayByAddingObjectsFromArray:[RetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]]] mutableCopy];
-            if ([responseObject[@"rows"] count] == 0) {
-                [_RetailTabelView.footer noticeNoMoreData];
-            }
-        } else {
-            _ReatilDatalist = [RetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
-        }
+
+        _ReatilDatalist = [RetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
+        
         if (_ReatilDatalist.count == 0) {
             _RetailTabelView.hidden = YES;
             _ReatilSearchController.searchBar.hidden = YES;
@@ -255,8 +241,6 @@
                 [_ReatilNames addObject:[dic valueForKey:@"col4"]];
 
             }
-
-            
         }
         
     } failure:^(NSError *error) {
@@ -264,16 +248,22 @@
     }];
 }
 
-- (void)getLastMonthData
+/**
+ *  清除采购异常条数
+ */
+- (void)cleanRetailWarningNumber
 {
-    if (_monthString > 1) {
-        [self getRetailDatalistWithYear:_yearString Month:(_monthString - 1)];
-        _monthString--;
-    } else if (_monthString == 1){
-        _monthString = 12;
-        [self getRetailDatalistWithYear:(_yearString - 1) Month:_monthString];
-        _yearString--;
-    }
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *removeWarningNumberURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_removeWarningNumber];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@"LSYC" forKey:@"txlx"];
+    [XPHTTPRequestTool requestMothedWithPost:removeWarningNumberURL params:params success:^(id responseObject) {
+        NSLog(@"成功");
+    } failure:^(NSError *error) {
+        NSLog(@"失败");
+    }];
 }
+
 
 @end

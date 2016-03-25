@@ -10,14 +10,15 @@
 
 #import "EarlyWarningTableViewCell.h"
 
-#import "OutboundViewController.h"
+#import "OutboundDetailViewController.h"
 #import "OldlibraryViewController.h"
 #import "PurchaseViewController.h"
 #import "RetailViewController.h"
 
 @interface EarlyWarningViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
-    NSArray *datalist;
+    NSMutableArray *datalist;
+    UITableView *_tableview;
 }
 
 @end
@@ -30,18 +31,36 @@
     
     [self naviTitleWhiteColorWithText:@"我的提醒"];
     
-    datalist = @[@{@"title":@"出库异常",@"image":@"btn_chukuyichang_h"},
-                 @{@"title":@"库龄预警",@"image":@"btn_kulingyuqi_h"},
-                 @{@"title":@"采购异常",@"image":@"btn_caigou_h"},
-                 @{@"title":@"零售异常",@"image":@"btn_lingshou_h"}];
     
-    UITableView *tableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
-    tableview.delegate = self;
-    tableview.dataSource = self;
-    tableview.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view addSubview:tableview];
+    NSArray *mess = @[@{@"title":@"出库异常",@"image":@"btn_chukuyichang_h"},
+                      @{@"title":@"库龄预警",@"image":@"btn_kulingyuqi_h"},
+                      @{@"title":@"采购异常",@"image":@"btn_caigou_h"},
+                      @{@"title":@"零售异常",@"image":@"btn_lingshou_h"}];
+    
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSDictionary *dic in mess) {
+        NSMutableDictionary *diced = [NSMutableDictionary dictionaryWithDictionary:dic];
+        [array addObject:diced];
+    }
+    datalist = array;
+    
+    
+    _tableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
+    _tableview.delegate = self;
+    _tableview.dataSource = self;
+    _tableview.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:_tableview];
     
   
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self getwarningMessages];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -76,7 +95,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.row == 0) {
         //出库异常
-        OutboundViewController *outboundVC = [[OutboundViewController alloc] init];
+        OutboundDetailViewController *outboundVC = [[OutboundDetailViewController alloc] init];
         [self.navigationController pushViewController:outboundVC animated:YES];
     } else if (indexPath.row == 1) {
         //库龄预警
@@ -91,6 +110,46 @@
         RetailViewController *retailVC = [[RetailViewController alloc] init];
         [self.navigationController pushViewController:retailVC animated:YES];
     }
+    
+}
+
+- (void)getwarningMessages
+{
+    
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *EarlyWarningNumURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_EarlyWarningNumber];
+    
+    
+    dispatch_group_t warninggroup = dispatch_group_create();
+    NSArray *txlx = @[@"CKYC",@"KLYJ",@"CGYC",@"LSYC"];
+    for (int i = 0; i < txlx.count; i++) {
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        [params setObject:txlx[i] forKey:@"txlx"];
+        dispatch_group_enter(warninggroup);
+        [XPHTTPRequestTool requestMothedWithPost:EarlyWarningNumURL params:params success:^(id responseObject) {
+            NSLog(@"%@",responseObject);
+            if ([responseObject[@"type"] isEqualToString:@"success"]) {
+                NSMutableDictionary *dic = [datalist objectAtIndex:i];
+                if ([responseObject[@"message"] integerValue] == 0) {
+                    [dic setObject:@"no" forKey:@"ycNum"];
+                } else {
+                    NSString *num = [NSString stringWithFormat:@"%@",responseObject[@"message"]];
+                    [dic setObject:num forKey:@"ycNum"];
+                }
+                [datalist replaceObjectAtIndex:i withObject:dic];
+            }
+            dispatch_group_leave(warninggroup);
+        } failure:^(NSError *error) {
+            dispatch_group_leave(warninggroup);
+            NSLog(@"获取条数失败%d",i);
+        }];
+    }
+   
+    dispatch_group_notify(warninggroup, dispatch_get_main_queue(), ^{
+        NSLog(@"%@",datalist);
+        [_tableview reloadData];
+    });
     
 }
 

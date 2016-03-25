@@ -62,18 +62,66 @@
 //回复接口
 #define X6_reply @"/msg/msgReplyAction_saveMsgReply.action"
 
-//2.个人页面数据
-//修改头像接口
-#define X6_changeHeaderView @"/xtgl/xtuserAction_updatePhoto.action"
 
-//修改密码接口
-#define X6_changePassword @"/xtgl/xtuserAction_modifyPwd.action"
 
-//知识库接口
-#define X6_collectionView @"/msg/msgAction_getMyKnowledge.action"
 
-//3.联系人页面
+//2.联系人页面
 #define X6_persons @"/xtgl/appSelectPersonAction_SelectPerson.action"
+
+
+
+
+
+//3.业务员页面
+//供应商
+#define X6_supplier @"/jcxx/dmJgAction_getGysList.action"
+//供应商详情
+#define X6_supplierdetail @"/jcxx/dmJgAction_getGysDetail.action"
+//供应商保存
+#define X6_addsupplier @"/jcxx/dmJgAction_SaveGys.action"
+
+//客户
+#define X6_customer @"/jcxx/dmJgAction_getKhList.action"
+//客户详情
+#define X6_customerdetail @"/jcxx/dmJgAction_getKhxxDetail.action"
+//客户保存
+#define X6_addcustomer @"/jcxx/dmJgAction_SaveKhxx.action"
+
+//订单（未审核）
+#define X6_orderreviewone @"/jxc/jxcPreInStockAction_getDsList.action"
+//审核
+#define X6_examineOrder @"/jxc/jxcPreInStockAction_shBill.action"
+//订单（审核）
+#define X6_orderreviewtwo @"/jxc/jxcPreInStockAction_getYsList.action"
+//撤审
+#define X6_revokeOrder @"/jxc/jxcPreInStockAction_QxShBill.action"
+
+
+
+
+//银行存款
+#define X6_deposit @"/cw/cwMddkAction_getList.action"
+//银行存款保存
+#define X6_savedeposit @"/cw/cwMddkAction_save.action"
+//银行存款删除
+#define X6_deletedeposit @"/cw/cwMddkAction_delete.action"
+
+
+
+//银行账户列表
+#define X6_banksList @"/jcxx/dmYhzhAction_getMyDkzh.action"
+//门店列表
+#define X6_storesList @"/xtgl/xtGsAction_getMyMd.action"
+//经办人列表
+#define X6_personsList @"/jcxx/dmYgAction_getYgList.action"
+
+
+
+//一键设置考核价
+#define X6_resetPrice @"/jcxx/dmPriceAction_setkhPrice.action"
+//最后一次设置考核价的时间
+#define X6_lastsetPrice @"/jcxx/dmPriceAction_getLastSetDate.action"
+
 
 
 //4.报表页面
@@ -104,6 +152,12 @@
 #define X6_myAcount @"/report/reportCwAction_myzh.action"
 
 //我的提醒
+
+//异常条数
+#define X6_EarlyWarningNumber @"/report/reportXttxAction_getTxcount.action"
+//清除异常条数
+#define X6_removeWarningNumber @"/report/reportXttxAction_removeTxcount.action"
+
 //出库异常
 #define X6_Outbound @"/report/reportXttxAction_lsckyc.action"
 //出库异常详情
@@ -127,6 +181,19 @@
 
 #define X6_ignore @"/report/reportXttxAction_txpass.action"
 
+
+
+
+
+//5.个人页面数据
+//修改头像接口
+#define X6_changeHeaderView @"/xtgl/xtuserAction_updatePhoto.action"
+
+//修改密码接口
+#define X6_changePassword @"/xtgl/xtuserAction_modifyPwd.action"
+
+//知识库接口
+#define X6_collectionView @"/msg/msgAction_getMyKnowledge.action"
 
 
 #endif /* X6API_h */

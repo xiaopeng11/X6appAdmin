@@ -21,7 +21,7 @@
 - (void)dealloc
 {
     NSLog(@"登录页面释放");
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    self.view = nil;
 
 }
 - (void)viewDidLoad {
@@ -30,7 +30,6 @@
     self.view.backgroundColor = GrayColor;
     //添加键盘弹出事件
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardwillhide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -63,9 +62,6 @@
     
     UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth - 100) / 2.0, 20 + 64, 100, 100)];
     headerView.image = [UIImage imageNamed:@"pho-moren"];
-    headerView.backgroundColor = [UIColor yellowColor];
-    headerView.clipsToBounds = YES;
-    headerView.layer.cornerRadius = 50;
     [self.view addSubview:headerView];
     
     //输入框
@@ -117,12 +113,7 @@
 
 }
 
-- (void)keyboardwillhide:(NSNotification *)noti
-{
-    if (!isDevice6P) {
-        self.view.frame =CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    }
-}
+
 
 
 #pragma mark - loadAction：
@@ -130,9 +121,6 @@
 {
     [self.view endEditing:YES];
     
-    if (!isDevice6P) {
-        self.view.frame =CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    }
     UITextField *company = (UITextField *)[self.view viewWithTag:10];
     UITextField *userid = (UITextField *)[self.view viewWithTag:11];
     UITextField *password = (UITextField *)[self.view viewWithTag:12];
@@ -170,6 +158,7 @@
                     [GiFHUD show];
                     [managerload POST:mainURL parameters:paramsload success:^(AFHTTPRequestOperation *operation, id responseObject) {
                         //登陆成功
+                        NSLog(@"%@",responseObject);
                         if ([[responseObject objectForKey:@"type"] isEqualToString:@"error"]) {
                             [GiFHUD dismiss];
                             [self writeWithName:[responseObject objectForKey:@"message"]];
@@ -182,14 +171,18 @@
                             
                             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
                             
-                            //移除加载提示
+                         
                             NSMutableDictionary *loaddictionary = [responseObject valueForKey:@"vo"];
+                            NSArray *userqxList = [responseObject valueForKey:@"qxlist"];
+                            
                             //保存本地
                             NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
                             [userdefaults setObject:data forKey:X6_Cookie];
                             [userdefaults setObject:loaddictionary forKey:X6_UserMessage];
                             [userdefaults setObject:leaderurl forKey:X6_UseUrl];
                             [userdefaults setObject:[loaddictionary objectForKey:@"userpic"] forKey:X6_UserHeaderView];
+                            [userdefaults setObject:userqxList forKey:X6_UserQXList];
+                            [userdefaults setObject:userqxList forKey:X6_UserQXList];
                             [userdefaults setObject:@(0) forKey:X6_refresh];
                             [userdefaults synchronize];
                             
@@ -250,36 +243,5 @@
         }];
     }
 }
-
-
-//移动视图
--(void)textFieldDidBeginEditing:(UITextField *)textField
-
-{
-    
-    if (!isDevice6P) {
-        int offset = 216.0 - (KScreenHeight - 394.0 - 50);//iPhone键盘高度216，iPad的为352
-        
-        
-        [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
-        
-        [UIView setAnimationDuration:0.5f];
-        
-        
-        
-        //将视图的Y坐标向上移动offset个单位，以使下面腾出地方用于软键盘的显示
-        
-        //    if(offset > 0)
-        
-        self.view.frame = CGRectMake(0.0f, - offset, self.view.frame.size.width, self.view.frame.size.height);
-        
-        
-        
-        [UIView commitAnimations];
-    }
-   
-    
-}
-
 
 @end

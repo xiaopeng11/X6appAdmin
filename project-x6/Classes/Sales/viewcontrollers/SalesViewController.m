@@ -22,6 +22,7 @@
 @interface SalesViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     NSArray *_datalist;
+    UIView *_wraningNumberView;
 }
 @end
 
@@ -41,6 +42,14 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    //获取异常条数
+    [self getEarlyWraningNumber];
+}
+
 #pragma mark - initWithSubViews
 - (void)initWithSubViews
 {
@@ -48,7 +57,7 @@
                   @{@"text":@"今日战报",@"image":@"btn_zhanbao_h"},
                   @{@"text":@"今日销量",@"image":@"btn_xiaoliang_n"},
                   @{@"text":@"今日营业款",@"image":@"btn_yingyekuan_h"},
-                  @{@"text":@"今日付款",@"image":@"btn_fukuan_h"},
+                  @{@"text":@"今日付款",@"image":@"btn_fukuan_n"},
                   @{@"text":@"我的提醒",@"image":@"btn_yujingtixing_h"},
                   @{@"text":@"我的帐户",@"image":@"btn_zhanghu_h"}];
  
@@ -58,6 +67,23 @@
     tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     tableView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:tableView];
+    
+    _wraningNumberView = [[UIView alloc] initWithFrame:CGRectMake(95 + (KScreenWidth - 90) / 2.0, 300 + 10, 26, 26)];
+    _wraningNumberView.clipsToBounds = YES;
+    _wraningNumberView.layer.cornerRadius = 13;
+    _wraningNumberView.backgroundColor = [UIColor redColor];
+    _wraningNumberView.hidden = YES;
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 26, 26)];
+    label.tag = 10001;
+    label.font = [UIFont boldSystemFontOfSize:15];
+    label.textColor = [UIColor whiteColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    [_wraningNumberView addSubview:label];
+    
+    [tableView addSubview:_wraningNumberView];
+    
+
 
 }
 
@@ -92,7 +118,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 5) {
-        return 80;
+        return 70;
     } else {
         return 60;
     }
@@ -126,5 +152,29 @@
     
 }
 
+- (void)getEarlyWraningNumber
+{
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *EarlyWarningNumURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_EarlyWarningNumber];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@"all" forKey:@"txlx"];
+    [XPHTTPRequestTool requestMothedWithPost:EarlyWarningNumURL params:params success:^(id responseObject) {
+        NSLog(@"%@",responseObject);
+        if ([responseObject[@"type"] isEqualToString:@"success"]) {
+            if ([responseObject[@"message"] integerValue] == 0) {
+                _wraningNumberView.hidden = YES;
+            } else {
+                _wraningNumberView.hidden = NO;
+                UILabel *label = [_wraningNumberView viewWithTag:10001];
+                label.text = responseObject[@"message"];
+            }
+        }
+        
+    } failure:^(NSError *error) {
+        NSLog(@"获取条数失败");
+    }];
+    
+}
 
 @end

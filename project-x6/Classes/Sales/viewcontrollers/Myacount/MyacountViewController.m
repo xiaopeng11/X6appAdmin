@@ -132,10 +132,6 @@
 #pragma mark - 日期选择响应事件
 - (void)changeData
 {
-    if (_datepicker.subView != nil) {
-        _datepicker.subView.tag = 0;
-        [_datepicker.subView removeFromSuperview];
-    }
     [self getMyacountDataWithDate:_datepicker.text];
 }
 

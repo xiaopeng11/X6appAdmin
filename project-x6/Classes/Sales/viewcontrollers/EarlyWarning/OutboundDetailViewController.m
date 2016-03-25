@@ -9,24 +9,45 @@
 #import "OutboundDetailViewController.h"
 #import "OutboundDetailTableViewCell.h"
 #import "OutboundMoredetailModel.h"
-#import "HeaderViewController.h"
+#import "OutboundViewController.h"
 @interface OutboundDetailViewController ()<UITableViewDataSource,UITableViewDelegate>
 
 {
-    UIButton *_headerButton;
-    UILabel *_title;
-    UILabel *_name;
-    UILabel *_phone;
-    UITableView *_OutboundDetailTableView;
-    
     NSMutableArray *_OutboundDetaildatalist;
-    NSDictionary *_MDpersonDic;
 }
+
+@property(nonatomic,copy)NSString *dateString;  //年月
+@property(nonatomic,strong)UITableView *OutboundDetailTableView;
+@property(nonatomic,strong)NoDataView *noOutboundDetailView;
 
 
 @end
 
 @implementation OutboundDetailViewController
+
+- (UITableView *)OutboundDetailTableView
+{
+    if (_OutboundDetailTableView == nil) {
+        _OutboundDetailTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
+        _OutboundDetailTableView.delegate = self;
+        _OutboundDetailTableView.dataSource = self;
+        _OutboundDetailTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+        _OutboundDetailTableView.hidden = YES;
+        [self.view addSubview:_OutboundDetailTableView];
+    }
+    return _OutboundDetailTableView;
+}
+
+- (NoDataView *)noOutboundDetailView
+{
+    if (_noOutboundDetailView == nil) {
+        _noOutboundDetailView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
+        _noOutboundDetailView.text = @"您还没有异常";
+        _noOutboundDetailView.hidden = YES;
+        [self.view addSubview:_noOutboundDetailView];
+    }
+    return _noOutboundDetailView;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,8 +55,16 @@
     
     [self naviTitleWhiteColorWithText:@"出库异常详情"];
     
+    NSDate *date = [NSDate date];
+    _dateString = [NSString stringWithFormat:@"%@",date];
+    _dateString = [_dateString substringToIndex:10];
+    
     //绘制UI
     [self initWithOutboundDetailView];
+    
+    //异常明细
+    [self addRightNaviItem];
+    
     
     
 }
@@ -49,45 +78,38 @@
 {
     [super viewWillAppear:animated];
     
-    [self getheadViewData];
-    
     [self getTabelViewData];
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self cleanOutboundWarningNumber];
+    });
 }
 
 #pragma mark - 绘制UI
 - (void)initWithOutboundDetailView
 {
-    UIImageView *bgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 100)];
-    bgView.image = [UIImage imageNamed:@"btn_xiangqingtubiao_h"];
-    [self.view addSubview:bgView];
-    
-    _headerButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 80, 80)];
-    _headerButton.clipsToBounds = YES;
-    _headerButton.layer.cornerRadius = 40;
-    _headerButton.backgroundColor = [UIColor yellowColor];
-    [_headerButton addTarget:self action:@selector(MDpersonAction) forControlEvents:UIControlEventTouchUpInside];
-    [bgView addSubview:_headerButton];
-    
-    _title = [[UILabel alloc] initWithFrame:CGRectMake(100, 20, KScreenWidth - 120, 35)];
-    _title.font = [UIFont boldSystemFontOfSize:18];
-    _title.text = _ssgsName;
-    [bgView addSubview:_title];
-    
-    _name = [[UILabel alloc] initWithFrame:CGRectMake(100, 65, (KScreenWidth - 100) / 2.0, 25)];
-    _name.font = [UIFont systemFontOfSize:16];
-    _name.text = @"姓名:";
-    [bgView addSubview:_name];
-    
-    _phone = [[UILabel alloc] initWithFrame:CGRectMake(100 + (KScreenWidth - 100) / 2.0, 65, (KScreenWidth - 100) / 2.0, 25)];
-    _phone.font = [UIFont systemFontOfSize:16];
-    _phone.text = @"电话:";
-    [bgView addSubview:_phone];
-    
-    _OutboundDetailTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100, KScreenWidth, KScreenHeight - 64 - 100) style:UITableViewStylePlain];
+    _OutboundDetailTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
     _OutboundDetailTableView.delegate = self;
     _OutboundDetailTableView.dataSource = self;
     _OutboundDetailTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:_OutboundDetailTableView];
+}
+
+#pragma mark - addRightNaviItem
+- (void)addRightNaviItem
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0, 0, 40, 30);
+    [button addTarget:self action:@selector(moreOutboundData) forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"统计" forState:UIControlStateNormal];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    
+}
+
+- (void)moreOutboundData
+{
+    OutboundViewController *outboundView = [[OutboundViewController alloc] init];
+    [self.navigationController pushViewController:outboundView animated:YES];
 }
 
 #pragma mark - UITableViewDelegate
@@ -98,7 +120,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 80;
+    return 170;
 }
 
 #pragma mark - UITableViewDataSource
@@ -118,8 +140,6 @@
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewRowAction *ignore = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"忽略" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        UIAlertController *alertcontroller = [UIAlertController alertControllerWithTitle:@"确定忽略吗" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *okaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
         NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
         NSString *ignoreURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_ignore];
@@ -138,41 +158,13 @@
         [_OutboundDetaildatalist removeObjectAtIndex:indexPath.row];
         [_OutboundDetailTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }];
-        UIAlertAction *cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
-        [alertcontroller addAction:okaction];
-        [alertcontroller addAction:cancelaction];
-        [self presentViewController:alertcontroller animated:YES completion:nil];
-    }];
+
     return @[ignore];
 }
 
-#pragma mark - 门店负责人头像点击时间
-- (void)MDpersonAction
-{
-    HeaderViewController *headerVC = [[HeaderViewController alloc] init];
-    headerVC.dic = _MDpersonDic;
-    [self.navigationController pushViewController:headerVC animated:YES];
-}
+
 
 #pragma mark - 获取数据
-/**
- *  透视图数据
- */
-- (void)getheadViewData
-{
-    NSLog(@"获取透视图数据");
-    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
-    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-    NSString *MDPersondetailURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_MDPersondetail];
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:_ssgs forKey:@"ssgs"];
-    [XPHTTPRequestTool requestMothedWithPost:MDPersondetailURL params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
-    } failure:^(NSError *error) {
-        NSLog(@"shibai");
-    }];
-}
-
 /**
  *   表示图数据
  */
@@ -187,20 +179,18 @@
     NSString *umonth = [_dateString substringWithRange:NSMakeRange(5, 2)];
     [params setObject:uyear forKey:@"uyear"];
     [params setObject:umonth forKey:@"accper"];
-    [params setObject:_ssgs forKey:@"ssgs"];
     
     [XPHTTPRequestTool requestMothedWithPost:myOutboundDetailURL params:params success:^(id responseObject) {
         _OutboundDetaildatalist = [OutboundMoredetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
-        
-        NSMutableArray *disItems = [NSMutableArray array];
-        for (NSDictionary *dic in _OutboundDetaildatalist) {
-            if ([[dic valueForKey:@"col8"] boolValue] == 1) {
-                [disItems addObject:dic];
-            }
+        if (_OutboundDetaildatalist.count == 0) {
+            _OutboundDetailTableView.hidden = YES;
+            _noOutboundDetailView.hidden = NO;
+        } else {
+            _noOutboundDetailView.hidden = YES;
+            _OutboundDetailTableView.hidden = NO;
+            [_OutboundDetailTableView reloadData];
         }
-        [_OutboundDetaildatalist removeObjectsInArray:disItems];
         
-        [_OutboundDetailTableView reloadData];
     } failure:^(NSError *error) {
         NSLog(@"出库异常明细获取失败");
     }];
@@ -208,4 +198,21 @@
     
 }
 
+/**
+ *  清除出库异常条数
+ */
+- (void)cleanOutboundWarningNumber
+{
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *removeWarningNumberURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_removeWarningNumber];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@"CKYC" forKey:@"txlx"];
+    [XPHTTPRequestTool requestMothedWithPost:removeWarningNumberURL params:params success:^(id responseObject) {
+        NSLog(@"成功");
+    } failure:^(NSError *error) {
+        NSLog(@"失败");
+    }];
+    
+}
 @end

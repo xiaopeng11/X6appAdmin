@@ -18,7 +18,7 @@
         //初始化子视图
         self.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
         
-        _bgview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, KScreenWidth, 60)];
+        _bgview = [[UIView alloc] initWithFrame:CGRectMake(0, 5, KScreenWidth, 60)];
         _bgview.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:_bgview];
         

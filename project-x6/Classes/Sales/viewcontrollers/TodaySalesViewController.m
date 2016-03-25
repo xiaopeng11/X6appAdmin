@@ -443,11 +443,6 @@
 #pragma mark - 日期选择响应事件
 - (void)changeData
 {
-    NSLog(@"改变了日期");
-    if (_todaydatepicker.subView != nil) {
-        _todaydatepicker.subView.tag = 0;
-        [_todaydatepicker.subView removeFromSuperview];
-    }
     [self getTodaySalesDataWithDate:_todaydatepicker.text];
 }
 

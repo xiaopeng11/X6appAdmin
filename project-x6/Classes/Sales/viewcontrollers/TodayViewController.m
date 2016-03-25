@@ -361,10 +361,6 @@
 - (void)changeData
 {
     NSLog(@"改变了日期");
-    if (_datepicker.subView != nil) {
-        _datepicker.subView.tag = 0;
-        [_datepicker.subView removeFromSuperview];
-    }
     [self getTodayDataWithDate:_datepicker.text];
 }
 

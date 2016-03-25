@@ -172,11 +172,6 @@
 #pragma mark - 日期选择响应事件
 - (void)changeData
 {
-    NSLog(@"改变了日期");
-    if (_todayMoneydatepicker.subView != nil) {
-        _todayMoneydatepicker.subView.tag = 0;
-        [_todayMoneydatepicker.subView removeFromSuperview];
-    }
     [self getTodayMoneyDataWithDate:_todayMoneydatepicker.text];
 }
 

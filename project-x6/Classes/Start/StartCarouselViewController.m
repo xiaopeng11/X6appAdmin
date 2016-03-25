@@ -42,14 +42,12 @@
     [self.view addSubview:scrollView];
     
     // 2.添加图片
-
     for (int i = 0; i<HMNewfeatureImageCount; i++) {
         // 创建UIImageView
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i * KScreenWidth, 0, KScreenWidth, KScreenHeight)];
         NSString *name = [NSString stringWithFormat:@"feature_%d", i + 1];
         imageView.image = [UIImage imageNamed:name];
         [scrollView addSubview:imageView];
-
         
         // 给最后一个imageView添加按钮
         if (i == HMNewfeatureImageCount - 1) {
@@ -61,6 +59,8 @@
     scrollView.contentSize = CGSizeMake(HMNewfeatureImageCount * KScreenWidth, 0);
     scrollView.pagingEnabled = YES;
     scrollView.showsHorizontalScrollIndicator = NO;
+    
+    
 }
 
 /**
@@ -112,7 +112,7 @@
 }
 
 /**
- *  开始微博
+ *  开始
  */
 - (void)start
 {

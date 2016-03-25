@@ -20,8 +20,6 @@
     
     NSMutableArray *_PurchaseDatalist;
     
-    NSInteger _yearString;
-    NSInteger _monthString;
     
 }
 
@@ -38,10 +36,6 @@
     // Do any additional setup after loading the view.
     [self naviTitleWhiteColorWithText:@"采购异常"];
     
-    NSDate *date = [NSDate date];
-    NSString *dateString = [NSString stringWithFormat:@"%@",date];
-    _yearString = [[dateString substringToIndex:4] doubleValue];
-    _monthString = [[dateString substringWithRange:NSMakeRange(5, 2)] doubleValue];
     
     _PurchaseNames = [NSMutableArray array];
     _PurchaseSearchNames = [NSMutableArray array];
@@ -58,7 +52,10 @@
     [_PurchaseSearchController.searchBar setHidden:NO];
     
     
-    [self getPurchaseDatalistWithYear:_yearString Month:_monthString];
+    [self getPurchaseDatalist];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self cleanPurchaseWarningNumber];
+    });
     
     
 }
@@ -113,8 +110,6 @@
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewRowAction *ignore = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"忽略" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        UIAlertController *alertcontroller = [UIAlertController alertControllerWithTitle:@"确定忽略吗" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *okaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             NSMutableArray *array = [NSMutableArray array];
             if (_PurchaseSearchController.active) {
                 array = _NewPurchaseDatalist;
@@ -144,11 +139,6 @@
             [_PurchaseTabelView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             
         }];
-        UIAlertAction *cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
-        [alertcontroller addAction:okaction];
-        [alertcontroller addAction:cancelaction];
-        [self presentViewController:alertcontroller animated:YES completion:nil];
-    }];
     return @[ignore];
 }
 
@@ -174,7 +164,6 @@
     _PurchaseTabelView.dataSource = self;
     _PurchaseTabelView.hidden = YES;
     _PurchaseTabelView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [_PurchaseTabelView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(getLastMonthData)];
     [self.view addSubview:_PurchaseTabelView];
     
     _noPurchaseView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
@@ -207,29 +196,23 @@
 
 
 #pragma mark - 获取数据
-- (void)getPurchaseDatalistWithYear:(NSInteger)year Month:(NSInteger)month
+/**
+ *  获取采购异常数据
+ *
+ *  @param year  年
+ *  @param month 月
+ */
+- (void)getPurchaseDatalist
 {
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *PurchaseURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Purchase];
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(year) forKey:@"uyear"];
-    [params setObject:@(month) forKey:@"accper"];
-    if (!_PurchaseTabelView.footer.isRefreshing) {
-        [GiFHUD show];
-    }
     
-    [XPHTTPRequestTool requestMothedWithPost:PurchaseURL params:params success:^(id responseObject) {
+    [XPHTTPRequestTool requestMothedWithPost:PurchaseURL params:nil success:^(id responseObject) {
         NSLog(@"采购异常数据%@",responseObject);
-        if (_PurchaseTabelView.footer.isRefreshing) {
-            [_PurchaseTabelView.footer endRefreshing];
-            _PurchaseDatalist = [[_PurchaseDatalist arrayByAddingObjectsFromArray:[PurchaseModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]]] mutableCopy];
-            if ([responseObject[@"rows"] count] == 0) {
-                [_PurchaseTabelView.footer noticeNoMoreData];
-            }
-        } else {
-            _PurchaseDatalist = [PurchaseModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
-        }
+ 
+        _PurchaseDatalist = [PurchaseModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
+        
         if (_PurchaseDatalist.count == 0) {
             _PurchaseTabelView.hidden = YES;
             _PurchaseSearchController.searchBar.hidden = YES;
@@ -262,17 +245,23 @@
     }];
 }
 
-- (void)getLastMonthData
+/**
+ *  清除采购异常条数
+ */
+- (void)cleanPurchaseWarningNumber
 {
-    if (_monthString > 1) {
-        [self getPurchaseDatalistWithYear:_yearString Month:(_monthString - 1)];
-        _monthString--;
-    } else if (_monthString == 1){
-        _monthString = 12;
-        [self getPurchaseDatalistWithYear:(_yearString - 1) Month:_monthString];
-        _yearString--;
-    }
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *removeWarningNumberURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_removeWarningNumber];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@"CGYC" forKey:@"txlx"];
+    [XPHTTPRequestTool requestMothedWithPost:removeWarningNumberURL params:params success:^(id responseObject) {
+        NSLog(@"成功");
+    } failure:^(NSError *error) {
+        NSLog(@"失败");
+    }];
 }
+
 
 
 @end

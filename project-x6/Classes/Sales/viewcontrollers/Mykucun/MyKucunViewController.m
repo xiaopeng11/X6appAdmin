@@ -24,6 +24,7 @@
 @property(nonatomic,strong)NSMutableArray *KucunSearchNames;
 @property(nonatomic,copy)NSMutableArray *newkucunDatalist;
 @property(nonatomic, strong)UISearchController *KucunSearchController;
+
 @end
 
 @implementation MyKucunViewController
