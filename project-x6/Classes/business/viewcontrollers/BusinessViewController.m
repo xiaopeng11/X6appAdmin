@@ -10,7 +10,6 @@
 
 #import "SupplierViewController.h"
 #import "OrderreviewViewController.h"
-#import "AdvancePaymentViewController.h"
 #import "DepositViewController.h"
 
 
@@ -35,37 +34,53 @@
     
     _busDatalist = [NSMutableArray array];
     
-    NSArray *arrayimage = @[@{@"title":@"供应商",@"image":@"btn_gongying_h"},
-                            @{@"title":@"客户",@"image":@"btn_kehu_h"},
-                            @{@"title":@"订单",@"image":@"btn_dingdan_h"},
-                            @{@"title":@"预付款",@"image":@"btn_yufukuan_h"},
-                            @{@"title":@"付款",@"image":@"btn_fukuan_h1"},
-                            @{@"title":@"银行存款",@"image":@"btn_cunkuan_h"},
-                            @{@"title":@"设置考核价",@"image":@"btn_shezhi_h1"},
+    NSArray *arrayimage = @[@{@"title":@"sz_gys",@"image":@"btn_gongyingshan"},
+                            @{@"title":@"sz_kh",@"image":@"btn_kehu"},
+                            @{@"title":@"cz_cgddsh",@"image":@"btn_dingdan"},
+                            @{@"title":@"cz_ywkdk",@"image":@"btn_cunkuan"},
+                            @{@"title":@"sz_yjszkhj",@"image":@"btn_shezhi"},
                              ];
-    NSArray *names = @[@"供应商",@"客户",@"订单审核",@"预付款",@"付款",@"银行存款",@"设置考核价"];
     
     NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
     NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-    for (int i = 0; i < arrayimage.count; i++) {
-        NSDictionary *dic = qxList[i];
-        NSString *name = names[i];
-        if ([[dic valueForKey:@"name"] isEqualToString:name]) {
-            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                [_busDatalist addObject:arrayimage[i]];
-            }
+    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:arrayimage];
+    for (int i = 0; i < mutableArray.count; i++) {
+        NSMutableDictionary *mutableDic = [NSMutableDictionary dictionaryWithDictionary:mutableArray[i]];
+        for (NSDictionary *diced in qxList) {
+            if ([[diced valueForKey:@"qxid"] isEqualToString:[mutableDic valueForKey:@"title"]]) {
+                if ([[diced valueForKey:@"qxid"] isEqualToString:@"sz_gys"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"0" forKey:@"buttonTag"];
+                        [_busDatalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"sz_kh"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"1" forKey:@"buttonTag"];
+                        [_busDatalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"cz_cgddsh"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"2" forKey:@"buttonTag"];
+                        [_busDatalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"cz_ywkdk"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"3" forKey:@"buttonTag"];
+                        [_busDatalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"sz_yjszkhj"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"4" forKey:@"buttonTag"];
+                        [_busDatalist addObject:mutableDic];
+                    }
+                }
+                break;
         }
+ 
+    }
     }
     
-    
-//    _busDatalist = arrayimage;
-    
-    UIScrollView *bussScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
-    bussScrollView.showsVerticalScrollIndicator = NO;
-    bussScrollView.showsHorizontalScrollIndicator = NO;
-    bussScrollView.contentSize = CGSizeMake(KScreenWidth, 550);
-    [self.view addSubview:bussScrollView];
-    
+    NSArray *titleNames = @[@"供应商",@"客户",@"订单审核",@"银行存款",@"设置考核价"];
     for (int i = 0; i < _busDatalist.count; i++) {
         int bus_X = i % 2;
         int bus_Y = i / 2;
@@ -73,15 +88,13 @@
         button.frame = CGRectMake(imageWidth + (imageWidth * 2 + 80) * bus_X, 10 + 110 * bus_Y, 80, 80);
         [button setImage:[UIImage imageNamed:[_busDatalist[i] valueForKey:@"image"]] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
-        button.tag = 3000 + i;
-        [bussScrollView addSubview:button];
+        button.tag = 3000 + [[_busDatalist[i] valueForKey:@"buttonTag"] integerValue];
+        [self.view addSubview:button];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth - 10 + (imageWidth  * 2 + 80) * bus_X, 90 + 110 * bus_Y, 100, 20)];
         label.textAlignment = NSTextAlignmentCenter;
-        label.text = [_busDatalist[i] valueForKey:@"title"];
-        [bussScrollView addSubview:label];
-    
+        label.text = titleNames[i];
+        [self.view addSubview:label];
     }
-   
 }
 
 - (void)didReceiveMemoryWarning {
@@ -89,38 +102,26 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 #pragma mark - 按钮事件
 - (void)buttonAction:(UIButton *)button
 {
     if (button.tag == 3000) {
-        NSLog(@"供应商");
         SupplierViewController *supplierVC = [[SupplierViewController alloc] init];
         supplierVC.issupplier = YES;
         [self.navigationController pushViewController:supplierVC animated:YES];
     } else if (button.tag == 3001) {
-        NSLog(@"客户");
         SupplierViewController *supplierVC = [[SupplierViewController alloc] init];
         supplierVC.issupplier = NO;
         [self.navigationController pushViewController:supplierVC animated:YES];
     } else if (button.tag == 3002) {
-        NSLog(@"订单");
         OrderreviewViewController *orderreviewVC = [[OrderreviewViewController alloc] init];
         [self.navigationController pushViewController:orderreviewVC animated:YES];
     } else if (button.tag == 3003) {
-        NSLog(@"预付款");
-        [self writeWithName:@"该功能还没有开通"];
-//
-//        AdvancePaymentViewController *advancePaymentVC = [[AdvancePaymentViewController alloc] init];
-//        [self.navigationController pushViewController:advancePaymentVC animated:YES];
-    } else if (button.tag == 3004) {
-        NSLog(@"付款");
-        [self writeWithName:@"该功能还没有开通"];
-    } else if (button.tag == 3005) {
-        NSLog(@"银行存款");
         DepositViewController *depositVC = [[DepositViewController alloc] init];
+        depositVC.isBusiness = YES;
         [self.navigationController pushViewController:depositVC animated:YES];
-    } else if (button.tag == 3006) {
-        NSLog(@"设置考核价");
+    } else if (button.tag == 3004) {
         SettingPriceViewController *settingPriceVC = [[SettingPriceViewController alloc] init];
         [self.navigationController pushViewController:settingPriceVC animated:YES];
     }

@@ -34,11 +34,11 @@
         _needPayMoney.font = [UIFont systemFontOfSize:14];
         [self.contentView addSubview:_needPayMoney];
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 40, (KScreenWidth - 100) / 2.0, 15)];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 40, (KScreenWidth - 80) / 2.0 - 30, 15)];
         _nameLabel.font = [UIFont systemFontOfSize:14];
         [self.contentView addSubview:_nameLabel];
         
-        _phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(45 + (KScreenWidth - 100) / 2.0, 40, (KScreenWidth - 100) / 2.0, 15)];
+        _phoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(((KScreenWidth - 80) / 2.0) + 10, 40, ((KScreenWidth - 80) / 2.0) + 30, 15)];
         _phoneLabel.font = [UIFont systemFontOfSize:14];
         [self.contentView addSubview:_phoneLabel];
     }
@@ -48,14 +48,19 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    _imageView.image = [UIImage imageNamed:@"btn_gys_h"];
+    
+    if (_issupplier) {
+        _imageView.image = [UIImage imageNamed:@"btn_gys_h"];
+    } else {
+        _imageView.image = [UIImage imageNamed:@"btn_khu_h"];
+    }
     
     _supplierName.text = [_dic valueForKey:@"name"];
     
     if (_issupplier) {
-        _needPayMoney.text = [NSString stringWithFormat:@"应付款:%@",[_dic valueForKey:@"yfje"]];
+        _needPayMoney.text = [NSString stringWithFormat:@"应付款:￥%@",[_dic valueForKey:@"yfje"]];
     } else {
-        _needPayMoney.text = [NSString stringWithFormat:@"应收款:%@",[_dic valueForKey:@"ysje"]];
+        _needPayMoney.text = [NSString stringWithFormat:@"应收款:￥%@",[_dic valueForKey:@"ysje"]];
     }
     
   

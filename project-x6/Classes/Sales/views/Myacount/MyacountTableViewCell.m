@@ -10,6 +10,7 @@
 
 @implementation MyacountTableViewCell
 
+#define myacountwidth ((KScreenWidth - 165) / 2.0)
 - (void)awakeFromNib {
     // Initialization code
 }
@@ -27,36 +28,38 @@
         
         self.backgroundColor = GrayColor;
         
-        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 100)];
+        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 79)];
         _bgView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:_bgView];
         
         _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 20, 20)];
         [_bgView addSubview:_imageView];
         
-        _bankLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, KScreenWidth - 40, 29)];
+        _bankLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, KScreenWidth - 45, 29)];
         [_bgView addSubview:_bankLabel];
         
-        _lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 29, KScreenWidth, 1)];
-        _lineView.backgroundColor = LineColor;
-        [_bgView addSubview:_lineView];
-        
-        for (int i = 0; i < 6; i++) {
-            int myacountX = i / 2;
-            int myacountY = i % 2;
-            _myacountLabel = [[UILabel alloc] initWithFrame:CGRectMake(40 + 85 * myacountY, 32 + 22 * myacountX, 80, 20)];
-            if (myacountY == 0) {
-                _myacountLabel.textAlignment = NSTextAlignmentRight;
+        for (int i = 0; i < 3; i++) {
+            _acountNameLabel = [[UILabel alloc] init];
+            _myacountLabel = [[UILabel alloc] init];
+            if (i == 0) {
+                _acountNameLabel.frame = CGRectMake(35, 32, 60, 20);
+                _myacountLabel = [[UILabel alloc] initWithFrame:CGRectMake(95, 32, myacountwidth, 20)];
+            } else if (i == 1) {
+                _acountNameLabel.frame = CGRectMake(95 + myacountwidth, 32, 60, 20);
+                _myacountLabel = [[UILabel alloc] initWithFrame:CGRectMake(155 + myacountwidth, 32, myacountwidth, 20)];
+                _myacountLabel.textColor = Mycolor;
             } else {
-                _myacountLabel.textAlignment = NSTextAlignmentLeft;
+                _acountNameLabel.frame = CGRectMake(95 + myacountwidth, 54, 30, 20);
+                _myacountLabel = [[UILabel alloc] initWithFrame:CGRectMake(125 + myacountwidth, 54, KScreenWidth - (125 + myacountwidth + 10), 20)];
+                _myacountLabel.textColor = [UIColor redColor];
             }
+            _acountNameLabel.tag = 4720 + i;
             _myacountLabel.tag = 4710 + i;
-            _myacountLabel.font = [UIFont systemFontOfSize:15];
+            _myacountLabel.font = [UIFont systemFontOfSize:13];
+            _acountNameLabel.font = [UIFont systemFontOfSize:13];
             [_bgView addSubview:_myacountLabel];
+            [_bgView addSubview:_acountNameLabel];
         }
-        
-        
-        
     }
     return self;
 }
@@ -69,21 +72,18 @@
     
     _bankLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col0"]];
     
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 3; i++) {
         _myacountLabel = (UILabel *)[self.contentView viewWithTag:4710 + i];
+        _acountNameLabel = (UILabel *)[self.contentView viewWithTag:4720 + i];
         if (i == 0) {
-            _myacountLabel.text = @"本期收入: ";
-        } else if (i == 2) {
-            _myacountLabel.text = @"本期支出: ";
-        } else if (i == 4) {
-            _myacountLabel.text = @"余额: ";
+            _acountNameLabel.text = @"本期收入:";
+            _myacountLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col2"]];
         } else if (i == 1) {
-            _myacountLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col2"]];
-        
-        } else if (i == 3) {
-            _myacountLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col3"]];
-        } else if (i == 5) {
-            _myacountLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col4"]];
+            _acountNameLabel.text = @"本期支出:";
+            _myacountLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col3"]];
+        } else if (i == 2) {
+            _acountNameLabel.text = @"余额:";
+            _myacountLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col4"]];
         }
     }
 }

@@ -47,17 +47,30 @@
     _OrderreviewSearchNames = [NSMutableArray array];
     _neworderreviewDatalist = [NSMutableArray array];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(revokeAction:) name:@"revokeAction" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orderAction:) name:@"orderAction" object:nil];
+
+    
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"revokeAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"orderAction" object:nil];
+    _OrderreviewNames = nil;
+    _OrderreviewSearchNames = nil;
+    _neworderreviewDatalist = nil;
+    _OrderreviewDatalist = nil;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -130,7 +143,6 @@
     if (_noOrderreviewView == nil) {
         _noOrderreviewView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
         _noOrderreviewView.hidden = YES;
-        _noOrderreviewView.text = @"没有需要审核的订单信息";
         [self.view addSubview:_noOrderreviewView];
     }
     
@@ -195,15 +207,11 @@
 {
     if (_number % 2 == 0) {
         [self naviTitleWhiteColorWithText:@"撤审列表"];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"orderAction" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(revokeAction:) name:@"revokeAction" object:nil];
         [_button setTitle:@"审核" forState:UIControlStateNormal];
         _number++;
         [self getOrderreviewDataWithOrderreview:NO Page:1];
     } else {
         [self naviTitleWhiteColorWithText:@"订单审核"];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"revokeAction" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orderAction:) name:@"orderAction" object:nil];
         [_button setTitle:@"撤审" forState:UIControlStateNormal];
         _number--;
         [self getOrderreviewDataWithOrderreview:YES Page:1];
@@ -217,7 +225,6 @@
  */
 - (void)orderAction:(NSNotification *)noti
 {
-    NSLog(@"%@",noti.object);
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *orderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_examineOrder];
@@ -227,6 +234,7 @@
         if ([responseObject[@"type"] isEqualToString:@"error"]) {
             [self writeWithName:responseObject[@"message"]];
         } else {
+            NSLog(@"审核成功");
             NSMutableArray *deleteArray = [NSMutableArray array];
             for (NSDictionary *dic in _OrderreviewDatalist) {
                 NSString *reviewID = [NSString stringWithFormat:@"%@",[dic valueForKey:@"col0"]];
@@ -300,7 +308,6 @@
     }
     [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:examOrderURL params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         if ([_OrderreviewTableView.footer isRefreshing]) {
             [_OrderreviewTableView.footer endRefreshing];
             NSArray *array = [OrderreviewModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
@@ -313,6 +320,11 @@
         }
         if (_OrderreviewDatalist.count == 0) {
             _noOrderreviewView.hidden = NO;
+            if (_number % 2 == 0) {
+                _noOrderreviewView.text = @"没有需要审核的订单信息";
+            } else {
+                _noOrderreviewView.text = @"没有需要撤审的订单信息";
+            }
             _OrderreviewTableView.hidden = YES;
             _OrderreviewSearchController.searchBar.hidden = YES;
         } else {

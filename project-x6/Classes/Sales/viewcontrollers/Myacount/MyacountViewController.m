@@ -15,7 +15,7 @@
 @interface MyacountViewController ()<UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,UISearchResultsUpdating,UISearchBarDelegate>
 
 {
-    NSArray *_myacountDatalist;
+    NSMutableArray *_myacountDatalist;
     NSString *_dateString;            //今日日期
 
     UITableView *_myacountTableView;
@@ -24,6 +24,7 @@
 }
 
 @property(nonatomic,strong)NoDataView *noacountView;
+@property(nonatomic,strong)UIView *totalacountView;        //总计
 
 @property(nonatomic,copy)NSMutableArray *bankNames;         //门店名集合
 @property(nonatomic,copy)NSMutableArray *newmyacountDatalist;
@@ -36,7 +37,11 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeTodayData" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    _bankNames = nil;
+    _banksearchNames = nil;
+    _myacountDatalist = nil;
+    _newmyacountDatalist = nil;
 }
 
 - (NoDataView *)noacountView
@@ -49,6 +54,39 @@
     }
     return _noacountView;
 }
+
+- (UIView *)totalacountView
+{
+    if (!_totalacountView) {
+        _totalacountView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 104, KScreenWidth, 40)];
+        _totalacountView.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.2];
+        _totalacountView.hidden = YES;
+        [self.view addSubview:_totalacountView];
+   
+        for (int i = 0; i < 3; i++) {
+            UILabel *label = [[UILabel alloc] init];
+            label.font = [UIFont systemFontOfSize:14];
+            if (i == 0) {
+                label.frame = CGRectMake(20, 0, 40, 40);
+                label.text = @"合计:";
+            } else if (i == 1) {
+                label.frame = CGRectMake(KScreenWidth - 170, 0, 40, 40);
+                label.text = @"金额:";
+            } else {
+                label.frame = CGRectMake(KScreenWidth - 130, 0, 120, 40);
+                label.textColor = [UIColor redColor];
+                label.tag = 4711;
+            }
+            [_totalacountView addSubview:label];
+            
+        }
+        
+        
+        
+    }
+    return _totalacountView;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -70,6 +108,19 @@
     //绘制UI
     [self initWithMyacountView];
 
+    
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_myzh"]) {
+            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                //获取数据
+                [self getMyacountDataWithDate:_dateString];
+            } else {
+                [self writeWithName:@"您没有查看帐户详情的权限"];
+            }
+        }
+    }
 }
 
 #pragma mark - UISearchResultsUpdating
@@ -96,16 +147,17 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.MyacountSearchController.searchBar setHidden:NO];
-    
-    //获取数据
-    [self getMyacountDataWithDate:_dateString];
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -161,7 +213,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 105;
+    return 89;
 }
 
 #pragma mark - UITableViewDataSource
@@ -180,9 +232,6 @@
     return cell;
 }
 
-
-
-
 #pragma mark - 绘制UI
 - (void)initWithMyacountView
 {
@@ -198,13 +247,14 @@
     [self.view addSubview:_MyacountSearchController.searchBar];
     
     
-    _myacountTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44) style:UITableViewStylePlain];
+    _myacountTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 40) style:UITableViewStylePlain];
     _myacountTableView.delegate = self;
     _myacountTableView.dataSource = self;
     _myacountTableView.hidden = YES;
     _myacountTableView.allowsSelection = NO;
     _myacountTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _myacountTableView.showsVerticalScrollIndicator = NO;
+    _myacountTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_myacountTableView];
 }
 
@@ -217,6 +267,7 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:myacountURL params:params success:^(id responseObject) {
         NSLog(@"我的帐户%@",responseObject);
         _myacountDatalist = [MyacountModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
@@ -225,19 +276,32 @@
                 [self noacountView];
                 _noacountView.hidden = NO;
                 _myacountTableView.hidden = YES;
+                if (_totalacountView) {
+                    _totalacountView.hidden = YES;
+                }
             }
         } else {
             if (_noacountView) {
                 _noacountView.hidden = YES;
             }
             _myacountTableView.hidden = NO;
+            [self totalacountView];
+            _totalacountView.hidden = NO;
+            long long totalMoney = 0;
+            for (NSDictionary *dic in _myacountDatalist) {
+                totalMoney += [[dic valueForKey:@"col4"] longLongValue];
+            }
+            UILabel *label = (UILabel *)[_totalacountView viewWithTag:4711];
+            label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+            
+            NSArray *sortacountArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col4" ascending:NO]];
+            [_myacountDatalist sortUsingDescriptors:sortacountArray];
             [_myacountTableView reloadData];
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 for (NSDictionary *dic in _myacountDatalist) {
                     [_bankNames addObject:[dic valueForKey:@"col0"]];
                 }
             });
-            
         }
     } failure:^(NSError *error) {
         NSLog(@"我的帐户数据失败");

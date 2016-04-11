@@ -11,6 +11,7 @@
 @interface TodayMoneyTableViewCell : UITableViewCell
 
 {
+    UILabel *_nameLabel;
     UILabel *_label;
 }
 

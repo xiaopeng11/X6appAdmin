@@ -11,9 +11,10 @@
   */
 
 #import "ContactSelectionViewController.h"
+#import "EMRemarkImageView.h"
+
 
 #import "EMSearchBar.h"
-#import "EMRemarkImageView.h"
 #import "EMSearchDisplayController.h"
 #import "RealtimeSearchUtil.h"
 
@@ -157,7 +158,6 @@
             }
 
             NSString *buddy = [weakSelf.searchController.resultsSource objectAtIndex:indexPath.row];
-//            cell.imageView.image = [UIImage imageNamed:@"chatListCellHead.png"];
             cell.textLabel.text = buddy;
             cell.username = buddy;
             
@@ -419,8 +419,7 @@
     if (_delegate && [_delegate respondsToSelector:@selector(viewController:didFinishSelectedSources:)]) {
         if ([_blockSelectedUsernames count] == 0) {
             isPop = [_delegate viewController:self didFinishSelectedSources:self.selectedContacts];
-        }
-        else{
+        } else {
             NSMutableArray *resultArray = [NSMutableArray array];
             for (NSString *buddy in self.selectedContacts) {
                 if(![self isBlockUsername:buddy])
@@ -428,19 +427,8 @@
                     [resultArray addObject:buddy];
                 }
             }
-            
-            //传入对应的环信id
-            NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-            NSArray *contactList = [userdefaults objectForKey:X6_Contactlist];
-            NSMutableArray *resultArrayed = [NSMutableArray array];
-            for (NSDictionary *dic in contactList) {
-                for (NSString *nickname in resultArray) {
-                    if ([nickname isEqualToString:[dic valueForKey:@"nickname"]]) {
-                        [resultArrayed addObject:[dic valueForKey:@"username"]];
-                    }
-                }
-            }
-            isPop = [_delegate viewController:self didFinishSelectedSources:resultArrayed];
+            //将用户昵称传给协议（协议通过昵称判断用户id，成功）
+            isPop = [_delegate viewController:self didFinishSelectedSources:resultArray];
         }
     }
     

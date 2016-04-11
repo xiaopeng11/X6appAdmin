@@ -21,13 +21,16 @@
     XPDatePicker *_datePicker;
     
     NSString *_dateString;
-    NSArray *_todayPayDatalist;
+    NSMutableArray *_todayPayDatalist;
 }
 
 @property(nonatomic,copy)NSMutableArray *companyNames;         //门店名集合
 @property(nonatomic,copy)NSMutableArray *newtodayPayDatalist;
 @property(nonatomic,strong)NSMutableArray *companysearchNames;
 @property(nonatomic,strong)UISearchController *todayPaySearchController;
+
+
+@property(nonatomic,strong)UIView *totalTodayPayView;        //总计
 
 @end
 
@@ -36,6 +39,41 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeTodayData" object:nil];
+    _companyNames = nil;
+    _companysearchNames = nil;
+    _todayPayDatalist = nil;
+    _newtodayPayDatalist = nil;
+    
+}
+
+- (UIView *)totalTodayPayView
+{
+    if (!_totalTodayPayView) {
+        _totalTodayPayView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 104, KScreenWidth, 40)];
+        _totalTodayPayView.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.2];
+        _totalTodayPayView.hidden = YES;
+        [self.view addSubview:_totalTodayPayView];
+        
+        for (int i = 0; i < 3; i++) {
+            UILabel *label = [[UILabel alloc] init];
+            label.font = [UIFont systemFontOfSize:14];
+            if (i == 0) {
+                label.frame = CGRectMake(20, 0, 40, 40);
+                label.text = @"合计:";
+            } else if (i == 1) {
+                label.frame = CGRectMake(KScreenWidth - 150, 0, 40, 40);
+                label.text = @"金额:";
+            } else {
+                label.frame = CGRectMake(KScreenWidth - 110, 0, 100, 40);
+                label.textColor = [UIColor redColor];
+                label.tag = 4511;
+            }
+            [_totalTodayPayView addSubview:label];
+            
+        }
+        
+    }
+    return _totalTodayPayView;
 }
 
 - (void)viewDidLoad {
@@ -60,17 +98,33 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.todayPaySearchController.searchBar setHidden:NO];
+    
     //绘制UI
     [self initTodayPay];
-
-    //获取数据
-    [self gettodayPayDataWithDate:_dateString];
+    
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrcwfk"]) {
+            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                //获取数据
+                [self gettodayPayDataWithDate:_dateString];
+            } else {
+                [self writeWithName:@"您没有查看今日付款详情的权限"];
+            }
+        }
+    }
  
 }
 
@@ -80,6 +134,11 @@
     [self.todayPaySearchController.searchBar setHidden:YES];
     if ([self.todayPaySearchController.searchBar isFirstResponder]) {
         [self.todayPaySearchController.searchBar resignFirstResponder];
+    }
+    
+    if (_datePicker.datePicker != nil) {
+        [_datePicker.datePicker removeFromSuperview];
+        [_datePicker.subView removeFromSuperview];
     }
 }
 
@@ -118,7 +177,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100;
+    return 75;
 }
 
 #pragma mark - UITableViewDataSource
@@ -183,12 +242,13 @@
     [_todayPaySearchController.searchBar sizeToFit];
     [self.view addSubview:_todayPaySearchController.searchBar];
     
-    _todayPayTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44) style:UITableViewStylePlain];
+    _todayPayTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 40) style:UITableViewStylePlain];
     _todayPayTableView.delegate = self;
     _todayPayTableView.dataSource = self;
     _todayPayTableView.hidden = YES;
     _todayPayTableView.allowsSelection = NO;
     _todayPayTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    _todayPayTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_todayPayTableView];
     
     _notodayPayView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44)];
@@ -206,15 +266,30 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:todayPayURL params:params success:^(id responseObject) {
-        NSLog(@"我的今日付款%@",responseObject);
         _todayPayDatalist = [TodayPayModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_todayPayDatalist.count == 0) {
             _todayPayTableView.hidden = YES;
             _notodayPayView.hidden = NO;
+            if (_totalTodayPayView) {
+                _totalTodayPayView.hidden = YES;
+            }
         } else {
             _notodayPayView.hidden = YES;
             _todayPayTableView.hidden = NO;
+            [self totalTodayPayView];
+            _totalTodayPayView.hidden = NO;
+            long long totalMoney = 0;
+            for (NSDictionary *dic in _todayPayDatalist) {
+                totalMoney += [[dic valueForKey:@"col3"] longLongValue];
+            }
+            UILabel *label = (UILabel *)[_totalTodayPayView viewWithTag:4511];
+            label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+
+            NSArray *sorttodaypayArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col3" ascending:NO]];
+            [_todayPayDatalist sortUsingDescriptors:sorttodaypayArray];
+            
             [_todayPayTableView reloadData];
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 for (NSDictionary *dic in _todayPayDatalist) {

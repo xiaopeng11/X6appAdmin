@@ -13,13 +13,17 @@
 {
     UIView *_editbgView;
     NSDictionary *_suppliermessage;
-    
-    UITextView *_textView;
 }
 
 @end
 
 @implementation AddsupplierViewController
+
+- (void)dealloc
+{
+    self.view = nil;
+    _suppliermessage = nil;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,8 +44,20 @@
             [self naviTitleWhiteColorWithText:[NSString stringWithFormat:@"客户详情"]];
         }
     }
-    
+}
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    for (int i = 0; i < 4; i++) {
+        UITextField *textfield = (UITextField *)[_editbgView viewWithTag:3100 + i];
+        if ([textfield isFirstResponder]) {
+            [textfield resignFirstResponder];
+        }
+    }
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,7 +66,7 @@
 }
 
 
-#pragma mark -  绘制UI
+#pragma mark - 绘制UI
 - (void)initAddsupplierUI
 {
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 150)];
@@ -71,39 +87,35 @@
     [self.view addSubview:imageView];
     
     _editbgView = [[UIView alloc] initWithFrame:CGRectMake(10, 170, KScreenWidth - 20, 240)];
-    _editbgView.backgroundColor = LineColor;
     [self.view addSubview:_editbgView];
     
     for (int i = 0; i < 5; i++) {
-        UIImageView *imgaeview = [[UIImageView alloc] initWithFrame:CGRectMake(20, 16 + 40 * i, 22, 20)];
+        UIImageView *imgaeview = [[UIImageView alloc] initWithFrame:CGRectMake(20, 16 + 40 * i, 20, 20)];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(42, 10 + 40 * i, 60, 30)];
         label.textAlignment = NSTextAlignmentRight;
         UITextField *textfield;
-        if (i < 4) {
-            textfield = [[UITextField alloc] initWithFrame:CGRectMake(110, 10 + 39 * i, KScreenWidth - 140, 30)];
-            textfield.borderStyle = UITextBorderStyleNone;
-            textfield.tag = 3100 + i;
-            [_editbgView addSubview:textfield];
-            
-            UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(110, 39 + 40 * i , KScreenWidth - 140, 1)];
-            lineView.backgroundColor = LineColor;
-            [_editbgView addSubview:lineView];
-        }
+        textfield = [[UITextField alloc] initWithFrame:CGRectMake(110, 10 + 39 * i, KScreenWidth - 140, 30)];
+        textfield.borderStyle = UITextBorderStyleNone;
+        textfield.tag = 3100 + i;
+        [_editbgView addSubview:textfield];
         
-        _textView = [[UITextView alloc] initWithFrame:CGRectMake(110, 170, KScreenWidth - 110 - 30, 55)];
-        [_editbgView addSubview:_textView];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(110, 39 + 40 * i , KScreenWidth - 140, 1)];
+        lineView.backgroundColor = LineColor;
+        [_editbgView addSubview:lineView];
+        
+        
      
         if (i == 0) {
-            imgaeview.image = [UIImage imageNamed:@""];
+            imgaeview.image = [UIImage imageNamed:@"btn_mingchen_h"];
             label.text = @"名称:";
         } else if (i == 1) {
-            imgaeview.image = [UIImage imageNamed:@""];
+            imgaeview.image = [UIImage imageNamed:@"btn_lianxirenren_h"];
             label.text = @"联系人:";
         } else if (i == 2) {
             imgaeview.image = [UIImage imageNamed:@"btn_dianhua_h"];
             label.text = @"电话:";
         } else if (i == 3) {
-            imgaeview.image = [UIImage imageNamed:@""];
+            imgaeview.image = [UIImage imageNamed:@"btn_dizhi_h"];
             label.text = @"地址:";
         } else if (i == 4) {
             imgaeview.image = [UIImage imageNamed:@"btn_beizhu_h"];
@@ -119,8 +131,9 @@
                 textfield.text = [_supplierdic valueForKey:@"lxhm"];
             } else if (i == 3) {
                 textfield.text = [_supplierdic valueForKey:@"dz"];
+            } else {
+                textfield.text = [_supplierdic valueForKey:@"comments"];
             }
-            _textView.text = [_supplierdic valueForKey:@"comments"];
         }
         
         [_editbgView addSubview:imgaeview];
@@ -160,37 +173,39 @@
     UITextField *lxrtextfield = (UITextField *)[_editbgView viewWithTag:3101];
     UITextField *lxhmtextfield = (UITextField *)[_editbgView viewWithTag:3102];
     UITextField *dztextfield = (UITextField *)[_editbgView viewWithTag:3103];
-    [params setObject:nametextfield.text forKey:@"name"];
-    [params setObject:lxrtextfield.text forKey:@"lxr"];
-    [params setObject:lxhmtextfield.text forKey:@"lxhm"];
-    [params setObject:dztextfield.text forKey:@"dz"];
-    [params setObject:_textView.text forKey:@"comments"];
-    
-    NSMutableDictionary *diced = [NSMutableDictionary dictionary];
-    [diced setObject:params forKey:@"vo"];
-    NSMutableDictionary *dics = [NSMutableDictionary dictionary];
-
-    NSData *jsondata = [NSJSONSerialization dataWithJSONObject:diced options:NSJSONWritingPrettyPrinted error:nil];
-    NSString *string = [[NSString alloc] initWithData:jsondata encoding:NSUTF8StringEncoding];
-    
-    [dics setObject:string forKey:@"postdata"];
-
-    [XPHTTPRequestTool requestMothedWithPost:addsupplierORcostumerURL params:dics success:^(id responseObject) {
-        NSLog(@"上传信息成功%@",responseObject);
-        if ([responseObject[@"type"] isEqualToString:@"error"]) {
-            [self writeWithName:responseObject[@"message"]];
-        } else {
-            [self.navigationController popViewControllerAnimated:YES];
-        }
+    UITextField *commentstextfield = (UITextField *)[_editbgView viewWithTag:3104];
+    if (nametextfield.text.length == 0) {
+        [self writeWithName:@"名称不能为空"];
+    } else if (lxrtextfield.text.length == 0) {
+        [self writeWithName:@"联系人不能为空"];
+    } else {
+        [params setObject:nametextfield.text forKey:@"name"];
+        [params setObject:lxrtextfield.text forKey:@"lxr"];
+        [params setObject:lxhmtextfield.text forKey:@"lxhm"];
+        [params setObject:dztextfield.text forKey:@"dz"];
+        [params setObject:commentstextfield.text forKey:@"comments"];
         
-    } failure:^(NSError *error) {
-        NSLog(@"上传信息失败%@",error);
-        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+        NSMutableDictionary *diced = [NSMutableDictionary dictionary];
+        [diced setObject:params forKey:@"vo"];
+        NSMutableDictionary *dics = [NSMutableDictionary dictionary];
+        
+        NSData *jsondata = [NSJSONSerialization dataWithJSONObject:diced options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *string = [[NSString alloc] initWithData:jsondata encoding:NSUTF8StringEncoding];
+        
+        [dics setObject:string forKey:@"postdata"];
+        
+        
+        [XPHTTPRequestTool requestMothedWithPost:addsupplierORcostumerURL params:dics success:^(id responseObject) {
+            if ([responseObject[@"type"] isEqualToString:@"error"]) {
+                [self writeWithName:responseObject[@"message"]];
+            } else {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+            
+        } failure:^(NSError *error) {
+        }];
 
-    }];
-    
-    
+    }
 }
-
 
 @end

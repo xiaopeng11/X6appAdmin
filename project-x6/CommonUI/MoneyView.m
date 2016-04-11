@@ -11,7 +11,7 @@
 
 #import "AppDelegate.h"
 
-#define Size            150
+#define Size            200
 #define FadeDuration    0.2
 
 #define SCREEN_WIDTH    ([[UIScreen mainScreen] bounds].size.width)
@@ -56,34 +56,34 @@ static MoneyView *instance;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancleSetMoney)];
         [self addGestureRecognizer:tap];
         
-        UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 150) / 2.0, 100, 150, 150)];
+        UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 200) / 2.0, 100, 200, 200)];
         bgView.clipsToBounds = YES;
         bgView.layer.cornerRadius = 10;
         bgView.backgroundColor = [UIColor whiteColor];
         [self addSubview:bgView];
         
-        _moneyTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 50, 130, 30)];
+        _moneyTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 75, 180, 30)];
         _moneyTextField.placeholder = @"请输入金额";
         _moneyTextField.textAlignment = NSTextAlignmentCenter;
         _moneyTextField.delegate = self;
         _moneyTextField.keyboardType = UIKeyboardTypeNumberPad;
         [bgView addSubview:_moneyTextField];
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 80, 130, 1)];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 105, 180, 1)];
         lineView.backgroundColor = [UIColor grayColor];
         [bgView addSubview:lineView];
         
         
         _cancleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _cancleButton.frame = CGRectMake(0, 120, 75, 30);
-        _cancleButton.backgroundColor = [UIColor blueColor];
+        _cancleButton.frame = CGRectMake(0, 150, 100, 50);
+        _cancleButton.backgroundColor = Mycolor;
         [_cancleButton setTitle:@"取消" forState:UIControlStateNormal];
         [_cancleButton addTarget:self action:@selector(cancleSetMoney) forControlEvents:UIControlEventTouchUpInside];
         [bgView addSubview:_cancleButton];
         
         _sureButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _sureButton.frame = CGRectMake(75, 120, 75, 30);
-        _sureButton.backgroundColor = [UIColor blueColor];
+        _sureButton.frame = CGRectMake(100, 150, 100, 50);
+        _sureButton.backgroundColor = Mycolor;
         [_sureButton setTitle:@"确定" forState:UIControlStateNormal];
         [_sureButton addTarget:self action:@selector(sureSetMoney) forControlEvents:UIControlEventTouchUpInside];
         [bgView addSubview:_sureButton];

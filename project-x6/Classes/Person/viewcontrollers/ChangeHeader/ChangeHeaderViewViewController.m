@@ -91,8 +91,6 @@
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     //显示图片
     _HeaderView.image = image;
-    
-    NSLog(@"%@",info);
 
     //压缩图片大小
     image = [self imageCompressForWidth:image targetWidth:100];
@@ -148,7 +146,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"changeHeaderView" object:nil];
         [self.navigationController popViewControllerAnimated:YES];
     } failure:^(NSError *error) {
-        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+//        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
 }
 

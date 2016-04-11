@@ -254,7 +254,6 @@
     NSString *collectionURL = [NSString stringWithFormat:@"%@%@",url,X6_collectionView];
     [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:collectionURL params:nil success:^(id responseObject) {
-        NSLog(@"知识库:%@",responseObject);
         _txtDatalist = [FocusModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         //处理数据
         [self getPicsAndTxtData];
@@ -265,8 +264,7 @@
             [_picTableview reloadData];
         }
     } failure:^(NSError *error) {
-        NSLog(@"知识库请求失败%@",error);
-        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+//        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
 }
 

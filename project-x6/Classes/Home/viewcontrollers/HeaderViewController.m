@@ -8,6 +8,8 @@
 
 #import "HeaderViewController.h"
 #import "HomeModel.h"
+#import "PersonsModel.h"
+
 #import "ChatViewController.h"
 #import "Persontableviewed.h"
 @interface HeaderViewController ()
@@ -39,21 +41,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
     [self naviTitleWhiteColorWithText:[NSString stringWithFormat:@"%@的动态",[_dic valueForKey:@"name"]]];
-
+    
     
     //获取数据
     [self getPersonDynamicDataWithPage:1];
     //初始化子视图
     [self initSubViews];
-    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
 
 }
 
@@ -108,13 +107,13 @@
         if ([[_dic valueForKey:@"usertype"] integerValue] == 1) {
             personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  营业员",[_dic valueForKey:@"ssgsname"]]];
         } else {
-            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  操作员",[_dic valueForKey:@"ssgsname"]]];
+            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  系统管理员",[_dic valueForKey:@"ssgsname"]]];
         }
     } else {
         if ([[_dic valueForKey:@"userType"] integerValue] == 1) {
             personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  营业员",[_dic valueForKey:@"ssgsname"]]];
         } else {
-            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  操作员",[_dic valueForKey:@"ssgsname"]]];
+            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  系统管理员",[_dic valueForKey:@"ssgsname"]]];
         }
     }
     
@@ -131,7 +130,7 @@
     
     //个人信息功能－打电话，关注，即时消息
     NSArray *buttonLabel = @[@"电话",@"消息",@"关注"];
-    NSArray *buttonImages = @[@"btn_dianhua_h",@"btn_xinxi_h",@"btn_guanzhu_h"];
+    NSArray *buttonImages = @[@"btn_dianhua_n",@"btn_xinxi_h",@"btn_guanzhu_h"];
     for (int i = 0; i < buttonImages.count; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.tag = 1300 + i;
@@ -193,13 +192,47 @@
         } else if (button.tag == 1301) {
             //消息
             NSLog(@"消息");
-            NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-            NSDictionary *dic = [userdefaults objectForKey:X6_UserMessage];
             if ([[_dic valueForKey:@"hxflag"] intValue] == 1) {
-                NSString *easeID = [NSString stringWithFormat:@"%@%@",[dic valueForKey:@"gsdm"],[_dic valueForKey:@"phone"]];
+                NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+                NSString *gsdm = [[userdefaults objectForKey:X6_UserMessage] valueForKey:@"gsdm"];
+                NSString *easeID = [NSString stringWithFormat:@"%@%@%@",gsdm,[_dic valueForKey:@"usertype"],[_dic valueForKey:@"phone"]];
                 ChatViewController *chatVC = [[ChatViewController alloc] initWithConversationChatter:easeID conversationType:eConversationTypeChat];
                 chatVC.title = [_dic valueForKey:@"name"];
-                [self.navigationController pushViewController:chatVC animated:YES];
+                //判断是否有联系人数据
+                if ([userdefaults objectForKey:X6_Contactlist] == NULL) {
+                    dispatch_group_t grouped = dispatch_group_create();
+                    dispatch_group_enter(grouped);
+                    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+                    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+                    NSString *personsURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_persons];
+                    [XPHTTPRequestTool requestMothedWithPost:personsURL params:nil success:^(id responseObject) {
+                        NSArray *contactList = [PersonsModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"userList"] ignoredKeys:@[@"phone",@"ssgs"]];
+
+                        [self writeContactListDataWithContactlist:contactList];
+                        dispatch_group_leave(grouped);
+
+                    } failure:^(NSError *error) {
+                        dispatch_group_leave(grouped);
+
+                    }];
+                    dispatch_group_notify(grouped, dispatch_get_main_queue(), ^{
+                        NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+                        NSMutableArray *contactList = [userdefaults objectForKey:X6_Contactlist];
+                        NSLog(@"%@",contactList);
+                        [self.navigationController pushViewController:chatVC animated:YES];
+                        
+                       
+                        
+                    });
+                } else {
+                    NSMutableArray *contactlisy = [userdefaults objectForKey:X6_Contactlist];
+                    NSLog(@"%@",contactlisy);
+                    [self.navigationController pushViewController:chatVC animated:YES];
+
+                }
+                
+                
+                
             } else  {
                 [self writeWithName:@"该用户还未登录"];
             }
@@ -221,17 +254,11 @@
                 //关注成功
                 [self writeWithName:@"关注成功"];
             } failure:^(NSError *error) {
-                [BasicControls showNDKNotifyWithMsg:@"关注失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
+//                [BasicControls showNDKNotifyWithMsg:@"关注失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
             }];
-            
         }
-
     }
-    
 }
-
-
-
 
 #pragma mark - 下拉刷新，上拉加载更多
 - (void)HeaderViewfooterAction
@@ -280,6 +307,7 @@
 
 
 #pragma mark - 获取数据
+//获取个人动态数据
 - (void)getPersonDynamicDataWithPage:(double)page
 {
     NSString *userid;
@@ -335,8 +363,42 @@
  
     } failure:^(NSError *error) {
         NSLog(@"获取失败");
-        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+//        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
+    
+}
+
+
+#pragma mark - 将数据写入本地
+- (void)writeContactListDataWithContactlist:(NSArray *)contactlist
+{
+    NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+    NSString *gsdm = [[userdefaults objectForKey:X6_UserMessage] valueForKey:@"gsdm"];
+    NSMutableArray *huanxinContacts = [NSMutableArray array];
+    
+    for (NSDictionary *dic in contactlist) {
+        @autoreleasepool {
+            NSString *headerURLString,*easeID;
+            if ([[dic valueForKey:@"usertype"] intValue] == 0) {
+                headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,[dic valueForKey:@"userpic"]];
+            } else {
+                headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,gsdm,[dic valueForKey:@"userpic"]];
+            }
+            easeID = [NSString stringWithFormat:@"%@%@%@",gsdm,[dic valueForKey:@"usertype"],[dic valueForKey:@"phone"]];
+            
+            NSString *easeNickName = [dic valueForKey:@"name"];
+            NSNumber *hxflag = [dic valueForKey:@"hxflag"];
+            NSMutableDictionary *FBdic = [NSMutableDictionary dictionary];
+            [FBdic setObject:easeID forKey:@"username"];
+            [FBdic setObject:headerURLString forKey:@"avatar"];
+            [FBdic setObject:easeNickName forKey:@"nickname"];
+            [FBdic setObject:hxflag forKey:@"hxflag"];
+            [huanxinContacts addObject:FBdic];
+        }
+
+    }
+    [userdefaults setObject:huanxinContacts forKey:X6_Contactlist];
+    [userdefaults synchronize];
     
 }
 

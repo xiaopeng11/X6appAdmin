@@ -9,6 +9,8 @@
 #import "OldlibraryTabelView.h"
 
 #import "OldlibrarydetailViewController.h"
+
+#define oldlibraryWidth ((KScreenWidth - 150) / 3.0)
 @implementation OldlibraryTabelView
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -23,16 +25,30 @@
         _gysLabel.font = [UIFont systemFontOfSize:16];
         [self.contentView addSubview:_gysLabel];
         
-        _hpLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, 50, KScreenWidth - 90 - 40, 20)];
+        _hpLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 50, KScreenWidth - 70 - 10, 20)];
         _hpLabel.font = [UIFont systemFontOfSize:16];
         [self.contentView addSubview:_hpLabel];
         
         for (int i = 0; i < 4; i++) {
             int OldlibraryX = i / 2;
             int OldlibraryY = i % 2;
-            _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(90 + ((KScreenWidth - 90) / 2.0) * OldlibraryY, 75 + 25 * OldlibraryX, (KScreenWidth - 90) / 2.0, 20)];
+            
+            _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(60 + OldlibraryY * (oldlibraryWidth + 40), 75 + 25 * OldlibraryX, 40, 20)];
+            if (OldlibraryY == 0) {
+                _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 75 + 25 * OldlibraryX, oldlibraryWidth, 20)];
+            } else {
+                _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(100 + (oldlibraryWidth + 40) , 75 + 25 * OldlibraryX, oldlibraryWidth * 2, 20)];
+            }            
+            _nameLabel.tag = 4630 + i;
             _messageLabel.tag = 4620 + i;
             [self.contentView addSubview:_messageLabel];
+            [self.contentView addSubview:_nameLabel];
+            
+            if (i == 1) {
+                _messageLabel.textColor = [UIColor redColor];
+            } else {
+                _messageLabel.textColor = Mycolor;
+            }
             
         }
         
@@ -53,22 +69,28 @@
 {
     [super layoutSubviews];
     
-    _headerView.image = [UIImage imageNamed:@"btn_gyschuanhao_h"];
+    _headerView.image = [UIImage imageNamed:@"btn_gys_h"];
     
     _gysLabel.text = [NSString stringWithFormat:@"供应商:%@",[_dic valueForKey:@"col1"]];
     
     _hpLabel.text = [NSString stringWithFormat:@"货品:%@",[_dic valueForKey:@"col3"]];
     
     for (int i = 0; i < 4; i++) {
-        UILabel *label = [self.contentView viewWithTag:4620 + i];
+        _messageLabel = (UILabel *)[self.contentView viewWithTag:4620 + i];
+        _nameLabel = (UILabel *)[self.contentView viewWithTag:4630 + i];
+
         if (i == 0) {
-            label.text = [NSString stringWithFormat:@"数量:%@",[_dic valueForKey:@"col6"]];
+            _nameLabel.text = @"数量:";
+            _messageLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col6"]];
         } else if (i == 1) {
-            label.text = [NSString stringWithFormat:@"金额:%@",[_dic valueForKey:@"col7"]];
+            _nameLabel.text = @"金额:";
+            _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col7"]];
         } else if (i == 2) {
-            label.text = [NSString stringWithFormat:@"库龄:%@天",[_dic valueForKey:@"col4"]];
+            _nameLabel.text = @"库龄:";
+            _messageLabel.text = [NSString stringWithFormat:@"%@天",[_dic valueForKey:@"col4"]];
         } else {
-            label.text = [NSString stringWithFormat:@"预期:%@天",[_dic valueForKey:@"col5"]];
+            _nameLabel.text = @"逾期:";
+            _messageLabel.text = [NSString stringWithFormat:@"%@天",[_dic valueForKey:@"col5"]];
         }
     }
 }

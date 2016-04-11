@@ -14,5 +14,4 @@
     UILabel *_label;
 }
 @property(nonatomic,copy)NSDictionary *dic;
-@property(nonatomic,assign)BOOL isStore;
 @end

@@ -31,6 +31,14 @@
 
 @implementation PurchaseViewController
 
+- (void)dealloc
+{
+    _PurchaseNames = nil;
+    _PurchaseSearchNames = nil;
+    _PurchaseDatalist = nil;
+    _NewPurchaseDatalist = nil;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -50,9 +58,19 @@
     [super viewWillAppear:animated];
     
     [_PurchaseSearchController.searchBar setHidden:NO];
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_cgyc"]) {
+            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                //获取数据
+                [self getPurchaseDatalist];
+            } else {
+                [self writeWithName:@"您没有查看采购异常详情的权限"];
+            }
+        }
+    }
     
-    
-    [self getPurchaseDatalist];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self cleanPurchaseWarningNumber];
     });
@@ -72,6 +90,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 #pragma mark - UITableViewDelegate
@@ -86,7 +109,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 220;
+    return 200;
 }
 
 #pragma mark - UITableViewDataSource
@@ -125,7 +148,7 @@
             NSNumber *djh = [array[indexPath.row] valueForKey:@"col1"];
             [params setObject:djid forKey:@"djid"];
             [params setObject:djh forKey:@"djh"];
-            [params setObject:@"CKYC" forKey:@"txlx"];
+            [params setObject:@"CGYC" forKey:@"txlx"];
             [XPHTTPRequestTool requestMothedWithPost:ignoreURL params:params success:^(id responseObject) {
                 NSLog(@"采购异常忽略成功");
             } failure:^(NSError *error) {
@@ -207,10 +230,9 @@
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *PurchaseURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Purchase];
-    
-    [XPHTTPRequestTool requestMothedWithPost:PurchaseURL params:nil success:^(id responseObject) {
-        NSLog(@"采购异常数据%@",responseObject);
- 
+    [GiFHUD show];
+
+    [XPHTTPRequestTool requestMothedWithPost:PurchaseURL params:nil success:^(id responseObject) { 
         _PurchaseDatalist = [PurchaseModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         
         if (_PurchaseDatalist.count == 0) {
@@ -229,6 +251,9 @@
             _noPurchaseView.hidden = YES;
             _PurchaseTabelView.hidden = NO;
             _PurchaseSearchController.searchBar.hidden = NO;
+            
+            NSArray *PurchaseArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col1" ascending:NO]];
+            [_PurchaseDatalist sortUsingDescriptors:PurchaseArray];
             [_PurchaseTabelView reloadData];
             
             for (NSDictionary *dic in _PurchaseDatalist) {
@@ -241,7 +266,7 @@
         }
         
     } failure:^(NSError *error) {
-        NSLog(@"获取零售异常失败");
+        NSLog(@"获取采购异常失败");
     }];
 }
 

@@ -42,9 +42,9 @@
         [_OrderbgView addSubview:_ddhLabel];
         
         //日期
-        _dateImageview = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 145, 11, 20, 16)];
+        _dateImageview = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 130, 11, 20, 16)];
         [_OrderbgView addSubview:_dateImageview];
-        _dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 120, 10, 100, 20)];
+        _dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 100, 10, 100, 20)];
         _dateLabel.font = [UIFont systemFontOfSize:12];
         [_OrderbgView addSubview:_dateLabel];
         
@@ -56,14 +56,14 @@
         //供应商
         _gysImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 51, 20, 16)];
         [_OrderbgView addSubview:_gysImageView];
-        _gysLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, (KScreenWidth - 80) / 2.0, 20)];
+        _gysLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, KScreenWidth - 80 - 20, 20)];
         _gysLabel.font = [UIFont systemFontOfSize:15];
         [_OrderbgView addSubview:_gysLabel];
         
         //货品
         _huopiImageview = [[UIImageView alloc] initWithFrame:CGRectMake(20, 80, 20, 16)];
         [_OrderbgView addSubview:_huopiImageview];
-        _huopinLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 80, (KScreenWidth - 80) / 2.0, 20)];
+        _huopinLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 80, KScreenWidth - 80 - 20, 20)];
         _huopinLabel.font = [UIFont systemFontOfSize:15];
         [_OrderbgView addSubview:_huopinLabel];
         
@@ -71,7 +71,8 @@
         for (int i = 0; i < 4; i++) {
             int order_X = i / 2;
             int order_Y = i % 2;
-            _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(50 + 140 * order_Y, 110 + 25 * order_X, 100, 20)];
+            
+            _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(50 + ((KScreenWidth - 50) / 2.0) * order_Y, 110 + 25 * order_X, ((KScreenWidth - 50) / 2.0), 20)];
             _messageLabel.tag = 3300 + i;
             _messageLabel.font = [UIFont systemFontOfSize:14];
             [_OrderbgView addSubview:_messageLabel];
@@ -117,11 +118,11 @@
         if (i == 0) {
             _messageLabel.text = [NSString stringWithFormat:@"数量:%@台",[_dic valueForKey:@"col5"]];
         } else if (i == 1) {
-            _messageLabel.text = [NSString stringWithFormat:@"单价:%@元",[_dic valueForKey:@"col6"]];
+            _messageLabel.text = [NSString stringWithFormat:@"单价:￥%@",[_dic valueForKey:@"col6"]];
         } else if (i == 2) {
-            _messageLabel.text = [NSString stringWithFormat:@"单台返利:%@元",[_dic valueForKey:@"col7"]];
+            _messageLabel.text = [NSString stringWithFormat:@"单台返利:￥%@",[_dic valueForKey:@"col7"]];
         } else if (i == 3) {
-            _messageLabel.text = [NSString stringWithFormat:@"金额:%@元",[_dic valueForKey:@"col8"]];
+            _messageLabel.text = [NSString stringWithFormat:@"金额:￥%@",[_dic valueForKey:@"col8"]];
         }
     }
     
@@ -131,7 +132,7 @@
 - (void)orderAction
 {
     NSLog(@"点击了审核按钮");
-    [_orderButton respondsToSelector:@selector(revokeorderAction)];
+//    [_orderButton respondsToSelector:@selector(revokeorderAction)];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"orderAction" object:[_dic valueForKey:@"col0"]];
     

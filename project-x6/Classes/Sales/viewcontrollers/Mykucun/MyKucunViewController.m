@@ -13,6 +13,7 @@
 @interface MyKucunViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchResultsUpdating,UISearchBarDelegate>
 @property(nonatomic,strong)UITableView *KucunTableview;                 //库存表示图
 @property(nonatomic,strong)NoDataView *NokucunView;                     //没有库存
+@property(nonatomic,strong)UIView *MykucuntotalView;
 
 
 @property(nonatomic,copy)NSMutableArray *Kucundatalist;                 //库存数据
@@ -28,10 +29,23 @@
 @end
 
 @implementation MyKucunViewController
+
+- (void)dealloc
+{
+    _Kucundatalist = nil;
+    _mykucunDic = nil;
+    _selectkucunSection = nil;
+    _KucunNames = nil;
+    _KucunSearchNames = nil;
+    _newkucunDatalist = nil;
+    
+}
+
+
 - (UITableView *)KucunTableview
 {
     if (!_KucunTableview) {
-        _KucunTableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44) style:UITableViewStylePlain];
+        _KucunTableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 40) style:UITableViewStylePlain];
         _KucunTableview.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
         _KucunTableview.delegate = self;
         _KucunTableview.dataSource = self;
@@ -50,6 +64,45 @@
         [self.view addSubview:_NokucunView];
     }
     return _NokucunView;
+}
+
+
+- (UIView *)MykucuntotalView
+{
+    if (_MykucuntotalView == nil) {
+        _MykucuntotalView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 104, KScreenWidth, 40)];
+        _MykucuntotalView.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.2];
+        [self.view addSubview:_MykucuntotalView];
+        
+        long long totalNum = 0,totalMoney = 0;
+        for (NSDictionary *dic in _Kucundatalist) {
+            totalNum += [[dic valueForKey:@"col2"] longLongValue];
+            totalMoney += [[dic valueForKey:@"col3"] longLongValue];
+        }
+        for (int i = 0; i < 5; i++) {
+            UILabel *Label = [[UILabel alloc] init];
+            Label.font = [UIFont systemFontOfSize:13];
+            if (i == 0) {
+                Label.frame = CGRectMake(10, 0, 30, 40);
+                Label.text = @"合计:";
+            } else if (i == 1) {
+                Label.frame = CGRectMake(40, 0, 30, 40);
+                Label.text = @"数量:";
+            } else if (i == 2) {
+                Label.frame = CGRectMake(70, 0, (KScreenWidth - 110) / 2.0, 40);
+                Label.text = [NSString stringWithFormat:@"%lld个",totalNum];
+            } else if (i == 3) {
+                Label.text = @"金额:";
+                Label.frame = CGRectMake(70 + ((KScreenWidth - 110) / 2.0), 0, 30, 40);
+            } else {
+                Label.frame = CGRectMake(100 + ((KScreenWidth - 110) / 2.0), 0, (KScreenWidth - 110) / 2.0, 40);
+                Label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+                Label.textColor = [UIColor redColor];
+            }
+            [_MykucuntotalView addSubview:Label];
+        }
+    }
+    return _MykucuntotalView;
 }
 
 - (void)viewDidLoad {
@@ -71,6 +124,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -98,7 +156,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     if (self.KucunSearchController.active) {
-        return _KucunSearchNames.count;
+        return _newkucunDatalist.count;
     } else {
         return _Kucundatalist.count;
     }
@@ -108,8 +166,8 @@
 {
     NSString *string = [NSString stringWithFormat:@"%ld",(long)section];
     if ([_selectkucunSection containsObject:string]) {
-        UIImageView *loadView = (UIImageView *)[_KucunTableview viewWithTag:4100 + section];
-        loadView.image = [UIImage imageNamed:@"btn_jiantou_n"];
+        UIImageView *loadView = (UIImageView *)[_KucunTableview.tableHeaderView viewWithTag:4180 + section];
+        loadView.image =[UIImage imageNamed:@"btn_jiantou_n"];
         return 1;
     } else {
         return 0;
@@ -119,12 +177,15 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 60;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 85;
+    NSString *indexStr = [NSString stringWithFormat:@"%ld",(long)indexPath.section];
+    NSMutableDictionary *dic = [_mykucunDic objectForKey:indexStr];
+    CGFloat height = [[dic valueForKey:@"rowheight"] floatValue];
+    return height;
 }
 
 
@@ -166,25 +227,23 @@
 }
 
 
-
-
-
 #pragma mark - 标题视图
 - (UIView *)creatTableviewWithMutableArray:(NSMutableArray *)mutableArray Section:(long)section
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 40)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 60)];
     view.backgroundColor = GrayColor;
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 30, 20)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 30, 20)];
     imageView.image = [UIImage imageNamed:@"btn_chanpin_h"];
     [view addSubview:imageView];
     
-    UILabel *companyTitle = [[UILabel alloc] initWithFrame:CGRectMake(60, 5, KScreenWidth - 180, 30)];
+    UILabel *companyTitle = [[UILabel alloc] initWithFrame:CGRectMake(60, 15, KScreenWidth - 180, 30)];
     companyTitle.text = [mutableArray[section] valueForKey:@"col1"];
     [view addSubview:companyTitle];
     
-    UIImageView *selectView = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 30, 10, 20, 20)];
+    UIImageView *selectView = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 30, 20, 20, 20)];
     NSString *string = [NSString stringWithFormat:@"%ld",(long)section];
+    selectView.tag = 4180 + section;
     if ([_selectkucunSection containsObject:string]) {
         selectView.image = [UIImage imageNamed:@"btn_jiantou_n"];
     } else {
@@ -193,18 +252,18 @@
     [view addSubview:selectView];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(0, 0, KScreenWidth, 40);
+    button.frame = CGRectMake(0, 0, KScreenWidth, 60);
     button.tag = 4100 + section;
     [button addTarget:self action:@selector(leadmykucunSectionData:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:button];
     
     
-    UILabel *Label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 100, 5, 60, 30)];
+    UILabel *Label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 100, 15, 60, 30)];
     Label.text = [NSString stringWithFormat:@"%@个",[mutableArray[section] valueForKey:@"col2"]];
     [view addSubview:Label];
     
     
-    UIView *lowLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 39, KScreenWidth, 1)];
+    UIView *lowLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 59, KScreenWidth, 1)];
     lowLineView.backgroundColor = LineColor;
     [view addSubview:lowLineView];
     
@@ -233,15 +292,21 @@
         dispatch_group_t grouped = dispatch_group_create();
         
         [_selectkucunSection addObject:string];
-        
-        [self getkucunDetailWithArray:array Section:string group:grouped];
+        NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+        NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+        for (NSDictionary *dic in qxList) {
+            if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_mykc"]) {
+                if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                    [self getkucunDetailWithArray:array Section:string group:grouped];
+                } else {
+                    [self writeWithName:@"您没有查看我的库存详情的权限"];
+                }
+            }
+        }
         dispatch_group_notify(grouped, dispatch_get_main_queue(), ^{
             [_KucunTableview reloadData];
-            
         });
-        
     }
-    
 }
 
 
@@ -271,15 +336,20 @@
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *mykucunURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_mykucun];
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:mykucunURL params:nil success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         _Kucundatalist = [KucunModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_Kucundatalist.count == 0) {
             _KucunTableview.hidden = YES;
+            _MykucuntotalView.hidden = YES;
             _NokucunView.hidden = NO;
         } else {
             _NokucunView.hidden = YES;
             _KucunTableview.hidden = NO;
+            [self MykucuntotalView];
+            _MykucuntotalView.hidden = NO;
+            NSArray *sortkucunArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col1" ascending:NO]];
+            [_Kucundatalist sortUsingDescriptors:sortkucunArray];
             
             [_KucunTableview reloadData];
 
@@ -309,7 +379,7 @@
     NSNumber *spdm = [[array objectAtIndex:[section longLongValue]] valueForKey:@"col0"];
     [params setObject:spdm forKey:@"spdm"];
     dispatch_group_enter(group);
-
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:mykucunDetailURL params:params success:^(id responseObject) {
         NSLog(@"我的");
         NSMutableDictionary *kucundetailDic = [NSMutableDictionary dictionaryWithDictionary:responseObject[@"vo"]];
@@ -319,6 +389,16 @@
         
         [kucundetailDic setObject:@(junjia) forKey:@"zongjunjia"];
         [kucundetailDic setObject:jine forKey:@"zongjine"];
+        
+        //增加高度参数
+        CGFloat rowhight;
+        if ([[kucundetailDic valueForKey:@"zgsl"] integerValue] == 0 && [[kucundetailDic valueForKey:@"zdsl"] integerValue] == 0) {
+            rowhight = 30;
+        } else {
+            rowhight = 85;
+        }
+        [kucundetailDic setObject:@(rowhight) forKey:@"rowheight"];
+        
         [_mykucunDic setObject:kucundetailDic forKey:section];
         dispatch_group_leave(group);
     } failure:^(NSError *error) {
@@ -334,6 +414,7 @@
     [self.KucunSearchNames removeAllObjects];
     [self.mykucunDic removeAllObjects];
     [self.selectkucunSection removeAllObjects];
+    [self.newkucunDatalist removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.KucunSearchController.searchBar.text];
     self.KucunSearchNames = [[self.KucunNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
@@ -345,7 +426,6 @@
             }
         }
     }
-    
     [_KucunTableview reloadData];
     
 }

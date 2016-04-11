@@ -24,7 +24,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        _imageview = [[UIImageView alloc] initWithFrame:CGRectMake(20, 15, 24, 20)];
+        _imageview = [[UIImageView alloc] initWithFrame:CGRectMake(20, 15, 22, 20)];
         [self.contentView addSubview:_imageview];
         
         _label = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, KScreenWidth - 100, 30)];
@@ -37,12 +37,8 @@
 {
     [super layoutSubviews];
     
-    if (_isStore) {
-        _imageview.image = [UIImage imageNamed:@"btn_mendian_h"];
-    } else {
-        _imageview.image = [UIImage imageNamed:@"bth_ren_h"];
-    }
-    
+    _imageview.image = [UIImage imageNamed:@"btn_mendian_h"];
+      
     _label.text = [_dic valueForKey:@"name"];
 }
 @end

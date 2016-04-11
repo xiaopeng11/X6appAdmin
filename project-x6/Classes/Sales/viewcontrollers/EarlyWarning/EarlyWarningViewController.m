@@ -19,6 +19,9 @@
 {
     NSMutableArray *datalist;
     UITableView *_tableview;
+    
+    UIView *_wraningView;
+    UILabel *_wraningNumLabel;
 }
 
 @end
@@ -51,6 +54,23 @@
     _tableview.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:_tableview];
     
+    for (int i = 0; i < 4; i++) {
+        _wraningView = [[UIView alloc] initWithFrame:CGRectMake((KScreenWidth - 130) / 2.0 + 105, 15 + 60 * i, 20, 20)];
+        _wraningView.backgroundColor = [UIColor redColor];
+        _wraningView.clipsToBounds = YES;
+        _wraningView.layer.cornerRadius = 10;
+        _wraningView.hidden = YES;
+        _wraningView.tag = 60010 + i;
+        [_tableview addSubview:_wraningView];
+        
+        _wraningNumLabel = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 130) / 2.0 + 105, 15 + 60 * i, 20, 20)];
+        _wraningNumLabel.textColor = [UIColor whiteColor];
+        _wraningNumLabel.textAlignment = NSTextAlignmentCenter;
+        _wraningNumLabel.font = [UIFont systemFontOfSize:10];
+        _wraningNumLabel.tag = 60020 + i;
+        _wraningNumLabel.hidden = YES;
+        [_tableview addSubview:_wraningNumLabel];
+    }
   
 }
 
@@ -66,6 +86,7 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -119,8 +140,7 @@
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *EarlyWarningNumURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_EarlyWarningNumber];
-    
-    
+
     dispatch_group_t warninggroup = dispatch_group_create();
     NSArray *txlx = @[@"CKYC",@"KLYJ",@"CGYC",@"LSYC"];
     for (int i = 0; i < txlx.count; i++) {
@@ -128,26 +148,30 @@
         [params setObject:txlx[i] forKey:@"txlx"];
         dispatch_group_enter(warninggroup);
         [XPHTTPRequestTool requestMothedWithPost:EarlyWarningNumURL params:params success:^(id responseObject) {
-            NSLog(@"%@",responseObject);
             if ([responseObject[@"type"] isEqualToString:@"success"]) {
-                NSMutableDictionary *dic = [datalist objectAtIndex:i];
+                _wraningView = (UIView *)[_tableview viewWithTag:60010 + i];
+                _wraningNumLabel = (UILabel *)[_tableview viewWithTag:60020 + i];
                 if ([responseObject[@"message"] integerValue] == 0) {
-                    [dic setObject:@"no" forKey:@"ycNum"];
+                    _wraningNumLabel.hidden = YES;
+                    _wraningView.hidden = YES;
                 } else {
                     NSString *num = [NSString stringWithFormat:@"%@",responseObject[@"message"]];
-                    [dic setObject:num forKey:@"ycNum"];
+                    _wraningNumLabel.hidden = NO;
+                    _wraningView.hidden = NO;
+                    if ([num longLongValue] > 99) {
+                        _wraningNumLabel.text = @"99+";
+                    } else {
+                        _wraningNumLabel.text = num;
+                    }
                 }
-                [datalist replaceObjectAtIndex:i withObject:dic];
             }
             dispatch_group_leave(warninggroup);
         } failure:^(NSError *error) {
             dispatch_group_leave(warninggroup);
-            NSLog(@"获取条数失败%d",i);
         }];
     }
    
     dispatch_group_notify(warninggroup, dispatch_get_main_queue(), ^{
-        NSLog(@"%@",datalist);
         [_tableview reloadData];
     });
     

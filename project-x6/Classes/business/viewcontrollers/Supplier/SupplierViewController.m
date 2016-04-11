@@ -15,6 +15,7 @@
 #import "CustomerModel.h"
 #import "SupplierModel.h"
 
+#import "ChineseString.h"
 
 @interface SupplierViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchResultsUpdating,UISearchBarDelegate>
 @property(nonatomic,strong)UITableView *SupplierTableview;                 //供应商表示图
@@ -28,6 +29,9 @@
 @property(nonatomic,strong)NSMutableArray *SupplierSearchNames;
 @property(nonatomic,copy)NSMutableArray *newsupplierDatalist;
 @property(nonatomic, strong)UISearchController *SupplierSearchController;
+
+@property(nonatomic,copy)NSMutableArray *Suppliersections;          //获取右侧提示文本数据
+@property(nonatomic,copy)NSMutableArray *SuppliersectionDatalist;   //数据按照首字母分类
 @end
 
 @implementation SupplierViewController
@@ -49,11 +53,17 @@
     _newsupplierDatalist = [NSMutableArray array];
     
 
+
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -63,17 +73,18 @@
     _SupplierSearchController.searchBar.hidden = NO;
     
     [self getsupplierDataWithSupplier:_issupplier];
-
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    if (_SupplierSearchController.active) {
-        [_SupplierSearchController resignFirstResponder];
+    if ([_SupplierSearchController.searchBar isFirstResponder]) {
+        [_SupplierSearchController.searchBar resignFirstResponder];
     }
     _SupplierSearchController.searchBar.hidden = YES;
 }
+
 #pragma mark - 绘制UI
 - (void)initsupplierUI
 {
@@ -132,14 +143,46 @@
 }
 
 #pragma mark - UITableViewDelegate
+//组的数量
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if (self.SupplierSearchController.active) {
+        return 1;
+    } else {
+        return _Suppliersections.count;
+    }
+}
+
+//每一组的条数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.SupplierSearchController.active) {
         return _newsupplierDatalist.count;
     } else {
-        return _supplierDatalist.count;
+        return [[_SuppliersectionDatalist objectAtIndex:section] count];
     }
 }
+
+///右侧提示文本
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    if (!self.SupplierSearchController.active) {
+        return _Suppliersections;
+    } else {
+        return nil;
+    }
+}
+
+//组名
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (!self.SupplierSearchController.active) {
+        return _Suppliersections[section];
+    } else {
+        return nil;
+    }
+}
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -157,7 +200,12 @@
     if (self.SupplierSearchController.active) {
         cell.dic = _newsupplierDatalist[indexPath.row];
     } else {
-        cell.dic = _supplierDatalist[indexPath.row];
+        NSString *name = [[_SuppliersectionDatalist objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+        for (NSDictionary *dic in _supplierDatalist) {
+            if ([[dic valueForKey:@"name"] isEqualToString:name]) {
+                cell.dic = dic;
+            }
+        }
     }
     cell.issupplier = _issupplier;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -172,7 +220,12 @@
     if (self.SupplierSearchController.active) {
         addSupplier.supplierdic = _newsupplierDatalist[indexPath.row];
     } else {
-        addSupplier.supplierdic = _supplierDatalist[indexPath.row];
+        NSString *name = [[_SuppliersectionDatalist objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+        for (NSDictionary *dic in _supplierDatalist) {
+            if ([[dic valueForKey:@"name"] isEqualToString:name]) {
+                addSupplier.supplierdic = dic;
+            }
+        }
     }
     addSupplier.issupplier = _issupplier;
     [self.navigationController pushViewController:addSupplier animated:YES];
@@ -182,7 +235,7 @@
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.SupplierSearchNames removeAllObjects];
-    
+    [_newsupplierDatalist removeAllObjects];
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.SupplierSearchController.searchBar.text];
     self.SupplierSearchNames = [[self.SupplierNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
     
@@ -209,15 +262,14 @@
     } else {
         supplierORcostumerURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_customer];
     }
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:supplierORcostumerURL params:nil success:^(id responseObject) {
         if (_SupplierTableview.header.isRefreshing) {
             [_SupplierTableview.header endRefreshing];
         }
         if (supplier == YES) {
-            NSLog(@"供应商数据获取%@",responseObject);
             _supplierDatalist = [SupplierModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         } else {
-            NSLog(@"客户数据获取%@",responseObject);
             _supplierDatalist = [CustomerModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         }
         
@@ -230,11 +282,15 @@
             _NoSupplierView.hidden = YES;
             _SupplierTableview.hidden = NO;
             _SupplierSearchController.searchBar.hidden = NO;
-            [_SupplierTableview reloadData];
             
+            [_SupplierNames removeAllObjects];
             for (NSDictionary *dic in _supplierDatalist) {
                 [_SupplierNames addObject:[dic valueForKey:@"name"]];
             }
+            
+            _Suppliersections = [ChineseString IndexArray:_SupplierNames];    //右侧的提示文本
+            _SuppliersectionDatalist = [ChineseString LetterSortArray:_SupplierNames];    //数据分类
+            [_SupplierTableview reloadData];
         }
     } failure:^(NSError *error) {
         NSLog(@"数据失败");

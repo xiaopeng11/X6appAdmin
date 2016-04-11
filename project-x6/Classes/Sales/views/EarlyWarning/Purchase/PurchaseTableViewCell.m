@@ -27,7 +27,7 @@
         self.backgroundColor = GrayColor;
         
         
-        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 210)];
+        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 190)];
         _bgView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:_bgView];
         
@@ -35,7 +35,7 @@
         [_bgView addSubview:_rkdhImageView];
         
         _rkdhLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, KScreenWidth - 40 - 130, 20)];
-        _rkdhLabel.font = [UIFont systemFontOfSize:16];
+        _rkdhLabel.font = [UIFont systemFontOfSize:14];
         [_bgView addSubview:_rkdhLabel];
         
         _dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 120, 10, 100, 20)];
@@ -49,14 +49,29 @@
         _gysImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 51, 20, 16)];
         [_bgView addSubview:_gysImageView];
         
-        _gysLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, (KScreenWidth - 80) / 2.0, 20)];
+        _gysLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, KScreenWidth - 60, 20)];
         _gysLabel.font = [UIFont systemFontOfSize:14];
         [_bgView addSubview:_gysLabel];
         
         for (int i = 0; i < 5; i++) {
-            _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 80 + 20 * i, KScreenWidth - 120, 20)];
+            _messageLabel = [[UILabel alloc] init];
+            if (i < 4) {
+                _nameLabel = [[UILabel alloc] init];
+                _nameLabel.font = [UIFont systemFontOfSize:13];
+                _nameLabel.frame = CGRectMake(50, 80 + 20 * i, 30, 20);
+                _messageLabel.frame = CGRectMake(80, 80 + 20 * i, KScreenWidth - 100, 20);
+                _nameLabel.tag = 4660 + i;
+                [_bgView addSubview:_nameLabel];
+            } else {
+                _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 80 + 20 * i, KScreenWidth - 120, 20)];
+            }
+            if (i == 2 || i == 3) {
+                _messageLabel.textColor = [UIColor redColor];
+            } else if (i == 1) {
+                _messageLabel.textColor = Mycolor;
+            }
             _messageLabel.tag = 4650 + i;
-            _messageLabel.font = [UIFont systemFontOfSize:14];
+            _messageLabel.font = [UIFont systemFontOfSize:13];
             [_bgView addSubview:_messageLabel];
         }
         
@@ -70,7 +85,7 @@
     
     _rkdhImageView.image = [UIImage imageNamed:@"bth_danhao_n"];
     
-    _rkdhLabel.text = [NSString stringWithFormat:@"入库单号:%@",[_dic valueForKey:@"col1"]];
+    _rkdhLabel.text = [NSString stringWithFormat:@"单号:%@",[_dic valueForKey:@"col1"]];
     
     _dateLabel.text = [NSString stringWithFormat:@"日期:%@",[_dic valueForKey:@"col2"]];
     
@@ -87,17 +102,23 @@
     }
     
     for (int i = 0; i < 5; i++) {
-        _messageLabel = [_bgView viewWithTag:4650 + i];
+        _messageLabel = (UILabel *)[_bgView viewWithTag:4650 + i];
+        _nameLabel = (UILabel *)[_bgView viewWithTag:4660 + i];
+
         if (i == 0) {
-            _messageLabel.text = [NSString stringWithFormat:@"商品:%@",[_dic valueForKey:@"col4"]];
+            _nameLabel.text = @"商品:";
+            _messageLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col4"]];
         } else if (i == 1) {
-            _messageLabel.text = [NSString stringWithFormat:@"数量:%@",[_dic valueForKey:@"col5"]];
+            _nameLabel.text = @"数量:";
+            _messageLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col5"]];
         } else if (i == 2) {
-            _messageLabel.text = [NSString stringWithFormat:@"单价:%@",[_dic valueForKey:@"col6"]];
+            _nameLabel.text = @"单价:";
+            _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col6"]];
         } else if (i == 3) {
-            _messageLabel.text = [NSString stringWithFormat:@"金额:%@",[_dic valueForKey:@"col7"]];
+            _nameLabel.text = @"金额:";
+            _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col7"]];
         } else if (i == 4) {
-            _messageLabel.text = [NSString stringWithFormat:@"高于最近进价:%.0f％",pencet];
+            _messageLabel.text = [NSString stringWithFormat:@"高于最近进价:￥%.0f％",pencet];
         }
     }
     

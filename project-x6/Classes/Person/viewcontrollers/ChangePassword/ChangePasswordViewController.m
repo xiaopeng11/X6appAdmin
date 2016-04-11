@@ -62,7 +62,7 @@
         
         
         UIView *imaline = [[UIView alloc] initWithFrame:CGRectMake(20, 49, KScreenWidth - 30, 1)];
-        imaline.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.6];
+        imaline.backgroundColor = LineColor;
         [bgview addSubview:imaline];
     }
     
@@ -116,7 +116,7 @@
             [alertcontroller addAction:okaction];
             [self presentViewController:alertcontroller animated:YES completion:nil];
         } failure:^(NSError *error) {
-            [BasicControls showNDKNotifyWithMsg:@"密码修改失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
+//            [BasicControls showNDKNotifyWithMsg:@"密码修改失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
         }];
         
     }

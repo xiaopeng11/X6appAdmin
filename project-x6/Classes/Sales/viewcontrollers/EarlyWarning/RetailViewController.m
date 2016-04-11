@@ -32,6 +32,14 @@
 
 @implementation RetailViewController
 
+- (void)dealloc
+{
+    _ReatilNames = nil;
+    _ReatilSearchNames = nil;
+    _NewReatilDatalist = nil;
+    _ReatilDatalist = nil;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -53,9 +61,19 @@
     [super viewWillAppear:animated];
     
     [_ReatilSearchController.searchBar setHidden:NO];
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]) {
+            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                //获取数据
+                [self getRetailDatalist];
+            } else {
+                [self writeWithName:@"您没有查看零售异常详情的权限"];
+            }
+        }
+    }
     
-    
-    [self getRetailDatalist];
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self cleanRetailWarningNumber];
@@ -76,6 +94,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 #pragma mark - UITableViewDelegate
@@ -90,7 +113,14 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 220;
+    
+    CGFloat height;
+    if (self.ReatilSearchController.active) {
+        height = [[_NewReatilDatalist[indexPath.row] valueForKey:@"frame"] floatValue];
+    } else {
+        height = [[_ReatilDatalist[indexPath.row] valueForKey:@"frame"] floatValue];
+    }
+    return height;
 }
 
 #pragma mark - UITableViewDataSource
@@ -211,10 +241,8 @@
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *RetailURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Retail];
 
-    
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:RetailURL params:nil success:^(id responseObject) {
-        NSLog(@"零售异常数据%@",responseObject);
-
         _ReatilDatalist = [RetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         
         if (_ReatilDatalist.count == 0) {
@@ -233,6 +261,11 @@
             _noRetailView.hidden = YES;
             _RetailTabelView.hidden = NO;
             _ReatilSearchController.searchBar.hidden = NO;
+            NSArray *ReatilArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col1" ascending:NO]];
+            [_ReatilDatalist sortUsingDescriptors:ReatilArray];
+            
+            _ReatilDatalist = [self loadframeKeyWithDatalist:_ReatilDatalist];
+            
             [_RetailTabelView reloadData];
             
             for (NSDictionary *dic in _ReatilDatalist) {
@@ -265,5 +298,30 @@
     }];
 }
 
+
+- (NSMutableArray *)loadframeKeyWithDatalist:(NSMutableArray *)datalist
+{
+    NSMutableArray *array = [NSMutableArray array];
+    //计算动态高度
+    //计算文本高度
+    for (NSDictionary *dic in datalist) {
+        float height = 40 + 40 + 10;
+        
+        NSMutableDictionary *data = [NSMutableDictionary dictionaryWithDictionary:dic];
+        
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14]};
+        CGRect rect = [[dic valueForKey:@"col6"] boundingRectWithSize:CGSizeMake(KScreenWidth - 120, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesFontLeading attributes:attributes context:nil];
+        
+        if (rect.size.height > 20) {
+            height += 40 + 20 * 4 + 10;
+        } else {
+            height += 20 * 5 + 10;
+        }
+        data[@"frame"] = @(height);
+        [array addObject:data];
+
+    }
+    return array;
+}
 
 @end

@@ -47,14 +47,12 @@
     NSString *companyString = [dic objectForKey:@"gsdm"];
     NSString *headerURL = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[_dic objectForKey:@"col1"]];
     _headerImageView.frame = CGRectMake(20, 5, 30, 30);
-    [_headerImageView sd_setImageWithURL:[NSURL URLWithString:headerURL] placeholderImage:[UIImage imageNamed:@""]];
+    [_headerImageView sd_setImageWithURL:[NSURL URLWithString:headerURL] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
     
     _cornView.frame = CGRectMake(20, 5, 30, 30);
     _cornView.image = [UIImage imageNamed:@"corner_circle"];
     
     _label.frame = CGRectMake(70, 10, KScreenWidth - 70 - 10, 20);
     _label.text = [NSString stringWithFormat:@"%@:异常%@次",[_dic valueForKey:@"col0"],[_dic valueForKey:@"col2"]];
-
-
 }
 @end

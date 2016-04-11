@@ -27,9 +27,10 @@
 #import "ConversationListController.h"
 
 
+
 static const CGFloat kDefaultPlaySoundInterval = 3.0;
 
-@interface StockViewController ()<IChatManagerDelegate,UITableViewDelegate,UITableViewDataSource,UISearchResultsUpdating>
+@interface StockViewController ()<IChatManagerDelegate,UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate>
 
 {
     UITableView *_tableView;   //联系人页面
@@ -52,36 +53,39 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 @property(nonatomic,copy)NSMutableArray *sections;          //获取右侧提示文本数据
 @property(nonatomic,copy)NSMutableArray *sectionDatalist;   //数据按照首字母分类
 @property(nonatomic,strong)NSMutableArray *newdatalist;       //搜索后的数据
-@property(nonatomic,strong)UISearchController *searchController;
-@property(nonatomic,strong)NSArray *selectpersonArray;          //选中的联系人
+@property (strong, nonatomic)UISearchBar *stocksearchBar;
 
+@property(nonatomic,strong)NSArray *selectpersonArray;          //选中的联系人
 @property(nonatomic,copy)NSMutableArray *personsList;
 
 @end
 
 @implementation StockViewController
+
+
 - (void)dealloc
 {
     [self unregisterNotifications];
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self naviTitleWhiteColorWithText:@"联系人"];
-
+    
     // 初始化子视图
     [self initSubViews];
- 
+    
     //获取数据
     [self getPersonsData];
-
+    
     if (_type == YES) {
         self.selectPersons = YES;
     } else {
         //添加会话按钮
         _contactList = [UIButton buttonWithType:UIButtonTypeCustom];
-        _contactList.frame = CGRectMake(0, 27, 26, 22);
+        _contactList.frame = CGRectMake(0, 27, 27, 21);
         [_contactList setBackgroundImage:[UIImage imageNamed:@"btn_xixiaotixing_n"] forState:UIControlStateNormal];
         [_contactList addTarget:self action:@selector(contactList:) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_contactList];
@@ -90,7 +94,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     
     [self registerNotifications];
     [self setupUnreadMessageCount];
- 
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -102,39 +106,41 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     //显示搜索框
-    [_searchController.searchBar setHidden:NO];
+    _stocksearchBar.hidden = NO;
+    
+    NSLog(@"联系人%@",self.view.subviews);
+    
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
+
+
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    _stocksearchBar.hidden = YES;
     
     //移除键盘
-    if ([_searchController.searchBar isFirstResponder]) {
-         [_searchController.searchBar resignFirstResponder];
-        
+    if ([_stocksearchBar isFirstResponder]) {
+        [_stocksearchBar resignFirstResponder];
     }
-
     //隐藏搜索框
-    [_searchController.searchBar setHidden:YES];
+    NSLog(@"联系人页面移除");
+    
 }
 #pragma mark - 初始化子视图
 - (void)initSubViews
 {
-    _searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
-    _searchController.searchBar.frame = CGRectMake(0, 0, KScreenWidth, 44);
-    _searchController.searchResultsUpdater = self;
-    _searchController.dimsBackgroundDuringPresentation = NO;
-    self.searchController.hidesNavigationBarDuringPresentation = NO;
-    _searchController.searchBar.placeholder = @"搜索";
-    [_searchController.searchBar sizeToFit];
-    [self.view addSubview:_searchController.searchBar];
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    _stocksearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 44)];
+    _stocksearchBar.delegate = self;
+    _stocksearchBar.placeholder = @"搜索";
+    _stocksearchBar.showsScopeBar = YES;
+    _stocksearchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    [self.view addSubview:_stocksearchBar];
     
     NSArray *feileiTitle = nil;
     NSArray *buttonImages = nil;
@@ -148,11 +154,9 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         feileiTitle = @[@"按岗位",@"按公司框架",@"群组"];
         buttonImages = @[@"btn_gangwei_h",@"btn_kuangjia_h",@"btn_qun_h"];
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 49 - 44) style:UITableViewStylePlain];
-        [_tableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(stockHead)];
-
+        [_tableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(getPersonsData)];
+        
     }
-    _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    
     //添加分类
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 50 * feileiTitle.count)];
     for (int i = 0; i < feileiTitle.count; i++) {
@@ -176,10 +180,12 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         }
         
     }
-
- //联系人页面
+    
+    //联系人页面
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
     [self.view addSubview:_tableView];
     
     _tableView.tableHeaderView = view;
@@ -187,19 +193,71 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 }
 
 
-#pragma mark - 刷新按钮
-- (void)stockHead
+#pragma mark - UISearchBarDelegate
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
 {
-    [self getPersonsData];
+    [searchBar setShowsCancelButton:YES animated:YES];
+    for (id view in [_stocksearchBar subviews]) {
+        if ([view isKindOfClass:[UIButton class]]) {
+            UIButton *button = (UIButton *)view;
+            [button setTitle:@"取消" forState:UIControlStateNormal];
+        }
+    }
+    return YES;
 }
+
+- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar
+{
+    return YES;
+}
+
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+{
+    [self.newdatalist removeAllObjects];
+    
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    [self.newdatalist removeAllObjects];
+    if (searchBar.text.length == 0) {
+        self.newdatalist = [_datalist mutableCopy];
+    }
+    
+    NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", _stocksearchBar.text];
+    self.newdatalist = [[_nameArray filteredArrayUsingPredicate:searchPredicate] mutableCopy];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_tableView reloadData];
+    });
+}
+
+
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    [self.newdatalist removeAllObjects];
+    self.stocksearchBar.text = @"";
+    [self.stocksearchBar resignFirstResponder];
+    
+    [self.stocksearchBar setShowsCancelButton:NO animated:NO];
+    
+    [_tableView reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [self.stocksearchBar resignFirstResponder];
+}
+
 
 
 
 #pragma mark - 分类按钮
 - (void)PersonbuttonAction:(UIButton *)button
 {
-    if (self.searchController.active) {
-        [self.searchController.searchBar resignFirstResponder];
+    if ([_stocksearchBar isFirstResponder]) {
+        [_stocksearchBar resignFirstResponder];
     }
     
     if (_type == YES) {
@@ -239,22 +297,12 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     }
 }
 
-#pragma mark - UISearchResultsUpdating
-- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
-{
-    [self.newdatalist removeAllObjects];
-    NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.searchController.searchBar.text];
-    self.newdatalist = [[_nameArray filteredArrayUsingPredicate:searchPredicate] mutableCopy];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [_tableView reloadData];
-    });
-}
 
 #pragma mark - UITableViewDataSource
 //组的数量
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (!self.searchController.active) {
+    if (![_stocksearchBar isFirstResponder]) {
         return _sections.count;
     } else {
         return 1;
@@ -264,7 +312,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 ///右侧提示文本
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    if (!self.searchController.active) {
+    if (![_stocksearchBar isFirstResponder]) {
         return _sections;
     } else {
         return nil;
@@ -274,7 +322,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 //组名
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (!self.searchController.active) {
+    if (![_stocksearchBar isFirstResponder]) {
         return _sections[section];
     } else {
         return nil;
@@ -284,7 +332,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 //每一组的条数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (!self.searchController.active) {
+    if (![_stocksearchBar isFirstResponder]) {
         return [[_sectionDatalist objectAtIndex:section] count];
     } else {
         return _newdatalist.count;
@@ -304,7 +352,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     cell.datalist = _datalist;
     cell.comdatalist = _kuangjiadatalist;
     //文本
-    if (!self.searchController.active) {
+    if (![_stocksearchBar isFirstResponder]) {
         cell.name = [[_sectionDatalist objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
         
     } else {
@@ -320,12 +368,12 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 {
     if (_type == YES) {
         _selectpersonArray = [NSMutableArray array];
-        
+   
     } else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         HeaderViewController *headerVC = [[HeaderViewController alloc] init];
         headerVC.type = YES;
-        if (self.searchController.active) {
+        if ([_stocksearchBar isFirstResponder]) {
             for (NSDictionary *dic in _datalist) {
                 if ([[dic valueForKey:@"name"] isEqualToString:_newdatalist[indexPath.row]]) {
                     headerVC.dic = dic;
@@ -351,10 +399,15 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 #pragma mark - 获取联系人的数据
 - (void)getPersonsData
 {
+    if ([_stocksearchBar isFirstResponder]) {
+        [_stocksearchBar resignFirstResponder];
+    }
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *personsURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_persons];
-    [GiFHUD show];
+    if (!_tableView.header.isRefreshing) {
+        [GiFHUD show];
+    }
     [XPHTTPRequestTool requestMothedWithPost:personsURL params:nil success:^(id responseObject) {
         
         if (_tableView.header.isRefreshing) {
@@ -366,12 +419,14 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
             _gwdatalist = [GwModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"gwList"]];
             _kuangjiadatalist = [kuangjiaModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"gsList"]];
             
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                //将数据写入本地
-                [self writeContactListData];
-                
-            });
-            
+            NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+            if ([userdefaults objectForKey:X6_Contactlist] == NULL) {
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                    //将数据写入本地
+                    [self writeContactListData];
+                    
+                });
+            }
             //获取姓名数据
             _nameArray = [NSMutableArray array];
             for (NSDictionary *dic in _datalist) {
@@ -385,9 +440,9 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         }
         
     } failure:^(NSError *error) {
-        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+//        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
-
+    
 }
 
 - (void)networkChanged:(EMConnectionState)connectionState
@@ -402,16 +457,18 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
     NSString *gsdm = [[userdefaults objectForKey:X6_UserMessage] valueForKey:@"gsdm"];
     NSMutableArray *huanxinContacts = [NSMutableArray array];
-
+    
     for (NSDictionary *dic in _datalist) {
         @autoreleasepool {
-            NSString *easeID = [NSString stringWithFormat:@"%@%@",gsdm,[dic valueForKey:@"phone"]];
-            NSString *headerURLString;
+            NSString *headerURLString,*easeID;
             if ([[dic valueForKey:@"usertype"] intValue] == 0) {
                 headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,[dic valueForKey:@"userpic"]];
             } else {
                 headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,gsdm,[dic valueForKey:@"userpic"]];
             }
+            
+            easeID = [NSString stringWithFormat:@"%@%@%@",gsdm,[dic valueForKey:@"usertype"],[dic valueForKey:@"phone"]];
+            
             NSString *easeNickName = [dic valueForKey:@"name"];
             NSNumber *hxflag = [dic valueForKey:@"hxflag"];
             NSMutableDictionary *FBdic = [NSMutableDictionary dictionary];
@@ -422,6 +479,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
             [huanxinContacts addObject:FBdic];
         }
     }
+    
     [userdefaults setObject:huanxinContacts forKey:X6_Contactlist];
     [userdefaults synchronize];
     
@@ -433,20 +491,19 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 {
     //确定联系人列表
     //判断岗位列表和公司框架列表
-
+    
     _selectpersonArray = [NSArray array];
     _selectpersonArray = [_tableView indexPathsForSelectedRows];
-  
     //处理数据
     _personsList = [NSMutableArray array];
     if (_replytype == NO) {
-        if (self.searchController.active) {
+        if ([_stocksearchBar isFirstResponder]) {
             [self getPersondatalistWithArray:_newdatalist Section:YES];
         } else {
             [self getPersondatalistWithArray:_sectionDatalist Section:NO];
         }
     } else {
-        if (_searchController.active) {
+        if ([_stocksearchBar isFirstResponder]) {
             for (NSIndexPath *indec in _selectpersonArray) {
                 NSString *name = _newdatalist[indec.row];
                 [_personsList addObject:name];
@@ -459,7 +516,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         }
         
     }
-   
+    
     if (_personsList.count != 0) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stockList" object:_personsList];
     }
@@ -525,33 +582,33 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         notification.fireDate = [NSDate date];  //出发通知事件
         //        notification.timeZone = [NSTimeZone defaultTimeZone];
         if (options.displayStyle == ePushNotificationDisplayStyle_messageSummary) {
-//            id<IEMMessageBody>messageBody = [message.messageBodies firstObject];
-
-//            NSString *messageStr;
-//            switch (messageBody.messageBodyType) {
-//                case eMessageBodyType_Text:
-//                {
-//                    messageStr = ((EMTextMessageBody *)messageBody).text;
-//                }
-//                    break;
-//                case eMessageBodyType_Image:
-//                {
-//                    messageStr = NSLocalizedString(@"message.image", @"Image");
-//                }
-//                    break;
-//                case eMessageBodyType_Location:
-//                {
-//                    messageStr = NSLocalizedString(@"message.location", @"Location");
-//                }
-//                    break;
-//                case eMessageBodyType_Voice:
-//                {
-//                    messageStr = NSLocalizedString(@"message.voice", @"Voice");
-//                }
-//                    break;
-//                default:
-//                    break;
-//            }
+            //            id<IEMMessageBody>messageBody = [message.messageBodies firstObject];
+            
+            //            NSString *messageStr;
+            //            switch (messageBody.messageBodyType) {
+            //                case eMessageBodyType_Text:
+            //                {
+            //                    messageStr = ((EMTextMessageBody *)messageBody).text;
+            //                }
+            //                    break;
+            //                case eMessageBodyType_Image:
+            //                {
+            //                    messageStr = NSLocalizedString(@"message.image", @"Image");
+            //                }
+            //                    break;
+            //                case eMessageBodyType_Location:
+            //                {
+            //                    messageStr = NSLocalizedString(@"message.location", @"Location");
+            //                }
+            //                    break;
+            //                case eMessageBodyType_Voice:
+            //                {
+            //                    messageStr = NSLocalizedString(@"message.voice", @"Voice");
+            //                }
+            //                    break;
+            //                default:
+            //                    break;
+            //            }
             
             
             //        NSString *title = [[UserProfileManager sharedInstance] getNickNameWithUsername:message.from];
@@ -653,7 +710,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         }
         _label.hidden = NO;
         if (_unreadCantact == nil) {
-            _unreadCantact = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth / 4.0) + (KScreenWidth / 4.0) - 34, 5, 10, 10)];
+            _unreadCantact = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth / 5.0) * 2 - 24, 5, 10, 10)];
             _unreadCantact.image = [UIImage imageNamed:@"SmallPoint"];
             BaseTabBarViewController *centerVC = (BaseTabBarViewController *)self.navigationController.tabBarController;
             [centerVC.customTabBar addSubview:_unreadCantact];
@@ -664,14 +721,14 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         } else {
             _label.text = [NSString stringWithFormat:@"%d",(int)unreadCount];
         }
-       
+        
     } else if (unreadCount == 0) {
         _label.hidden = YES;
         if (_unreadCantact != nil) {
             _unreadCantact.hidden = YES;
         }
     }
-  
+    
     
     //未读消息数
     UIApplication *application = [UIApplication sharedApplication];
@@ -717,6 +774,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
                                                    delegate:nil
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
+    
     [alert show];
 }
 
@@ -727,8 +785,6 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     NSString *message = [NSString stringWithFormat:NSLocalizedString(@"group.agreedAndJoined", @"agreed to join the group of \'%@\'"), groupname];
     [self showHint:message];
 }
-
-
 
 #pragma mark - IChatManagerDelegate 登陆回调（主要用于监听自动登录是否成功）
 
@@ -746,8 +802,8 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         [alertView show];
         [_chatListVC isConnect:NO];
     } else {
-         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"login.endAutoLogin", @"End automatic login...") delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
-         [alertView show];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"login.endAutoLogin", @"End automatic login...") delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
+        [alertView show];
     }
 }
 

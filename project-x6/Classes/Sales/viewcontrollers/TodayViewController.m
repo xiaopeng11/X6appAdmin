@@ -14,14 +14,18 @@
 #import "TodaydetailModel.h"
 
 #import "TodayTableViewCell.h"
+
+#define todaywidth ((KScreenWidth - 135) / 5.0)
+
 @interface TodayViewController ()<UITextFieldDelegate,UITableViewDataSource,UITableViewDelegate,UISearchResultsUpdating,UISearchBarDelegate>
+
 {
     NSMutableArray *_selectSectionArray;                 //标题被选中数组
     XPDatePicker *_datepicker;                           //日期选择
 }
 
 @property(nonatomic,copy)NSString *dateString;            //今日日期
-@property(nonatomic,copy)NSArray *todayDatalist;          //今日战报门店数据
+@property(nonatomic,copy)NSMutableArray *todayDatalist;          //今日战报门店数据
 @property(nonatomic,copy)NSMutableDictionary *detailDic;
 @property(nonatomic,copy)NSArray *todayDetailDatalist;    //今日战报门店详情数据
 
@@ -60,6 +64,7 @@
         _TodayTableView.delegate = self;
         _TodayTableView.dataSource = self;
         _TodayTableView.allowsSelection = NO;
+        _TodayTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         [self.view addSubview:_TodayTableView];
     }
     return _TodayTableView;
@@ -69,26 +74,34 @@
 {
     if (_totalView == nil) {
         _totalView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 104, KScreenWidth, 40)];
-        _totalView.backgroundColor = [UIColor grayColor];
+        _totalView.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.2];
         [self.view addSubview:_totalView];
-        
-        long long totalNum = 0,totalMoney = 0,totalProfit = 0;
-        for (NSDictionary *dic in _todayDatalist) {
-            totalNum += [[dic valueForKey:@"col2"] longLongValue];
-            totalMoney += [[dic valueForKey:@"col3"] longLongValue];
-            totalProfit += [[dic valueForKey:@"col4"] longLongValue];
-        }
-        for (int i = 0; i < 3; i++) {
-            UILabel *Label = [[UILabel alloc] initWithFrame:CGRectMake(i * (KScreenWidth / 3.0), 0, KScreenWidth / 3.0, 40)];
-            Label.textAlignment = NSTextAlignmentCenter;
-            
+
+        for (int i = 0; i < 7; i++) {
+            UILabel *Label = [[UILabel alloc] init];
+            Label.font = [UIFont systemFontOfSize:13];
             if (i == 0) {
-                Label.text = [NSString stringWithFormat:@"总数量:%lld",totalNum];
+                Label.text = @"合计:";
+                Label.frame = CGRectMake(10, 0, 30, 40);
             } else if (i == 1) {
-                Label.text = [NSString stringWithFormat:@"总金额:%lld",totalMoney];
-            } else {
-                Label.text = [NSString stringWithFormat:@"总毛利:%lld",totalProfit];
+                Label.frame = CGRectMake(40, 0, 30, 40);
+                Label.text = @"数量:";
+            } else if (i == 2) {
+                Label.frame = CGRectMake(70, 0, todaywidth, 40);
+            } else if (i == 3) {
+                Label.frame = CGRectMake(70 + todaywidth, 0, 30, 40);
+                Label.text = @"金额:";
+            } else if (i == 4) {
+                Label.frame = CGRectMake(100 + todaywidth , 0, todaywidth * 2, 40);
+                Label.textColor = [UIColor redColor];
+            } else if (i == 5) {
+                Label.frame = CGRectMake(100 + todaywidth * 3, 0, 30, 40);
+                Label.text = @"毛利:";
+            } else if (i == 6) {
+                Label.frame = CGRectMake(130 + todaywidth * 3, 0, todaywidth * 2, 40);
+                Label.textColor = Mycolor;
             }
+            Label.tag = 4210 + i;
             [_totalView addSubview:Label];
         }
     }
@@ -99,6 +112,13 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeTodayData" object:nil];
+    _selectSectionArray = nil;
+    _todayDetailDatalist = nil;
+    _detailDic = nil;
+    _companyNames = nil;
+    _companSearchNames = nil;
+    _newtodayDatlist = nil;
+    _todayDatalist = nil;
 }
 
 - (void)viewDidLoad {
@@ -142,6 +162,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -238,7 +263,7 @@
 {
     NSString *string = [NSString stringWithFormat:@"%ld",(long)section];
     if ([_selectSectionArray containsObject:string]) {
-        UIImageView *loadView = (UIImageView *)[_TodayTableView viewWithTag:4200 + section];
+        UIImageView *loadView = (UIImageView *)[_TodayTableView.tableHeaderView viewWithTag:4200 + section];
         loadView.image = [UIImage imageNamed:@"btn_jiantou_n"];
         NSArray *sectionArray = [_detailDic objectForKey:string];
         return sectionArray.count;
@@ -296,7 +321,6 @@
     [params setObject:date forKey:@"fsrqz"];
     [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:todayURL params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         _todayDatalist = [TodayModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_todayDatalist.count == 0) {
             
@@ -309,8 +333,25 @@
         } else {
             _NotodayView.hidden = YES;
             _TodayTableView.hidden = NO;
+            NSArray *sorttodayArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col4" ascending:NO]];
+            [_todayDatalist sortUsingDescriptors:sorttodayArray];
             [_TodayTableView reloadData];
             [self totalView];
+            
+            long long totalNum = 0,totalMoney = 0,totalProfit = 0;
+            for (NSDictionary *dic in _todayDatalist) {
+                totalNum += [[dic valueForKey:@"col2"] longLongValue];
+                totalMoney += [[dic valueForKey:@"col3"] longLongValue];
+                totalProfit += [[dic valueForKey:@"col4"] longLongValue];
+            }
+            
+            UILabel *numlabel = (UILabel *)[_totalView viewWithTag:4212];
+            UILabel *jinelabel = (UILabel *)[_totalView viewWithTag:4214];
+            UILabel *maolilabel = (UILabel *)[_totalView viewWithTag:4216];
+            numlabel.text = [NSString stringWithFormat:@"%lld个",totalNum];
+            jinelabel.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+            maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+      
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *dic in _todayDatalist) {
                 [array addObject:[dic valueForKey:@"col1"]];
@@ -345,7 +386,6 @@
     dispatch_group_enter(group);
 
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         _todayDetailDatalist = [TodaydetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
         [_detailDic setObject:_todayDetailDatalist forKey:idnex];
@@ -389,8 +429,17 @@
         dispatch_group_t grouped = dispatch_group_create();
 
         [_selectSectionArray addObject:string];
-        
-        [self getYuanGongDataWithDate:_datepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
+        NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+        NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+        for (NSDictionary *dic in qxList) {
+            if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrzb"]) {
+                if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                    [self getYuanGongDataWithDate:_datepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
+                } else {
+                    [self writeWithName:@"您没有查看今日战报详情的权限"];
+                }
+            }
+        }
         dispatch_group_notify(grouped, dispatch_get_main_queue(), ^{
             [_TodayTableView reloadData];
 
@@ -420,16 +469,17 @@
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 70)];
     view.backgroundColor = GrayColor;
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 20, 20)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 12, 20, 16)];
     imageView.image = [UIImage imageNamed:@"btn_mendian_h"];
     [view addSubview:imageView];
     
-    UILabel *companyTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, KScreenWidth - 40 - 40, 39)];
+    UILabel *companyTitle = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, KScreenWidth - 40 - 40, 39)];
     companyTitle.text = [mutableArray[section] valueForKey:@"col1"];
     [view addSubview:companyTitle];
     
     UIImageView *selectView = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 30, 10, 20, 20)];
     NSString *string = [NSString stringWithFormat:@"%ld",(long)section];
+    selectView.tag = 4200 + section;
     if ([_selectSectionArray containsObject:string]) {
         selectView.image = [UIImage imageNamed:@"btn_jiantou_n"];
     } else {
@@ -442,23 +492,35 @@
     button.tag = 4220 + section;
     [button addTarget:self action:@selector(leadSectionData:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:button];
-    
-    UIView *lineImageView = [[UIView alloc] initWithFrame:CGRectMake(40, 39, KScreenWidth - 40, 1)];
-    lineImageView.backgroundColor = LineColor;
-    [view addSubview:lineImageView];
+
     
     for (int i = 0; i < 3; i++) {
-        UILabel *Label = [[UILabel alloc] initWithFrame:CGRectMake(i * (KScreenWidth / 3.0), 40, KScreenWidth / 3.0, 29)];
-        Label.textColor = [UIColor grayColor];
-        Label.textAlignment = NSTextAlignmentCenter;
+        UILabel *nameLabel = [[UILabel alloc] init];
+        UILabel *label = [[UILabel alloc] init];
         if (i == 0) {
-            Label.text = [NSString stringWithFormat:@"数量:%@",[mutableArray[section] valueForKey:@"col2"]];
+            nameLabel.frame = CGRectMake(35, 40, 30, 30);
+            nameLabel.text = @"数量:";
+            label.frame = CGRectMake(65, 40, todaywidth, 30);
+            label.textColor = [UIColor grayColor];
+            label.text = [NSString stringWithFormat:@"%@",[mutableArray[section] valueForKey:@"col2"]];
         } else if (i == 1) {
-            Label.text = [NSString stringWithFormat:@"金额:%@",[mutableArray[section] valueForKey:@"col3"]];
+            nameLabel.frame = CGRectMake(65 + todaywidth, 40, 30, 30);
+            nameLabel.text = @"金额:";
+            label.frame = CGRectMake(95 + todaywidth, 40, todaywidth * 2, 30);
+            label.textColor = [UIColor redColor];
+            label.text = [NSString stringWithFormat:@"￥%@",[mutableArray[section] valueForKey:@"col3"]];
         } else {
-            Label.text = [NSString stringWithFormat:@"毛利:%@",[mutableArray[section] valueForKey:@"col4"]];
+            nameLabel.frame = CGRectMake(95 + todaywidth * 3, 40, 30, 30);
+            nameLabel.text = @"毛利:";
+            label.frame = CGRectMake(125 + todaywidth * 3, 40, todaywidth * 2, 30);
+            label.textColor = Mycolor;
+            label.text = [NSString stringWithFormat:@"￥%@",[mutableArray[section] valueForKey:@"col4"]];
         }
-        [view addSubview:Label];
+        label.font = [UIFont systemFontOfSize:13];
+        nameLabel.font = [UIFont systemFontOfSize:13];
+        nameLabel.textColor = [UIColor grayColor];
+        [view addSubview:label];
+        [view addSubview:nameLabel];
     }
     
     UIView *lowLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 69, KScreenWidth, 1)];

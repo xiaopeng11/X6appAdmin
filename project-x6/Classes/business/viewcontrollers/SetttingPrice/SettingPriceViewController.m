@@ -17,6 +17,7 @@
 
 @implementation SettingPriceViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -30,6 +31,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -73,6 +79,8 @@
     
     UIButton *setButton = [UIButton buttonWithType:UIButtonTypeCustom];
     setButton.frame = CGRectMake((KScreenWidth - 150) / 2.0, 380, 150, 40);
+    setButton.clipsToBounds = YES;
+    setButton.layer.cornerRadius = 5;
     [setButton setBackgroundColor:Mycolor];
     [setButton setTitle:@"一键设置" forState:UIControlStateNormal];
     [setButton addTarget:self action:@selector(setPrice) forControlEvents:UIControlEventTouchUpInside];
@@ -84,10 +92,10 @@
 #pragma mark - 一键设置
 - (void)setPrice
 {
+    UILabel *label = (UILabel *)[self.view viewWithTag:3710];
     NSDate *date = [NSDate date];
     NSString *dateString = [NSString stringWithFormat:@"%@",date];
     dateString = [dateString substringToIndex:10];
-    UILabel *label = (UILabel *)[self.view viewWithTag:3710];
     label.text = dateString;
     
     dateLabel = (UILabel *)[self.view viewWithTag:3711];
@@ -98,6 +106,7 @@
     NSString *setPriceURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_resetPrice];
     [XPHTTPRequestTool requestMothedWithPost:setPriceURL params:nil success:^(id responseObject) {
         NSLog(@"设置考核价成功");
+        [self writeWithName:@"设置成功"];
     } failure:^(NSError *error) {
         NSLog(@"设置考核价失败");
     }];
@@ -110,7 +119,6 @@
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *lastsetURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_lastsetPrice];
     [XPHTTPRequestTool requestMothedWithPost:lastsetURL params:nil success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         NSDictionary *vo = responseObject[@"vo"];
         dateLabel = (UILabel *)[self.view viewWithTag:3710];
         dateLabel.text = [vo valueForKey:@"lastdate"];

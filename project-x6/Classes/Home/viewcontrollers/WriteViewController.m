@@ -459,8 +459,7 @@
             
 
         } failure:^(NSError *error) {
-            NSLog(@"发布失败   \n %@ \n",error);
-            [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+//            [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
         }];
     });
 

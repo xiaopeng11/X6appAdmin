@@ -67,7 +67,6 @@
     
     _selectgwPersons = [NSArray array];
     _selectgwPersons = [_gwsPersonTableview indexPathsForSelectedRows];
-    NSLog(@"%@",_selectgwPersons);
     
     //处理数据
     NSMutableArray *personsList = [NSMutableArray array];

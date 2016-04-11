@@ -19,6 +19,8 @@
     UIImageView *_mdImageView;     //门店图片
     UILabel *_mdLabel;             //门店名
     UILabel *_yyyLabel;            //营业员名
+    
+    UILabel *_nameLabel;           //名称
     UILabel *_messageLabel;        //详情信息
     UILabel *_chuanhaoLabel;
     

@@ -40,8 +40,8 @@
     NSString *gw = [userInformation objectForKey:@"gw"];
     
     //头像
-    _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 80, 80)];
-    _headerView.layer.cornerRadius = 40;
+    _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 60, 60)];
+    _headerView.layer.cornerRadius = 30;
     _headerView.clipsToBounds = YES;
     if ([userdefaults objectForKey:X6_UserHeaderView] != nil) {
          [_headerView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,ygImageUrl]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
@@ -63,11 +63,11 @@
     for (int i = 0; i < informations.count; i++) {
         UILabel *label = [[UILabel alloc] init];
         if (i == 0) {
-            label.frame = CGRectMake(_headerView.right + 10, _headerView.top, KScreenWidth - 10 - 80 - 15, 30);
+            label.frame = CGRectMake(_headerView.right + 10, _headerView.top, KScreenWidth - 10 - 60 - 15, 30);
             label.font = [UIFont boldSystemFontOfSize:18];
         } else {
-            label.frame = CGRectMake(_headerView.right + 10, _headerView.top + 35 + 30 * (i - 1), KScreenWidth - 10 - 80 - 5 - 10, 20);
-            label.font = [UIFont boldSystemFontOfSize:16];
+            label.frame = CGRectMake(_headerView.right + 10, _headerView.top + 30 + 20 * (i - 1), KScreenWidth - 10 - 60 - 5 - 10, 20);
+            label.font = [UIFont systemFontOfSize:15];
             if (i == 1) {
                 label.textColor = Mycolor;
             } else {

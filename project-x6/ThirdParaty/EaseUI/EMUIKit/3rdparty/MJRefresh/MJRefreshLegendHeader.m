@@ -21,7 +21,7 @@
 - (UIImageView *)arrowImage
 {
     if (!_arrowImage) {
-        UIImageView *arrowImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"EaseUIResource.bundle/arrow.png"]];
+        UIImageView *arrowImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"arrow.png"]];
         [self addSubview:_arrowImage = arrowImage];
     }
     return _arrowImage;

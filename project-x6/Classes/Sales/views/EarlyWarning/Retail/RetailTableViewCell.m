@@ -27,7 +27,7 @@
         self.backgroundColor = GrayColor;
         
         
-        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 210)];
+        _bgView = [[UIView alloc] initWithFrame:CGRectZero];
         _bgView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:_bgView];
         
@@ -35,7 +35,7 @@
         [_bgView addSubview:_dhImageView];
         
         _dhLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, KScreenWidth - 40 - 130, 20)];
-        _dhLabel.font = [UIFont systemFontOfSize:16];
+        _dhLabel.font = [UIFont systemFontOfSize:14];
         [_bgView addSubview:_dhLabel];
         
         _dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 120, 10, 100, 20)];
@@ -57,19 +57,28 @@
         _yyyLabel.font = [UIFont systemFontOfSize:14];
         [_bgView addSubview:_yyyLabel];
         
-        _chuanhaoLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 80, 40, 20)];
-        _chuanhaoLabel.font = [UIFont systemFontOfSize:14];
+        _chuanhaoLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 80, 40, 20)];
+        _chuanhaoLabel.font = [UIFont systemFontOfSize:13];
         [_bgView addSubview:_chuanhaoLabel];
         
         for (int i = 0; i < 5; i++) {
+            _nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
             _messageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
             if (i == 0) {
                 _messageLabel.lineBreakMode = NSLineBreakByCharWrapping;
+                _messageLabel.textAlignment = NSTextAlignmentLeft;
                 _messageLabel.numberOfLines = 0;
+            } else if ( i == 2 || i == 3) {
+                _messageLabel.textColor = [UIColor redColor];
+            } else if (i == 4) {
+                _messageLabel.textColor = Mycolor;
             }
             _messageLabel.tag = 4640 + i;
-            _messageLabel.font = [UIFont systemFontOfSize:14];
+            _nameLabel.tag = 4680 + i;
+            _nameLabel.font = [UIFont systemFontOfSize:13];
+            _messageLabel.font = [UIFont systemFontOfSize:13];
             [_bgView addSubview:_messageLabel];
+            [_bgView addSubview:_nameLabel];
         }
         
     }
@@ -80,9 +89,11 @@
 {
     [super layoutSubviews];
     
+    _bgView.frame = CGRectMake(0, 0, KScreenWidth, self.frame.size.height - 10);
+    
     _dhImageView.image = [UIImage imageNamed:@"bth_danhao_n"];
     
-    _dhLabel.text = [NSString stringWithFormat:@"出库单号:%@",[_dic valueForKey:@"col1"]];
+    _dhLabel.text = [NSString stringWithFormat:@"单号:%@",[_dic valueForKey:@"col1"]];
     
     _dateLabel.text = [NSString stringWithFormat:@"日期:%@",[_dic valueForKey:@"col2"]];
     
@@ -95,46 +106,49 @@
     _chuanhaoLabel.text = @"串号:";
     
     for (int i = 0; i < 5; i++) {
-        _messageLabel = [_bgView viewWithTag:4640 + i];
+        _messageLabel = (UILabel *)[_bgView viewWithTag:4640 + i];
+        _nameLabel = (UILabel *)[_bgView viewWithTag:4680 + i];
         double lowPrice = [[_dic valueForKey:@"col9"] doubleValue] - [[_dic valueForKey:@"col8"] doubleValue];
-        NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:14]};
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:13]};
         CGRect rect = [[_dic valueForKey:@"col6"] boundingRectWithSize:CGSizeMake(KScreenWidth - 120, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesFontLeading attributes:attributes context:nil];
         if (rect.size.height > 20) {
             if (i == 0) {
-                _messageLabel.frame = CGRectMake(100, 80, KScreenWidth - 120, 40);
-            } else if (i == 1) {
-                _messageLabel.frame = CGRectMake(60, 120, KScreenWidth - 120, 20);
-            } else if (i == 2) {
-                _messageLabel.frame = CGRectMake(60, 140, KScreenWidth - 120, 20);
-            } else if (i == 3) {
-                _messageLabel.frame = CGRectMake(60, 160, KScreenWidth - 120, 20);
-            } else if (i == 4) {
-                _messageLabel.frame = CGRectMake(60, 180, KScreenWidth - 120, 20);
+                _nameLabel.frame = CGRectMake(50, 80, 30, 20);
+                _messageLabel.frame = CGRectMake(80, 80, KScreenWidth - 120, 40);
+            } else  if (i == 4){
+                _nameLabel.frame = CGRectMake(50, 100 + 20 * i, 90, 20);
+                _messageLabel.frame = CGRectMake(140, 100 + 20 * i, KScreenWidth - 150, 20);
+            } else {
+                _nameLabel.frame = CGRectMake(50, 100 + 20 * i, 30, 20);
+                _messageLabel.frame = CGRectMake(80, 100 + 20 * i, KScreenWidth - 100, 20);
             }
         } else {
             if (i == 0) {
-                _messageLabel.frame = CGRectMake(100, 80, KScreenWidth - 120, 20);
-            } else if (i == 1) {
-                _messageLabel.frame = CGRectMake(60, 100, KScreenWidth - 120, 20);
-            } else if (i == 2) {
-                _messageLabel.frame = CGRectMake(60, 120, KScreenWidth - 120, 20);
-            } else if (i == 3) {
-                _messageLabel.frame = CGRectMake(60, 140, KScreenWidth - 120, 20);
-            } else if (i == 4) {
-                _messageLabel.frame = CGRectMake(60, 160, KScreenWidth - 120, 20);
+                _nameLabel.frame = CGRectMake(50, 80, 30, 20);
+                _messageLabel.frame = CGRectMake(80, 80, KScreenWidth - 120, 20);
+            } else if (i == 4){
+                _nameLabel.frame = CGRectMake(50, 80 + 20 * i, 90, 20);
+                _messageLabel.frame = CGRectMake(140, 80 + 20 * i, KScreenWidth - 150, 20);
+            } else {
+                _nameLabel.frame = CGRectMake(50, 80 + 20 * i, 30, 20);
+                _messageLabel.frame = CGRectMake(80, 80 + 20 * i, KScreenWidth - 120, 20);
             }
         }
         
         if (i == 0) {
             _messageLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col6"]];
         } else if (i == 1) {
-            _messageLabel.text = [NSString stringWithFormat:@"货品:%@",[_dic valueForKey:@"col7"]];
+            _nameLabel.text = @"货品:";
+            _messageLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col7"]];
         } else if (i == 2) {
-            _messageLabel.text = [NSString stringWithFormat:@"单价:%@",[_dic valueForKey:@"col8"]];
+            _nameLabel.text = @"单价:";
+            _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col8"]];
         } else if (i == 3) {
-            _messageLabel.text = [NSString stringWithFormat:@"限价:%@",[_dic valueForKey:@"col9"]];
+            _nameLabel.text = @"现价:";
+            _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col9"]];
         } else if (i == 4) {
-            _messageLabel.text = [NSString stringWithFormat:@"限价:%.0f",lowPrice];
+            _nameLabel.text = @"低于最低限价:";
+            _messageLabel.text = [NSString stringWithFormat:@"￥%.0f",lowPrice];
         }
     }
 }

@@ -12,9 +12,9 @@
 #import <ImageIO/ImageIO.h>
 
 
-#define Size            150
+#define Size            80
 #define FadeDuration    0.3
-#define GifSpeed        0.3
+#define GifSpeed        0.2
 
 #define APPDELEGATE     ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 
@@ -150,6 +150,7 @@ static UIImage *animatedImageWithAnimatedGIFReleasingImageSource(CGImageSourceRe
 
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, strong) UIImageView *imageView;
+@property(nonatomic,strong)UILabel *label;
 @property (nonatomic, assign) BOOL shown;
 
 @end
@@ -173,18 +174,24 @@ static GiFHUD *instance;
 }
 
 - (instancetype)init {
-    if ((self = [super initWithFrame:CGRectMake(0, 0, Size, Size)])) {
+    if ((self = [super initWithFrame:CGRectMake(0, 0, Size, Size + 20)])) {
         
         [self setAlpha:0];
         [self setCenter:APPDELEGATE.window.center];
         [self setClipsToBounds:NO];
         
-        [self.layer setBackgroundColor:[[UIColor colorWithWhite:0 alpha:0.5] CGColor]];
+        [self.layer setBackgroundColor:[[UIColor colorWithWhite:0 alpha:0] CGColor]];
         [self.layer setCornerRadius:10];
         [self.layer setMasksToBounds:YES];
         
-        self.imageView = [[UIImageView alloc] initWithFrame:CGRectInset(self.bounds, 20, 20)];
+        self.imageView = [[UIImageView alloc] initWithFrame:CGRectInset(self.bounds, 10, 20)];
         [self addSubview:self.imageView];
+        
+        self.label = [[UILabel alloc] initWithFrame:CGRectMake(self.imageView.left, self.imageView.bottom, 100, 20)];
+        self.label.textColor = [UIColor grayColor];
+        self.label.font = [UIFont systemFontOfSize:13];
+        self.label.text = @"努力加载中...";
+        [self addSubview:self.label];
         
         [APPDELEGATE.window addSubview:self];
     }
@@ -214,6 +221,8 @@ static GiFHUD *instance;
 + (void)dismiss {
     if (![[self instance] shown])
         return;
+    
+//    [[[self instance] overlay] removeFromSuperview];
     [[self instance] fadeOut];
 }
 
@@ -222,6 +231,7 @@ static GiFHUD *instance;
         return complated ();
     
     [[self instance] fadeOutComplate:^{
+//        [[[self instance] overlay] removeFromSuperview];
         complated ();
     }];
 }

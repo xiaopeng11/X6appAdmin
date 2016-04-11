@@ -152,20 +152,16 @@
         cellmodel.check = YES;
         [button setImage:[UIImage imageNamed:@"icon_image_yes"] forState:UIControlStateNormal];
         [_selectgws addObject:_gwsArray[button.tag]];
-        NSLog(@"%@",[_selectgws description]);
     } else {
         cellmodel.check = NO;
         [button setImage:[UIImage imageNamed:@"icon_image_no"] forState:UIControlStateNormal];
         [_selectgws removeObject:_gwsArray[button.tag]];
-        NSLog(@"%@",[_selectgws description]);
     }
 }
 
 #pragma mark - 重写确定联系人按钮事件
 - (void)sureAction:(UIButton *)button
 {
-    
-    NSLog(@"确定返回岗位信息%@",[_selectgws description]);
     NSMutableArray *personList = [NSMutableArray array];
     if (_replytype == YES) {
         for (NSString *gw in _selectgws) {

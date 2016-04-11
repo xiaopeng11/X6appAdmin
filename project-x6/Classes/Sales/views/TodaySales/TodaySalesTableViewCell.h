@@ -11,7 +11,9 @@
 @interface TodaySalesTableViewCell : UITableViewCell
 
 {
+    UIImageView *_titleImageView;
     UILabel *_titleLabel;
+    UILabel *_nameLabel;
     UILabel *_Label;
 }
 

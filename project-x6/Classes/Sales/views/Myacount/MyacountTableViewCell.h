@@ -13,8 +13,9 @@
 {
     UIView *_bgView;
     UIImageView *_imageView;
-    UIView *_lineView;
     UILabel *_bankLabel;
+    
+    UILabel *_acountNameLabel;
     UILabel *_myacountLabel;
     
 }

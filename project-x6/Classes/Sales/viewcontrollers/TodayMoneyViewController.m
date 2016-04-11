@@ -26,8 +26,7 @@
 @property(nonatomic,strong)UITableView *TodayMoneyTabelView;   //今日销量表示图
 @property(nonatomic,strong)UIView *totalTodayMoneyView;        //总计
 
-@property(nonatomic,copy)NSArray *todayMoneyDatalist;          //门店销量数据
-//@property(nonatomic,copy)NSDictionary *todayMoneydetailDic;       //指定门店销量
+@property(nonatomic,copy)NSMutableArray *todayMoneyDatalist;          //门店销量数据
 @property(nonatomic,copy)NSMutableDictionary *todayMoneyDic;
 @property(nonatomic,copy)NSMutableArray *selectTodayMoneySection;
 
@@ -42,7 +41,7 @@
 - (NoDataView *)noTodayMoneyView
 {
     if (!_noTodayMoneyView) {
-        _noTodayMoneyView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 40, KScreenWidth, KScreenHeight - 64 - 40)];
+        _noTodayMoneyView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44)];
         _noTodayMoneyView.text = @"没有数据";
         _noTodayMoneyView.hidden = YES;
         [self.view addSubview:_noTodayMoneyView];
@@ -53,7 +52,7 @@
 - (UITableView *)TodayMoneyTabelView
 {
     if (!_TodayMoneyTabelView) {
-        _TodayMoneyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 40, KScreenWidth, KScreenHeight - 64 - 40) style:UITableViewStylePlain];
+        _TodayMoneyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 40) style:UITableViewStylePlain];
         _TodayMoneyTabelView.hidden = YES;
         _TodayMoneyTabelView.delegate = self;
         _TodayMoneyTabelView.dataSource = self;
@@ -67,20 +66,26 @@
 {
     if (!_totalTodayMoneyView) {
         _totalTodayMoneyView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 104, KScreenWidth, 40)];
-        _totalTodayMoneyView.backgroundColor = [UIColor grayColor];
+        _totalTodayMoneyView.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.2];
         [self.view addSubview:_totalTodayMoneyView];
-        
-        long long totalMoney = 0;
-        for (NSDictionary *dic in _todayMoneyDatalist) {
-            totalMoney += [[dic valueForKey:@"col2"] longLongValue];
+        for (int i = 0; i < 3; i++) {
+            UILabel *label = [[UILabel alloc] init];
+            label.font = [UIFont systemFontOfSize:14];
+            if (i == 0) {
+                label.frame = CGRectMake(20, 0, 40, 40);
+                label.text = @"合计:";
+            } else if (i == 1) {
+                label.frame = CGRectMake(KScreenWidth - 150, 0, 40, 40);
+                label.text = @"金额:";
+            } else {
+                label.frame = CGRectMake(KScreenWidth - 110, 0, 100, 40);
+                label.textColor = [UIColor redColor];
+                label.tag = 4411;
+            }
+            [_totalTodayMoneyView addSubview:label];
+
         }
         
-        UILabel *Label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth / 2.0, 0, KScreenWidth / 3.0, 40)];
-        Label.textAlignment = NSTextAlignmentCenter;
-
-        Label.text = [NSString stringWithFormat:@"总金额:%lld",totalMoney];
-        
-        [_totalTodayMoneyView addSubview:Label];
         
         
     }
@@ -90,6 +95,13 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeTodayData" object:nil];
+    _selectTodayMoneySection = nil;
+    _todayMoneyDatalist = nil;
+    _todayMoneyDic = nil;
+    _companyNames = nil;
+    _companysearchNames = nil;    
+    _newtodayMoneyDatalist = nil;
+    _todayMoneyDatalist = nil;
 }
 
 - (void)viewDidLoad {
@@ -107,7 +119,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
     
     _selectTodayMoneySection = [NSMutableArray array];
-    _todayMoneyDatalist = [NSArray array];
+    _todayMoneyDatalist = [NSMutableArray array];
     _todayMoneyDic = [NSMutableDictionary dictionary];
     
     _companyNames = [NSMutableArray array];
@@ -130,6 +142,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -213,12 +230,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 60;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 70;
+    return 90;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
@@ -285,18 +302,18 @@
 #pragma mark - 标题视图
 - (UIView *)creatTableviewWithMutableArray:(NSMutableArray *)mutableArray Section:(long)section
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 40)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 60)];
     view.backgroundColor = GrayColor;
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 20, 20)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 24, 20)];
     imageView.image = [UIImage imageNamed:@"btn_mendian_h"];
     [view addSubview:imageView];
     
-    UILabel *companyTitle = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, KScreenWidth - 40 - 40 - 100, 39)];
+    UILabel *companyTitle = [[UILabel alloc] initWithFrame:CGRectMake(54, 15, KScreenWidth - 40 - 54 - 100, 30)];
     companyTitle.text = [mutableArray[section] valueForKey:@"col1"];
     [view addSubview:companyTitle];
     
-    UIImageView *selectView = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 30, 10, 20, 20)];
+    UIImageView *selectView = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth - 30, 20, 20, 20)];
     NSString *string = [NSString stringWithFormat:@"%ld",(long)section];
     if ([_selectTodayMoneySection containsObject:string]) {
         selectView.image = [UIImage imageNamed:@"btn_jiantou_n"];
@@ -311,13 +328,19 @@
     [button addTarget:self action:@selector(leadTodayMoneySectionData:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:button];
     
+    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 160, 15, 40, 30)];
+    nameLabel.text = @"金额:";
+    nameLabel.font = [UIFont systemFontOfSize:13];
+    [view addSubview:nameLabel];
     
-    UILabel *Label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 140, 0, 100, 39)];
-    Label.text = [NSString stringWithFormat:@"金额:%@",[mutableArray[section] valueForKey:@"col2"]];
+    UILabel *Label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 120, 15, 110, 30)];
+    Label.textColor = [UIColor redColor];
+    Label.font = [UIFont systemFontOfSize:13];
+    Label.text = [NSString stringWithFormat:@"￥%@",[mutableArray[section] valueForKey:@"col2"]];
     [view addSubview:Label];
     
     
-    UIView *lowLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 39, KScreenWidth, 1)];
+    UIView *lowLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 59, KScreenWidth, 1)];
     lowLineView.backgroundColor = LineColor;
     [view addSubview:lowLineView];
     
@@ -347,10 +370,20 @@
         
         [_selectTodayMoneySection addObject:string];
         
-        [self getOneMoneyDataWithDate:_todayMoneydatepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
+        NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+        NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+        for (NSDictionary *dic in qxList) {
+            if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jryyk"]) {
+                if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                    [self getOneMoneyDataWithDate:_todayMoneydatepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
+                } else {
+                    [self writeWithName:@"您没有查看今日营业款详情的权限"];
+                }
+            }
+        }
+        
         dispatch_group_notify(grouped, dispatch_get_main_queue(), ^{
             [_TodayMoneyTabelView reloadData];
-            
         });
         
     }
@@ -373,11 +406,10 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:todayMoneyDataString params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         _todayMoneyDatalist = [TodayMoneyModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_todayMoneyDatalist.count == 0) {
-            
             _TodayMoneyTabelView.hidden = YES;
             _noTodayMoneyView.hidden = NO;
             if (_totalTodayMoneyView != nil) {
@@ -387,8 +419,19 @@
         } else {
             _noTodayMoneyView.hidden = YES;
             _TodayMoneyTabelView.hidden = NO;
+            NSArray *sorttodaysalesArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col2" ascending:NO]];
+            [_todayMoneyDatalist sortUsingDescriptors:sorttodaysalesArray];
             [_TodayMoneyTabelView reloadData];
             [self totalTodayMoneyView];
+            
+            long long totalMoney = 0;
+            for (NSDictionary *dic in _todayMoneyDatalist) {
+                totalMoney += [[dic valueForKey:@"col2"] longLongValue];
+            }
+            UILabel *label = (UILabel *)[_totalTodayMoneyView viewWithTag:4411];
+            label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+
+            
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *dic in _todayMoneyDatalist) {
                 [array addObject:[dic valueForKey:@"col1"]];
@@ -423,7 +466,6 @@
     dispatch_group_enter(group);
     
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         NSDictionary *todayMoneydetailDic = [NSDictionary dictionary];
         todayMoneydetailDic = responseObject[@"vo"];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];

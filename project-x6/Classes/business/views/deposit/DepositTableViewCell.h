@@ -12,15 +12,14 @@
 
 {
     UIImageView *_headerView;     //图片
-    UILabel *_titleLabel;         //标题
     UILabel *_messageLabel;       //主题
-    UILabel *_userLabel;          //经办人
     
     UILabel *_acountLabel;        //帐户
+    UILabel *_moneyTitleLabel;    //金额标题
     UILabel *_moneyLabel;         //金额
-    
-//    UIView *_bottomView;          //底部试图
-    
+    UILabel *_totalTitleLabel;    //总金额标题
+    UILabel *_totalMoney;         //总金额
+
 }
 
 @property(nonatomic,copy)NSDictionary *dic;

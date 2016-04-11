@@ -8,6 +8,7 @@
 
 #import "TodayTableViewCell.h"
 
+#define todaywidth ((KScreenWidth - 135) / 5.0)
 @implementation TodayTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -16,23 +17,38 @@
     if (self) {
         
         
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 30, 30)];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 25, 25)];
         [self.contentView addSubview:_imageView];
         
-        _headerViewbg = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 30, 30)];
+        _headerViewbg = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 25, 25)];
         [self.contentView addSubview:_headerViewbg];
         
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, KScreenWidth - 50, 30)];
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 0, KScreenWidth - 100, 25)];
         [self.contentView addSubview:_titleLabel];
         
         for (int i = 0; i < 3; i++) {
-            
-            _label = [[UILabel alloc] initWithFrame:CGRectMake(50 + ((KScreenWidth - 50) / 3.0) * i, 30, (KScreenWidth - 50) / 3.0, 20)];
-            _label.font = [UIFont systemFontOfSize:14];
-            _label.textColor = [UIColor grayColor];
+            _nameLabel = [[UILabel alloc] init];
+            _label = [[UILabel alloc] init];
+            if (i == 0) {
+                _nameLabel.frame = CGRectMake(35, 30, 30, 20);
+                _label.frame = CGRectMake(65, 30, todaywidth, 20);
+                _label.textColor = [UIColor grayColor];
+            } else if (i == 1) {
+                _nameLabel.frame = CGRectMake(65 + todaywidth, 30, 30, 20);
+                _label.frame = CGRectMake(95 + todaywidth, 30, todaywidth * 2, 20);
+                _label.textColor = [UIColor redColor];
+            } else {
+                _nameLabel.frame = CGRectMake(95 + todaywidth * 3, 30, 30, 20);
+                _label.frame = CGRectMake(125 + todaywidth * 3, 30, todaywidth * 2, 20);
+                _label.textColor = Mycolor;
+            }
+            _label.font = [UIFont systemFontOfSize:13];
+            _nameLabel.font = [UIFont systemFontOfSize:13];
+            _nameLabel.textColor = [UIColor grayColor];
             _label.tag = 4210 + i;
-       
+            _nameLabel.tag = 4220 + i;
             [self.contentView addSubview:_label];
+            [self.contentView addSubview:_nameLabel];
         }
     }
     return self;
@@ -53,13 +69,17 @@
     _titleLabel.text = [_dic valueForKey:@"col1"];
     
     for (int i = 0; i < 3; i++) {
-        UILabel *label = (UILabel *)[self.contentView viewWithTag:4210 + i];
+        _label = (UILabel *)[self.contentView viewWithTag:4210 + i];
+        _nameLabel = (UILabel *)[self.contentView viewWithTag:4220 + i];
         if (i == 0) {
-            label.text = [NSString stringWithFormat:@"数量:%@",[_dic valueForKey:@"col3"]];
+            _nameLabel.text = @"数量:";
+            _label.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col3"]];
         } else if (i == 1) {
-            label.text = [NSString stringWithFormat:@"金额:%@",[_dic valueForKey:@"col4"]];
+            _nameLabel.text = @"金额:";
+            _label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col4"]];
         } else if (i == 2) {
-            label.text = [NSString stringWithFormat:@"毛利:%@",[_dic valueForKey:@"col5"]];
+            _nameLabel.text = @"毛利:";
+            _label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col5"]];
         }
     }
     

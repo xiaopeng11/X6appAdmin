@@ -10,6 +10,5 @@
 
 @interface StoresViewController : BaseViewController
 
-@property(nonatomic,assign)BOOL isStore;
 
 @end

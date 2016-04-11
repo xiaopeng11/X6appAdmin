@@ -10,9 +10,11 @@
 @interface PersonsTableViewCell : UITableViewCell
 
 {
-    UILabel *_nameLabel;
-    UIImageView *_imageView;
-    UILabel *_companyLabel;
+    UILabel *_nameLabel;            //名称
+    UIView *_noheaderViewView;      //没有头像的仕途
+    UILabel *_headerViewLabel;      //没有头像的文本
+    UIImageView *_imageView;        //头像
+    UILabel *_companyLabel;         //公司岗位
 }
 @property(nonatomic,strong)NSString *name;  //需要的数据
 @property(nonatomic,strong)NSArray *datalist;     //所有的数据

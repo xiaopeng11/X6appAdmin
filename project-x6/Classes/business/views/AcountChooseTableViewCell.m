@@ -25,7 +25,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 24, 20)];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 22, 20)];
         [self.contentView addSubview:_imageView];
         
         _bankLabel = [[UILabel alloc] initWithFrame:CGRectMake(44, 10, KScreenWidth - 150, 30)];

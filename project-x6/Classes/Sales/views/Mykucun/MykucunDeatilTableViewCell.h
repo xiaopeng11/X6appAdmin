@@ -11,6 +11,7 @@
 @interface MykucunDeatilTableViewCell : UITableViewCell
 
 {
+    UILabel *_titleLabel;
     UILabel *_label;
 }
 

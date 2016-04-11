@@ -14,6 +14,7 @@
     UIImageView *_headerViewbg;
     UIImageView *_imageView;
     UILabel *_titleLabel;
+    UILabel *_nameLabel;
     UILabel *_label;
 }
 

@@ -10,4 +10,5 @@
 
 @interface DepositViewController : BaseViewController
 
+@property(nonatomic,assign)BOOL isBusiness;
 @end

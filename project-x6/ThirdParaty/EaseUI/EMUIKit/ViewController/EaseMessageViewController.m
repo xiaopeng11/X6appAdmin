@@ -1405,7 +1405,7 @@
                         }
                         else{
                             model = [[EaseMessageModel alloc] initWithMessage:message];
-                            model.avatarImage = [UIImage imageNamed:@"EaseUIResource.bundle/user"];
+                            model.avatarImage = [UIImage imageNamed:@"user"];
                             model.failImageName = @"imageDownloadFail";
                         }
                         
@@ -1582,7 +1582,7 @@
         }
         else{
             model = [[EaseMessageModel alloc] initWithMessage:message];
-            model.avatarImage = [UIImage imageNamed:@"EaseUIResource.bundle/user"];
+            model.avatarImage = [UIImage imageNamed:@"user"];
             model.failImageName = @"imageDownloadFail";
         }
 

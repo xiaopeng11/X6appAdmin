@@ -21,6 +21,8 @@
     UIImageView *_bgView;
     ReplyTableView *_replyTableView;    //回复列表
     UILabel *_reLabel;
+    
+    int _clickcount;
 }
 
 @property(nonatomic,strong)NSDictionary *dic;    //动态详情数据

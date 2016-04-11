@@ -19,7 +19,7 @@
 {
     NoDataView *_noOldlibraryView;
     UITableView *_OldlibraryTabelView;
-    NSArray *_OldlibraryDatalist;
+    NSMutableArray *_OldlibraryDatalist;
 }
 
 @end
@@ -42,7 +42,19 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self getOldlibraryData];
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_klyj"]) {
+            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                //获取数据
+                [self getOldlibraryData];
+            } else {
+                [self writeWithName:@"您没有查看库龄预警详情的权限"];
+            }
+        }
+    }
+    
 }
 
 #pragma mark - UITableViewDelegate
@@ -95,6 +107,7 @@
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *OldlibraryURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Oldlibrary];
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:OldlibraryURL params:nil success:^(id responseObject) {
         _OldlibraryDatalist = [OldlibraryModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_OldlibraryDatalist.count == 0) {
@@ -103,6 +116,9 @@
         } else {
             _noOldlibraryView.hidden = YES;
             _OldlibraryTabelView.hidden = NO;
+            
+            NSArray *arrayDescriptors = [NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"col5" ascending:NO], nil];
+            [_OldlibraryDatalist sortUsingDescriptors:arrayDescriptors];
             [_OldlibraryTabelView reloadData];
         }
     } failure:^(NSError *error) {

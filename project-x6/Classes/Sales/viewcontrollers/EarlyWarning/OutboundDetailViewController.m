@@ -53,7 +53,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self naviTitleWhiteColorWithText:@"出库异常详情"];
+    [self naviTitleWhiteColorWithText:@"出库异常"];
     
     NSDate *date = [NSDate date];
     _dateString = [NSString stringWithFormat:@"%@",date];
@@ -62,11 +62,9 @@
     //绘制UI
     [self initWithOutboundDetailView];
     
-    //异常明细
     [self addRightNaviItem];
-    
-    
-    
+
+   
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,7 +76,19 @@
 {
     [super viewWillAppear:animated];
     
-    [self getTabelViewData];
+    
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
+            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                //异常明细
+                [self getTabelViewData];
+            } else {
+                [self writeWithName:@"您没有查看出库异常详情的权限"];
+            }
+        }
+    }
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self cleanOutboundWarningNumber];
@@ -179,7 +189,8 @@
     NSString *umonth = [_dateString substringWithRange:NSMakeRange(5, 2)];
     [params setObject:uyear forKey:@"uyear"];
     [params setObject:umonth forKey:@"accper"];
-    
+    [GiFHUD show];
+
     [XPHTTPRequestTool requestMothedWithPost:myOutboundDetailURL params:params success:^(id responseObject) {
         _OutboundDetaildatalist = [OutboundMoredetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_OutboundDetaildatalist.count == 0) {
@@ -188,6 +199,8 @@
         } else {
             _noOutboundDetailView.hidden = YES;
             _OutboundDetailTableView.hidden = NO;
+            NSArray *OutboundDetailArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col1" ascending:NO]];
+            [_OutboundDetaildatalist sortUsingDescriptors:OutboundDetailArray];
             [_OutboundDetailTableView reloadData];
         }
         

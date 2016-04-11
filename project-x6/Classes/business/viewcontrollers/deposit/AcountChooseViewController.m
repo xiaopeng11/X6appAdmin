@@ -27,11 +27,8 @@
 }
 
 @property(nonatomic,copy)NSMutableArray *AcountChoosesNames;
-
 @property(nonatomic,strong)NSMutableArray *searchAcountChoosesNames;
 @property(nonatomic,strong)UISearchController *AcountChooseSearchViewcontroller;
-
-
 
 @end
 
@@ -40,6 +37,10 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    _AcountChoosesNames = nil;
+    _searchAcountChoosesNames = nil;
+    _AcountChoosesdatalist = nil;
+    _newAcountChoosesdatalist = nil;
 }
 
 - (void)viewDidLoad {
@@ -63,6 +64,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)initWithAcountVC
@@ -72,9 +78,7 @@
     [sureButton setTitle:@"确定" forState:UIControlStateNormal];
     [sureButton addTarget:self action:@selector(sureAcountsNum) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:sureButton];
-    
-    
-    
+
     //搜索框
     _AcountChooseSearchViewcontroller = [[UISearchController alloc] initWithSearchResultsController:nil];
     _AcountChooseSearchViewcontroller.searchBar.frame = CGRectMake(0, 0, KScreenWidth, 44);
@@ -162,7 +166,6 @@
             [dic setValue:_amountmoney forKey:@"choose"];
         }
     }
-    NSLog(@"%@",_AcountChoosesdatalist);
     [_AcountChooseTableView reloadData];
     
 }
@@ -174,14 +177,12 @@
 #pragma mark - 导航栏按钮事件
 - (void)sureAcountsNum
 {
-    NSLog(@"%@",_AcountChoosesdatalist);
     NSMutableArray *sureAcounts = [NSMutableArray array];
     for (NSDictionary *dic in _AcountChoosesdatalist) {
         if (![[dic valueForKey:@"choose"]  isEqual: @""]) {
             [sureAcounts addObject:dic];
         }
     }
-    NSLog(@"%@",sureAcounts);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"sureAcounts" object:sureAcounts];
     
     [self.navigationController popViewControllerAnimated:YES];
@@ -244,10 +245,9 @@
             [_AcountChooseTableView reloadData];
         }
 
-        NSLog(@"%@",_AcountChoosesdatalist);
         
     } failure:^(NSError *error) {
-        NSLog(@"银行存款");
+
     }];
 }
 

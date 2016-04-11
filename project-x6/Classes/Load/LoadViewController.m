@@ -61,7 +61,21 @@
     [titleView addSubview:titleLabel];
     
     UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth - 100) / 2.0, 20 + 64, 100, 100)];
-    headerView.image = [UIImage imageNamed:@"pho-moren"];
+    headerView.clipsToBounds = YES;
+    headerView.layer.cornerRadius = 50;
+    NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userInformation = [userdefaults objectForKey:X6_UserMessage];
+    //公司代码
+    NSString *gsdm = [userInformation objectForKey:@"gsdm"];
+    //员工头像地址
+    NSString *ygImageUrl = [userdefaults objectForKey:X6_UserHeaderView];
+    NSString *info_imageURL = [userInformation objectForKey:@"userpic"];
+    if ([userdefaults objectForKey:X6_UserHeaderView] != nil) {
+        [headerView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,ygImageUrl]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
+    } else {
+        [headerView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,info_imageURL]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
+    }
+    
     [self.view addSubview:headerView];
     
     //输入框
@@ -138,6 +152,7 @@
         NSString *xlstring = @"电信";
         NSData *data = [xlstring dataUsingEncoding:NSUTF8StringEncoding];
         [params setObject:data forKey:@"xl"];
+        [GiFHUD show];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager POST:X6_API_loadmain parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             //继续网络请求
@@ -154,11 +169,8 @@
                     [paramsload setObject:userid.text forKey:@"uname"];
                     [paramsload setObject:password.text forKey:@"pwd"];
                     AFHTTPRequestOperationManager *managerload = [AFHTTPRequestOperationManager manager];
-                    //加载提示
-                    [GiFHUD show];
                     [managerload POST:mainURL parameters:paramsload success:^(AFHTTPRequestOperation *operation, id responseObject) {
                         //登陆成功
-                        NSLog(@"%@",responseObject);
                         if ([[responseObject objectForKey:@"type"] isEqualToString:@"error"]) {
                             [GiFHUD dismiss];
                             [self writeWithName:[responseObject objectForKey:@"message"]];
@@ -195,7 +207,7 @@
                             }];
                             
                             //注册环信账号(后期添加参数判断是否已经登陆过)
-                            NSString *EaseID = [NSString stringWithFormat:@"%@%@",company.text,[[responseObject valueForKey:@"vo"] valueForKey:@"phone"]];
+                            NSString *EaseID = [NSString stringWithFormat:@"%@0%@",company.text,[[responseObject valueForKey:@"vo"] valueForKey:@"phone"]];
                             NSString *password = @"yjxx&*()";
                             
                             if (![[EaseMob sharedInstance].chatManager loginWithUsername:EaseID password:password error:nil]) {

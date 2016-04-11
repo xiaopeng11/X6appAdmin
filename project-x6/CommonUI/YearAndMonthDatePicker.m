@@ -100,6 +100,8 @@
     self.text = [NSString stringWithString:[self.dateFormatter stringFromDate:self.datePicker.date]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTodayData" object:nil];
+    
+    [self cancledateChange];
 }
 
 - (void)cancledateChange

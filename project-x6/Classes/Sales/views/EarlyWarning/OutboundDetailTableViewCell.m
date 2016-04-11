@@ -67,13 +67,15 @@
         } else if (i == 1) {
             label.text = [NSString stringWithFormat:@"仓库:%@",[_dic valueForKey:@"col3"]];
         } else if (i == 2) {
-            label.text = [NSString stringWithFormat:@"串号:%@",[_dic valueForKey:@"col1"]];
+            label.text = [NSString stringWithFormat:@"串号:%@",[_dic valueForKey:@"col6"]];
         } else {
             label.text = [NSString stringWithFormat:@"机型:%@",[_dic valueForKey:@"col7"]];
         }
     }
     
 }
+
+
 
 
 @end

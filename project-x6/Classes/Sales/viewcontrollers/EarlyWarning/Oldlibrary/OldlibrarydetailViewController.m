@@ -45,6 +45,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -52,6 +57,12 @@
     [super viewWillAppear:animated];
     
     [self getOldlibrarydetailDataWithPage:1];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    _OldlibrarydetailDatalist = nil;
 }
 
 #pragma mark - UITableViewDelegate
@@ -90,7 +101,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 40)];
-    view.backgroundColor = [UIColor grayColor];
+    view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.1];
     
     UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, ((KScreenWidth - 20) * 2 )/ 5, 30)];
     label1.text = @"串号";
@@ -116,10 +127,10 @@
 - (void)initOldlibrarydetailUI
 {
     for (int i = 0; i < 2; i++) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20 + 30 * i, 30, 20)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(23, 21 + 30 * i, 24, 18)];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(60, 20 + 30 * i, KScreenWidth - 60 - 40, 20)];
         if (i == 0) {
-            imageView.image = [UIImage imageNamed:@"btn_gyschuanhao_h"];
+            imageView.image = [UIImage imageNamed:@"btn_gys_h"];
             label.text = [NSString stringWithFormat:@"供应商:%@",_gysName];
         } else {
             imageView.image = [UIImage imageNamed:@"btn_huopin_h"];
@@ -199,7 +210,6 @@
         [GiFHUD show];
     }
     [XPHTTPRequestTool requestMothedWithPost:OldlibrarydetailURL params:params success:^(id responseObject) {
-        NSLog(@"库龄预警%@",responseObject);
         if (_OldlibrarydetailDatalist.count == 0 || _OldlibrarydetailTableview.header.isRefreshing) {
             _OldlibrarydetailDatalist = [OldlibraryDetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         } else {

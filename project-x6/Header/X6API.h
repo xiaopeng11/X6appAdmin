@@ -14,8 +14,8 @@
 #define APP_URL @"http://itunes.apple.com/lookup?id=com.xiaopeng.X6ptdemo"
 
 //主服务器上线地址和测试地址
-#define X6basemain_API @"http://192.168.1.199:8080"
-//#define X6basemain_API @"http://www.x6pt.cn"
+//#define X6basemain_API @"http://192.168.1.199:8080"
+#define X6basemain_API @"http://www.x6pt.cn"
 
 //登陆接口
 #define X6_API_loadmain [NSString stringWithFormat:@"%@/yxmain/getAppUrl.action",X6basemain_API]
@@ -151,6 +151,10 @@
 //我的帐户
 #define X6_myAcount @"/report/reportCwAction_myzh.action"
 
+//今日付款
+#define X6_todaydeposit @"/cw/cwMddkAction_getTodayList.action"
+
+
 //我的提醒
 
 //异常条数
@@ -196,6 +200,11 @@
 #define X6_collectionView @"/msg/msgAction_getMyKnowledge.action"
 
 
+
+//6.检测全县变化
+#define X6_userQXchange @"/xtgl/xtuserAction_CheckMbQxChanged.action"
+
+#define X6_hadChangeQX @"/xtgl/xtuserAction_getMyMbSsgsAndQx.action"
 #endif /* X6API_h */
 
 

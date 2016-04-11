@@ -14,8 +14,8 @@
     UIImageView *_headerView;
     UILabel *_gysLabel;
     UILabel *_hpLabel;
+    UILabel *_nameLabel;
     UILabel *_messageLabel;
-    
     UIButton *_button;
 }
 

@@ -13,11 +13,10 @@
 #import "StockViewController.h"
 #import "TxtViewController.h"
 @interface MianDynamicViewController ()<UITextViewDelegate>
-{
-    int _clickcount;
-}
+
 @property(nonatomic,copy)NSArray *personList;
 @property(nonatomic,copy)NSMutableString *personString;
+
 @end
 
 @implementation MianDynamicViewController
@@ -34,7 +33,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"companysList" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"companyPersonList" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"stockList" object:nil];
-
+    
+    _personList = nil;
+    _datalist = nil;
+    
+    
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -43,7 +46,10 @@
     [self naviTitleWhiteColorWithText:@"动态详情"];
     
     self.view.backgroundColor = [UIColor whiteColor];
- 
+    
+    //初始化动态详情页面
+    [self initWithSubview];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -54,7 +60,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MainpersonsList:) name:@"companysList" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MainpersonsList:) name:@"companyPersonList" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MainpersonsList:) name:@"stockList" object:nil];
-  
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -62,16 +68,14 @@
     [super viewWillDisappear:animated];
     [_textfield resignFirstResponder];
     
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    //初始化动态详情页面
-    [self initWithSubview];
+    
     [self drawCollectedButton];
-
+    
     //获取数据
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self getReplyDataWithPage:1];
@@ -96,16 +100,16 @@
     [self initHeaderView];
     
     //回复按钮
-    _replyView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 40 - 64, KScreenWidth, 40)];
+    _replyView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 50 - 64, KScreenWidth, 50)];
     _replyView.backgroundColor = GrayColor;
     if (_nodataView.hidden == NO) {
         [self.view insertSubview:_replyView aboveSubview:_nodataView];
     } else {
         [self.view insertSubview:_replyView aboveSubview:_replyView];
     }
-
+    
     //回复按钮上面添加半透明的遮罩
-    _alphaView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64 - 60)];
+    _alphaView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64 - 50)];
     _alphaView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.3];
     _alphaView.hidden = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
@@ -113,18 +117,19 @@
     
     
     //@按钮
-    UIButton *addPersons = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 30, 30)];
+    UIButton *addPersons = [[UIButton alloc] initWithFrame:CGRectMake(5, 10, 30, 30)];
     [addPersons setImage:[UIImage imageNamed:@"at"] forState:UIControlStateNormal];
     [addPersons addTarget:self action:@selector(addPersons:) forControlEvents:UIControlEventTouchUpInside];
     [_replyView addSubview:addPersons];
     
     
-    _textfield = [[UITextView alloc] initWithFrame:CGRectMake(40, 5, KScreenWidth - 40 - 60, 30)];
+    _textfield = [[UITextView alloc] initWithFrame:CGRectMake(40, 10, KScreenWidth - 40 - 60, 30)];
     _textfield.delegate = self;
+    _textfield.keyboardType = UIKeyboardTypeNamePhonePad;
     _textfield.font = [UIFont systemFontOfSize:16];
     [_replyView addSubview:_textfield];
     
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 55, 5, 50, 30)];
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 55, 10, 50, 30)];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 30)];
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont systemFontOfSize:12];
@@ -182,7 +187,7 @@
     paragraphStyle.lineSpacing = 8;
     NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16],NSParagraphStyleAttributeName:paragraphStyle};
     CGSize size = [[self.dic valueForKey:@"content"] boundingRectWithSize:CGSizeMake(KScreenWidth - 40, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
-  
+    
     MLEmojiLabel *contentLabel = [[MLEmojiLabel alloc] initWithFrame:CGRectMake(headerView.left + 10, headerView.bottom + 10, KScreenWidth - 40, size.height)];
     contentLabel.numberOfLines = 0;
     contentLabel.lineSpacing = 8;
@@ -199,7 +204,7 @@
     _replyTableView = [[ReplyTableView alloc] init];
     _replyTableView.hidden = YES;
     _replyTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-
+    
     [_replyTableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(headerAction)];
     [_replyTableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(footerAction)];
     _replyTableView.frame = CGRectMake(0, 0 , KScreenWidth, KScreenHeight - 64 - 40);
@@ -266,11 +271,11 @@
             }
             _nodataView.frame = CGRectMake(0, _bgView.bottom, KScreenWidth, KScreenHeight - _bgView.height - 40 - 64);
         }
-
+        
     }
     
-
-
+    
+    
 }
 
 - (void)initReplyTableView
@@ -297,7 +302,7 @@
     if (_clickcount == 0) {
         [_collectButton setBackgroundImage:[UIImage imageNamed:@"btn_meicang_n"] forState:UIControlStateNormal];
     } else if ([[_dic valueForKey:@"issc"] intValue] == 1) {
-        [_collectButton setBackgroundImage:[UIImage imageNamed:@"btn_meicang_h"] forState:UIControlStateNormal];
+        [_collectButton setBackgroundImage:[UIImage imageNamed:@"btn_shoucang_h"] forState:UIControlStateNormal];
     }
     [_collectButton addTarget:self action:@selector(collectionAction:) forControlEvents:UIControlEventTouchUpInside];
     [_bgView addSubview:_collectButton];
@@ -314,7 +319,7 @@
         [XPHTTPRequestTool requestMothedWithPost:collectURL params:params success:^(id responseObject) {
             //收藏成功
             [self writeWithName:@"收藏成功"];
-            [button setBackgroundImage:[UIImage imageNamed:@"btn_meicang_h"] forState:UIControlStateNormal];
+            [button setBackgroundImage:[UIImage imageNamed:@"btn_shoucang_h"] forState:UIControlStateNormal];
         } failure:^(NSError *error) {
             //收藏失败
             [BasicControls showNDKNotifyWithMsg:@"收藏失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
@@ -330,8 +335,8 @@
             [BasicControls showNDKNotifyWithMsg:@"取消收藏失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
         }];
     }
-     _clickcount++;
-   
+    _clickcount++;
+    
 }
 
 
@@ -392,14 +397,15 @@
         [_personString appendFormat:@"%@%@",at,name];
         
     }
+    [_textfield becomeFirstResponder];
     
     if (_textfield.text != 0) {
         _textfield.text = [NSString stringWithFormat:@"%@%@",_textfield.text,_personString];
     } else {
         _textfield.text = [NSString stringWithFormat:@"%@",_personString];
     }
-    [_textfield becomeFirstResponder];
-
+    NSLog(@"%@",_textfield.text);
+    
 }
 
 
@@ -429,7 +435,7 @@
 {
     
     NSString *contentString = _textfield.text;
-
+    
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *replyURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_reply];
@@ -447,23 +453,23 @@
         NSString *kongbai = @" ";
         contentString = [NSString stringWithFormat:@"%@%@%@%@",textArray[0],_personString,kongbai,textArray[1]];
         [params setObject:contentString forKey:@"replycontent"];
-
+        
     } else if (_personString.length == 0) {
         [params setObject:contentString forKey:@"replycontent"];
     }
- 
+    
     [XPHTTPRequestTool requestMothedWithPost:replyURL params:params success:^(id responseObject) {
-        NSLog(@"回复成功");
+        NSLog(@"评论成功");
         _textfield.text = nil;
         [_textfield resignFirstResponder];
         [self writeWithName:@"回复成功"];
         [_replyTableView.header beginRefreshing];
         _personString = nil;
     } failure:^(NSError *error) {
-         NSLog(@"回复失败");
+        NSLog(@"回复失败");
         [BasicControls showNDKNotifyWithMsg:@"回复失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
     }];
-  
+    
 }
 
 #pragma mark - 半透明遮罩事件
@@ -496,13 +502,13 @@
             [_replyTableView.footer noticeNoMoreData];
         }
         
-
+        
         if (_datalist.count == 0 || _replyTableView.header.isRefreshing) {
             _datalist = [ReplyModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"rows"]];
         } else {
             _datalist = [_datalist arrayByAddingObjectsFromArray:[ReplyModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"rows"]]];
         }
-    
+        
         _page = [[responseObject valueForKey:@"page"] doubleValue];
         _pages = [[responseObject valueForKey:@"pages"] doubleValue];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -515,12 +521,12 @@
             }
         });
         
- 
+        
     } failure:^(NSError *error) {
         NSLog(@"回复失败");
         [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
-
+    
 }
 
 #pragma mark - 下拉刷新，上拉加载更多

@@ -209,8 +209,9 @@
     //获取表示图
     HomeTableView *tableview = (HomeTableView *)[_scrollView viewWithTag:100 + searchType];
     NoDataView *nodataView = (NoDataView *)[_scrollView viewWithTag:110 + searchType];
-    if (!tableview.header.isRefreshing && !tableview.footer.isRefreshing) {
-          [GiFHUD show];
+    if (_Myfocusdatalist.count == 0 || _Mycollectiondatalist.count == 0 || _datalist.count == 0) {
+        [GiFHUD show];
+        
     }
     [XPHTTPRequestTool requestMothedWithPost:homeURL params:params success:^(id responseObject) {
         //将刷新参数保存在本地
@@ -269,24 +270,11 @@
             }
         });
 
-        
     } failure:^(NSError *error) {
             tableview.hidden = YES;
             NSLog(@"首页请求数据失败%@",error);
-        
     }];
 }
-
-//#pragma mark - 网络错误
-//- (void)errorView:(Error *)errorView reloadViewWithMessage:(NSString *)message
-//{
-//    if (_scrollView.contentOffset.x == 0) {
-//        [self requestdata];
-//    } else {
-//        [_tableView reloadData];
-//
-//    }
-//}
 
 
 

@@ -17,6 +17,7 @@
     
     UIImageView *_imageView;
     UILabel *_label;
+    UILabel *_nameLabel;
     UILabel *_textLabel;
 }
 @property(nonatomic,copy)NSDictionary *dic;

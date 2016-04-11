@@ -24,6 +24,7 @@
 {
      self.view = nil;
      _datalist = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NoDataView *)nomyView
@@ -62,15 +63,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    [self naviTitleWhiteColorWithText:@"我的动态"];
+
+    [self getdatawithPage:1];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(nomydynamic) name:@"nomydynamic" object:nil];
 
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self naviTitleWhiteColorWithText:@"我的动态"];
-    
-    [self getdatawithPage:1];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -134,7 +138,7 @@
             [_tableview reloadData];
         }
     } failure:^(NSError *error) {
-        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+//        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
 }
 
@@ -181,6 +185,16 @@
         }
         
     }
+}
+
+#pragma mark - 删除了最后一条动态
+- (void)nomydynamic
+{
+    _tableview.hidden = YES;
+    if (_nomyView) {
+        [self nomyView];
+    }
+    _nomyView.hidden = NO;
 }
 
 

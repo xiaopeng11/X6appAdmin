@@ -29,16 +29,22 @@
 
 @implementation StoresViewController
 
+- (void)dealloc
+{
+    
+    _searchstoresNames = nil;
+    _storesNames = nil;
+    _newstoresdatalist = nil;
+    _storesdatalist = nil;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     
-    if (_isStore) {
-        [self naviTitleWhiteColorWithText:@"门店选择"];
-    } else {
-        [self naviTitleWhiteColorWithText:@"经办人选择"];
-    }
+    [self naviTitleWhiteColorWithText:@"门店选择"];
+    
     
     _searchstoresNames = [NSMutableArray array];
     _storesNames = [NSMutableArray array];
@@ -46,7 +52,7 @@
     
     [self initStoreUI];
     
-    [self getstoreDataWithIsStore:_isStore];
+    [self getstoreDataWithIsStore];
     
 }
 
@@ -55,6 +61,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 #pragma mark - 绘制UI
@@ -87,19 +98,15 @@
 }
 
 #pragma mark - 获取数据
-- (void)getstoreDataWithIsStore:(BOOL)isStore
+- (void)getstoreDataWithIsStore
 {
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaults objectForKey:X6_UseUrl];
     NSString *storeURL;
-    if (_isStore) {
-        storeURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_storesList];
-    } else {
-        storeURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_personsList];
-    }
+    storeURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_storesList];
+ 
     
     [XPHTTPRequestTool requestMothedWithPost:storeURL params:nil success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         _storesdatalist = [StoreModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_storesdatalist.count == 0) {
             _storeTableView.hidden = YES;
@@ -150,7 +157,6 @@
     } else {
         cell.dic = _storesdatalist[indexPath.row];
     }
-    cell.isStore = _isStore;
     return cell;
 }
 
@@ -163,11 +169,8 @@
     } else {
         dic = _storesdatalist[indexPath.row];
     }
-    if (_isStore) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"storeChange" object:dic];
-    } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"personChange" object:dic];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"storeChange" object:dic];
+  
     [self.navigationController popViewControllerAnimated:YES];
 }
 

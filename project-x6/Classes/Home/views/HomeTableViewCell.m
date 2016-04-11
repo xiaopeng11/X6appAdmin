@@ -18,9 +18,9 @@
 
 @implementation HomeTableViewCell
 {
-    UIImageView *postBGView;   //整个的背景
+    UIImageView *postBGView;            //整个的背景
     UIButton *_userHeaderButton;        //用户头像
-    UIImageView *cornerImage;  //头像的边框图片
+    UIImageView *cornerImage;           //头像的边框图片
 
     UILabel *_userNameLabel;            //用户姓名
     UILabel *_companyLabel;             //公司
@@ -95,14 +95,36 @@
         //头像
         //通过usertype判断员工还是营业员
         NSString *headerURLString = nil;
-        if ([[data valueForKey:@"userType"] intValue] == 0) {
-            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[data valueForKey:@"userpic"]];
+        NSString *headerpic = [data valueForKey:@"userpic"];
+        if (headerpic.length == 0) {
+            NSArray *array = @[[UIColor colorWithRed:161/255.0f green:136/255.0f blue:127/255.0f alpha:1],
+                               [UIColor colorWithRed:246/255.0f green:94/255.0f blue:141/255.0f alpha:1],
+                               [UIColor colorWithRed:238/255.0f green:69/255.0f blue:66/255.0f alpha:1],
+                               [UIColor colorWithRed:245/255.0f green:197/255.0f blue:47/255.0f alpha:1],
+                               [UIColor colorWithRed:255/255.0f green:148/255.0f blue:61/255.0f alpha:1],
+                               [UIColor colorWithRed:107/255.0f green:181/255.0f blue:206/255.0f alpha:1],
+                               [UIColor colorWithRed:94/255.0f green:151/255.0f blue:246/255.0f alpha:1],
+                               [UIColor colorWithRed:154/255.0f green:137/255.0f blue:185/255.0f alpha:1],
+                               [UIColor colorWithRed:106/255.0f green:198/255.0f blue:111/255.0f alpha:1],
+                               [UIColor colorWithRed:120/255.0f green:192/255.0f blue:110/255.0f alpha:1]];
+            
+            int x = arc4random() % 10;
+            [_userHeaderButton setBackgroundColor:(UIColor *)array[x]];
+            NSString *lastTwoName = _data[@"name"];
+            lastTwoName = [lastTwoName substringWithRange:NSMakeRange(lastTwoName.length - 2, 2)];
+            [_userHeaderButton setTitle:lastTwoName forState:UIControlStateNormal];
         } else {
-            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[data valueForKey:@"userpic"]];
-        }
-        NSURL *headerURL = [NSURL URLWithString:headerURLString];
-        if (headerURLString) {
-            [_userHeaderButton sd_setBackgroundImageWithURL:headerURL forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"pho-moren"] options:SDWebImageLowPriority];
+            if ([[data valueForKey:@"userType"] intValue] == 0) {
+                headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[data valueForKey:@"userpic"]];
+            } else {
+                headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[data valueForKey:@"userpic"]];
+            }
+            NSURL *headerURL = [NSURL URLWithString:headerURLString];
+            if (headerURLString) {
+                [_userHeaderButton sd_setBackgroundImageWithURL:headerURL forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"pho-moren"] options:SDWebImageLowPriority];
+                [_userHeaderButton setTitle:@"" forState:UIControlStateNormal];
+            }
+            
         }
         
     }
@@ -130,7 +152,7 @@
             float x = leftX;
             float y = 5;
             float size = KScreenWidth - leftX - 60;
-            [_data[@"name"] drawInContext:context withPosition:CGPointMake(x, y) andFont:[UIFont boldSystemFontOfSize:16] andTextColor:[UIColor blackColor] andHeight:rect.size.height andWidth:size];
+            [_data[@"name"] drawInContext:context withPosition:CGPointMake(x, y) andFont:[UIFont systemFontOfSize:16] andTextColor:[UIColor blackColor] andHeight:rect.size.height andWidth:size];
             y += 20;
             float fromeX = leftX;
             NSString *xinxi = [NSString stringWithFormat:@"%@  %@",[_data valueForKey:@"ssgsname"],[_data valueForKey:@"gw"]];

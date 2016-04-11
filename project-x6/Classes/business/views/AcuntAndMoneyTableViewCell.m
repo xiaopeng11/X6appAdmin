@@ -29,10 +29,11 @@
         
         self.backgroundColor = [UIColor clearColor];
         _acountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth - 145 - 40, 30)];
+        _acountLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_acountLabel];
         
         _moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 185, 0, 90, 30)];
-        _moneyLabel.font = [UIFont systemFontOfSize:14];
+        _moneyLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_moneyLabel];
     }
     return self;

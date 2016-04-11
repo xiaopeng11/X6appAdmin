@@ -108,8 +108,6 @@
 {
     UIAlertController *alertcontroller = [UIAlertController alertControllerWithTitle:@"确定删除吗" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *okaction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [_datalist removeObjectAtIndex:indexPath.row];
-        [tableView reloadData];
         
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             
@@ -122,12 +120,19 @@
             
             [params setObject:messgeid forKey:@"msgId"];
             [XPHTTPRequestTool requestMothedWithPost:deleteString params:params success:^(id responseObject) {
-
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [_datalist removeObjectAtIndex:indexPath.row];
+                    if (_datalist.count == 0) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"nomydynamic" object:nil];
+                    }
+                    [tableView reloadData];
+                });
             } failure:^(NSError *error) {
                 NSLog(@"删除失败");
                 
             }];
         });
+    
         
     }];
     UIAlertAction *cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];

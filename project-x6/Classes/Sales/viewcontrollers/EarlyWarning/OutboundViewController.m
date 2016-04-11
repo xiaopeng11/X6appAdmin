@@ -66,12 +66,22 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeTodayData" object:nil];
+    _OutboundNames = nil;
+    _OutboundSearchNames = nil;
+    
+    _OutboundDetaildatalist = nil;
+    _OutboundDic = nil;
+    
+    _NewOutboundDatalist = nil;
+    _Outbounddatalist = nil;
+    
+    _selectOutboundArray = nil;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self naviTitleWhiteColorWithText:@"出库异常"];
+    [self naviTitleWhiteColorWithText:@"出库异常统计"];
     
     NSDate *date = [NSDate date];
     _dateString = [NSString stringWithFormat:@"%@",date];
@@ -113,6 +123,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -129,6 +144,11 @@
     [_OutboundSearchController.searchBar setHidden:YES];
     if ([_OutboundSearchController.searchBar isFirstResponder]) {
         [_OutboundSearchController.searchBar resignFirstResponder];
+    }
+    
+    if (_datepicker.datePicker != nil) {
+        [_datepicker.datePicker removeFromSuperview];
+        [_datepicker.subView removeFromSuperview];
     }
 }
 
@@ -215,7 +235,7 @@
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 40)];
     view.backgroundColor = GrayColor;
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 25, 20)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 20, 18)];
     imageView.image = [UIImage imageNamed:@"btn_mendian_h"];
     [view addSubview:imageView];
     
@@ -296,8 +316,8 @@
     NSString *umonth = [date substringWithRange:NSMakeRange(5, 2)];
     [params setObject:uyear forKey:@"uyear"];
     [params setObject:umonth forKey:@"accper"];
+    [GiFHUD show];
     [XPHTTPRequestTool requestMothedWithPost:myOutboundURL params:params success:^(id responseObject) {
-        NSLog(@"%@",responseObject);
         _Outbounddatalist = [OutboundModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_Outbounddatalist.count == 0) {
             _OutboundTableview.hidden = YES;
@@ -305,7 +325,8 @@
         } else {
             _NoOutboundView.hidden = YES;
             _OutboundTableview.hidden = NO;
-            
+            NSArray *sortOutboundArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col2" ascending:NO]];
+            [_Outbounddatalist sortUsingDescriptors:sortOutboundArray];
             [_OutboundTableview reloadData];
             
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -341,7 +362,6 @@
     dispatch_group_enter(group);
     
     [XPHTTPRequestTool requestMothedWithPost:myOutboundDetailURL params:params success:^(id responseObject) {
-        NSLog(@"我的%@",responseObject);
         _OutboundDetaildatalist = [OutbounddetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         [_OutboundDic setObject:_OutboundDetaildatalist forKey:section];
         dispatch_group_leave(group);

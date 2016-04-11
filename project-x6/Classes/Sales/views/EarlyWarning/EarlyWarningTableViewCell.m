@@ -31,18 +31,18 @@
         _label.font = [UIFont systemFontOfSize:18];
         [self.contentView addSubview:_label];
         
-        _warningView = [[UIView alloc] initWithFrame:CGRectMake(_label.right - 25, _label.top - 8, 20, 20)];
-        _warningView.clipsToBounds = YES;
-        _warningView.layer.cornerRadius = 10;
-        _warningView.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:.5];
-        _warningView.hidden = YES;
-        [self.contentView addSubview:_warningView];
-        
-        _warningLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-        _warningLabel.font = [UIFont systemFontOfSize:10];
-        _warningLabel.textColor = [UIColor whiteColor];
-        _warningLabel.textAlignment = NSTextAlignmentCenter;
-        [_warningView addSubview:_warningLabel];
+//        _warningView = [[UIView alloc] initWithFrame:CGRectMake(_label.right - 25, _label.top - 8, 20, 20)];
+//        _warningView.clipsToBounds = YES;
+//        _warningView.layer.cornerRadius = 10;
+//        _warningView.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:.5];
+//        _warningView.hidden = YES;
+//        [self.contentView addSubview:_warningView];
+//        
+//        _warningLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+//        _warningLabel.font = [UIFont systemFontOfSize:10];
+//        _warningLabel.textColor = [UIColor whiteColor];
+//        _warningLabel.textAlignment = NSTextAlignmentCenter;
+//        [_warningView addSubview:_warningLabel];
         
     }
     return self;
@@ -56,17 +56,17 @@
     
     _label.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"title"]];
     
-    if ([[_dic valueForKey:@"ycNum"] isEqualToString:@"no"]) {
-        _warningView.hidden = YES;
-        
-    } else {
-        _warningView.hidden = NO;
-        if ([[_dic valueForKey:@"ycNum"] doubleValue] > 99) {
-            _warningLabel.text = @"99+";
-        } else {
-            _warningLabel.text = [_dic valueForKey:@"ycNum"];
-        }
-    }
+//    if ([[_dic valueForKey:@"ycNum"] isEqualToString:@"no"]) {
+//        _warningView.hidden = YES;
+//        
+//    } else {
+//        _warningView.hidden = NO;
+//        if ([[_dic valueForKey:@"ycNum"] doubleValue] > 99) {
+//            _warningLabel.text = @"99+";
+//        } else {
+//            _warningLabel.text = [_dic valueForKey:@"ycNum"];
+//        }
+//    }
 }
 
 @end
