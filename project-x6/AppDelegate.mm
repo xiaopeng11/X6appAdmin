@@ -38,7 +38,7 @@ extern"C"{
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     
-    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatdevelop" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
+    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatproduct" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
     
     //注册apns
     [self registerRemoteNotification];
@@ -211,19 +211,20 @@ extern"C"{
     BaseTabBarViewController *baseTar = (BaseTabBarViewController *)self.window.rootViewController;
 
     [UIApplication sharedApplication].applicationIconBadgeNumber += 1;
-    
+ 
     
     if (application.applicationState == UIApplicationStateActive) {
-        //操作时间
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"收到异常消息"
-                                                        message:string
-                                                       delegate:nil
-                                              cancelButtonTitle:@"取消"
-                                              otherButtonTitles:@"确定", nil];
-        [alert show];
+        if (![string isEqualToString:@"您有一条新消息"]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"您有一条异常提醒！"
+                                                            message:string
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"取消"
+                                                  otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
+        
     } else if (application.applicationState == UIApplicationStateInactive) {
         completionHandler(UIBackgroundFetchResultNewData);
-//        [[NSNotificationCenter defaultCenter]postNotificationName:@"openMessagePage" object:nil userInfo:nil];
         NSLog(@"程序活跃状态");
         if ([string isEqualToString:@"您有一条新消息"]) {
             baseTar.selectedIndex = 1;

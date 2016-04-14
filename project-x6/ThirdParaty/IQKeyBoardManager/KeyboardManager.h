@@ -1,7 +1,7 @@
 //
 //  KeyboardManager.h
 // https://github.com/hackiftekhar/IQKeyboardManager
-// Copyright (c) 2013-14 Iftekhar Qurashi.
+// Copyright (c) 2013-16 Iftekhar Qurashi.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,15 @@
 #ifndef KeyboardManager_h
 #define KeyboardManager_h
 
-#import <KeyboardManager/IQKeyboardManager.h>
-#import <KeyboardManager/IQKeyboardManagerConstants.h>
-#import <KeyboardManager/UIView+IQKeyboardToolbar.h>
+#import "IQBarButtonItem.h"
+#import "IQKeyboardManager.h"
+#import "IQKeyboardManagerConstants.h"
+#import "IQKeyboardReturnKeyHandler.h"
+#import "IQTextView.h"
+#import "IQTitleBarButtonItem.h"
+#import "IQToolbar.h"
+#import "IQUIView+Hierarchy.h"
+#import "IQUIView+IQKeyboardToolbar.h"
+#import "IQUIWindow+Hierarchy.h"
 
 #endif

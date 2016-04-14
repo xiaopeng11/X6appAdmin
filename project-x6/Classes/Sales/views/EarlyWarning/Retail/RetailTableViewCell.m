@@ -144,7 +144,7 @@
             _nameLabel.text = @"单价:";
             _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col8"]];
         } else if (i == 3) {
-            _nameLabel.text = @"现价:";
+            _nameLabel.text = @"限价:";
             _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col9"]];
         } else if (i == 4) {
             _nameLabel.text = @"低于最低限价:";

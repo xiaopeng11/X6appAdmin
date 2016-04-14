@@ -106,6 +106,9 @@
     _timer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
     [_timer setFireDate:[NSDate distantPast]];
     
+    _URLtimer = [NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(userURLchange:) userInfo:nil repeats:YES];
+    [_URLtimer setFireDate:[NSDate distantPast]];
+    
     //接受通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableview:) name:@"reloadTableview" object:nil];
     
@@ -120,6 +123,9 @@
 {
     [super viewWillDisappear:animated];
     [_timer setFireDate:[NSDate distantFuture]];
+    [_URLtimer setFireDate:[NSDate distantFuture]];
+    [GiFHUD dismiss];
+
 }
 
 
@@ -150,6 +156,30 @@
 
     } failure:^(NSError *error) {
         NSLog(@"获取失败");
+    }];
+}
+
+- (void)userURLchange:(NSTimer *)timer
+{
+    NSLog(@"根url");
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSDictionary *message = [userdefault objectForKey:X6_UserMessage];
+    NSString *gsdm = [message valueForKey:@"gsdm"];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:gsdm forKey:@"gsdm"];
+    NSString *xlstring = @"电信";
+    NSData *data = [xlstring dataUsingEncoding:NSUTF8StringEncoding];
+    [params setObject:data forKey:@"xl"];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager POST:X6_API_loadmain parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSString *leaderurl = [responseObject objectForKey:@"message"];
+        if (![leaderurl isEqualToString:[userdefault objectForKey:X6_UseUrl]]) {
+            [userdefault setObject:leaderurl forKey:X6_UseUrl];
+            [userdefault synchronize];
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
     }];
 }
 
@@ -211,7 +241,6 @@
     NoDataView *nodataView = (NoDataView *)[_scrollView viewWithTag:110 + searchType];
     if (_Myfocusdatalist.count == 0 || _Mycollectiondatalist.count == 0 || _datalist.count == 0) {
         [GiFHUD show];
-        
     }
     [XPHTTPRequestTool requestMothedWithPost:homeURL params:params success:^(id responseObject) {
         //将刷新参数保存在本地
@@ -337,7 +366,11 @@
         offset = offset/CGRectGetWidth(scrollView.frame);
         [_itemsControlView moveToIndex:offset];
         if (offset == 1 || offset == 2) {
-            [self getdataWithPage:1 SearchType:offset];
+            if (_MyfocusPages == 0) {
+                [self getdataWithPage:1 SearchType:1];
+            } else if (_MycollectPages == 0) {
+                [self getdataWithPage:1 SearchType:2];
+            }
         }
     }
 }
@@ -357,7 +390,10 @@
 {
     if (_scrollView.contentOffset.x == 0 && [_scrollView isEqual:_tableView]) {
         [_timer invalidate];
+        [_URLtimer invalidate];
+
         _timer = nil;
+        _URLtimer = nil;
     }
 }
 
@@ -365,6 +401,8 @@
 {
     if (_scrollView.contentOffset.x == 0 && [_scrollView isEqual:_tableView]) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
+        _URLtimer = [NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(userURLchange:) userInfo:nil repeats:YES];
+
     }
 }
 

@@ -164,9 +164,8 @@
 {
     [super viewWillDisappear:animated];
     [self.MyacountSearchController.searchBar setHidden:YES];
-    if ([self.MyacountSearchController.searchBar isFirstResponder]) {
-        [self.MyacountSearchController.searchBar resignFirstResponder];
-    }
+    [_MyacountSearchController setActive:NO];
+
 }
 
 #pragma mark - 导航栏按钮

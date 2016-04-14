@@ -132,9 +132,7 @@
 {
     [super viewWillDisappear:animated];
     [self.todayPaySearchController.searchBar setHidden:YES];
-    if ([self.todayPaySearchController.searchBar isFirstResponder]) {
-        [self.todayPaySearchController.searchBar resignFirstResponder];
-    }
+    [_todayPaySearchController setActive:NO];
     
     if (_datePicker.datePicker != nil) {
         [_datePicker.datePicker removeFromSuperview];

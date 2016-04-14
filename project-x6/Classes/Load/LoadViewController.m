@@ -194,14 +194,30 @@
                             [userdefaults setObject:leaderurl forKey:X6_UseUrl];
                             [userdefaults setObject:[loaddictionary objectForKey:@"userpic"] forKey:X6_UserHeaderView];
                             [userdefaults setObject:userqxList forKey:X6_UserQXList];
-                            [userdefaults setObject:userqxList forKey:X6_UserQXList];
                             [userdefaults setObject:@(0) forKey:X6_refresh];
                             [userdefaults synchronize];
                             
                             //设置极光tags
                             
+                            NSString *ssgs = [NSString stringWithFormat:@"%@_%@",[loaddictionary valueForKey:@"gsdm"],[loaddictionary valueForKey:@"ssgs"]];
+                            NSMutableSet *set = [[NSMutableSet alloc] initWithObjects:ssgs, nil];
+                            NSLog(@"%@",userqxList);
+                            for (NSDictionary *dic in userqxList) {
+                                if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
+                                    if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                        [set addObject:@"XJXC"];
+                                    }
+                                } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_cgyc"]){
+                                    if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                        [set addObject:@"CGJJ"];
+                                    }
+                                } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]){
+                                    if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                        [set addObject:@"LSXJ"];
+                                    }
+                                }
+                            }
                             
-                            NSSet *set = [[NSSet alloc] initWithObjects:@"001_0001",@"XJXC",@"LSXJ",@"CGJJ", nil];
                             [JPUSHService setTags:set alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
                                 NSLog(@"极光的tags：%@,返回的状态吗：%d",iTags,iResCode);
                             }];

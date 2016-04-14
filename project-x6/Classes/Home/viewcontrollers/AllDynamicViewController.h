@@ -14,4 +14,5 @@
 @property(nonatomic,strong)HomeTableView *tableView;
 @property(nonatomic,strong)NoDataView *nodataView;
 @property(nonatomic,strong)NSTimer *timer;
+@property(nonatomic,strong)NSTimer *URLtimer;
 @end

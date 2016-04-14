@@ -135,8 +135,7 @@
 {
     [super viewWillAppear:animated];
     [_KucunSearchController.searchBar setHidden:NO];
-    
-    
+
     [self getMykucunData];
     
 }
@@ -145,9 +144,7 @@
 {
     [super viewWillDisappear:animated];
     [_KucunSearchController.searchBar setHidden:YES];
-    if ([_KucunSearchController.searchBar isFirstResponder]) {
-        [_KucunSearchController.searchBar resignFirstResponder];
-    }
+    [_KucunSearchController setActive:NO];
 }
 
 

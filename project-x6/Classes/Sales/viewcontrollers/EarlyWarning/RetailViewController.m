@@ -86,9 +86,8 @@
 {
     [super viewWillDisappear:animated];
     [_ReatilSearchController.searchBar setHidden:YES];
-    if ([_ReatilSearchController.searchBar isFirstResponder]) {
-        [_ReatilSearchController.searchBar resignFirstResponder];
-    }
+    [_ReatilSearchController setActive:NO];
+    
 }
 
 - (void)didReceiveMemoryWarning {

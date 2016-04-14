@@ -95,6 +95,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     [self registerNotifications];
     [self setupUnreadMessageCount];
     
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -124,7 +125,11 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     
     //移除键盘
     if ([_stocksearchBar isFirstResponder]) {
-        [_stocksearchBar resignFirstResponder];
+        if ([self respondsToSelector:@selector(pushViewController:animated:)]) {
+            [_stocksearchBar resignFirstResponder];
+        } else {
+            NSLog(@"点击了叫啊叫啊叫");
+        }
     }
     //隐藏搜索框
     NSLog(@"联系人页面移除");
@@ -214,7 +219,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
 {
-    [self.newdatalist removeAllObjects];
+//    [self.newdatalist removeAllObjects];
     
 }
 

@@ -122,10 +122,8 @@
             [XPHTTPRequestTool requestMothedWithPost:deleteString params:params success:^(id responseObject) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [_datalist removeObjectAtIndex:indexPath.row];
-                    if (_datalist.count == 0) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"nomydynamic" object:nil];
-                    }
-                    [tableView reloadData];
+
+                    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
                 });
             } failure:^(NSError *error) {
                 NSLog(@"删除失败");

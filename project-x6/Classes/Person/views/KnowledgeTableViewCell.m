@@ -64,7 +64,7 @@
         _imageHeaderView.image = [UIImage imageNamed:@"btn-wendang4-n"];
     }
     
-    _name.frame = CGRectMake(_imageHeaderView.right + 10, 10, 150, 20);
+    _name.frame = CGRectMake(_imageHeaderView.right + 10, 10, KScreenWidth - 80 - 80, 20);
     _name.text = self.model.shortname;
     
 

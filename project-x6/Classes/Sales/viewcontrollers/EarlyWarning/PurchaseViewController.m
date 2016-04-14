@@ -82,9 +82,7 @@
 {
     [super viewWillDisappear:animated];
     [_PurchaseSearchController.searchBar setHidden:YES];
-    if ([_PurchaseSearchController.searchBar isFirstResponder]) {
-        [_PurchaseSearchController.searchBar resignFirstResponder];
-    }
+    [_PurchaseSearchController setActive:NO];
 }
 
 - (void)didReceiveMemoryWarning {

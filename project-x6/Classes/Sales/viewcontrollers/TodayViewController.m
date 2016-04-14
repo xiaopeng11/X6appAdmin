@@ -193,9 +193,7 @@
         [_datepicker.subView removeFromSuperview];
     }
     [_companySearchController.searchBar setHidden:YES];
-    if ([_companySearchController.searchBar isFirstResponder]) {
-        [_companySearchController.searchBar resignFirstResponder];
-    }
+    [_companySearchController setActive:NO];
 }
 
 #pragma mark - 导航栏按钮

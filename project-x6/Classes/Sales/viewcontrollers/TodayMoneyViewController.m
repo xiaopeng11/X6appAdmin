@@ -170,9 +170,8 @@
         [_todayMoneydatepicker.subView removeFromSuperview];
     }
     [_todayMoneySearchController.searchBar setHidden:YES];
-    if ([_todayMoneySearchController.searchBar isFirstResponder]) {
-        [_todayMoneySearchController.searchBar resignFirstResponder];
-    }
+    [_todayMoneySearchController setActive:NO];
+
 }
 
 #pragma mark - 导航栏按钮

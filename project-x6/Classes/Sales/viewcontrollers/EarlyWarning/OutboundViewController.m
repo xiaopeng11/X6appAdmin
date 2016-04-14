@@ -142,9 +142,7 @@
 {
     [super viewWillDisappear:animated];
     [_OutboundSearchController.searchBar setHidden:YES];
-    if ([_OutboundSearchController.searchBar isFirstResponder]) {
-        [_OutboundSearchController.searchBar resignFirstResponder];
-    }
+    [_OutboundSearchController setActive:NO];
     
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];

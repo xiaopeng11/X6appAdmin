@@ -18,6 +18,7 @@
 #import "MyacountViewController.h"
 #import "DepositViewController.h"
 
+#import "JPUSHService.h"
 #define imageWidth (KScreenWidth / 12.0)
 @interface SalesViewController ()
 {
@@ -79,9 +80,35 @@
                 [XPHTTPRequestTool requestMothedWithPost:QXhadchangeList params:nil success:^(id responseObject) {
                     [userdefaluts setObject:[responseObject valueForKey:@"qxlist"] forKey:X6_UserQXList];
                     [userdefaluts synchronize];
+                                        
+                    //设置极光tags
+                    NSMutableDictionary *loaddictionary = [userdefaluts valueForKey:X6_UserMessage];
+                    NSString *ssgs = [loaddictionary valueForKey:@"ssgs"];
+                    NSMutableSet *set = [[NSMutableSet alloc] initWithObjects:ssgs, nil];
+                    for (NSDictionary *dic in [responseObject valueForKey:@"qxlist"]) {
+                        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"XJXC"];
+                            }
+                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_cgyc"]){
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"CGJJ"];
+                            }
+                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]){
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"LSXJ"];
+                            }
+                        }
+                    }
+                    
+                    [JPUSHService setTags:set alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+                        NSLog(@"极光的tags：%@,返回的状态吗：%d",iTags,iResCode);
+                    }];
                 } failure:^(NSError *error) {
                     NSLog(@"全此案列表失败");
                 }];
+               
+                
             }
         }
     } failure:^(NSError *error) {

@@ -202,8 +202,7 @@
                 if ([userdefaults objectForKey:X6_Contactlist] == NULL) {
                     dispatch_group_t grouped = dispatch_group_create();
                     dispatch_group_enter(grouped);
-                    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
-                    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+                    NSString *baseURL = [userdefaults objectForKey:X6_UseUrl];
                     NSString *personsURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_persons];
                     [XPHTTPRequestTool requestMothedWithPost:personsURL params:nil success:^(id responseObject) {
                         NSArray *contactList = [PersonsModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"userList"] ignoredKeys:@[@"phone",@"ssgs"]];
@@ -225,8 +224,6 @@
                         
                     });
                 } else {
-                    NSMutableArray *contactlisy = [userdefaults objectForKey:X6_Contactlist];
-                    NSLog(@"%@",contactlisy);
                     [self.navigationController pushViewController:chatVC animated:YES];
 
                 }

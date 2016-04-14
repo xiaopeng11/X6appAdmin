@@ -67,7 +67,7 @@
 
     [self getdatawithPage:1];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(nomydynamic) name:@"nomydynamic" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(nomydynamic) name:@"nomydynamic" object:nil];
 
 }
 
@@ -187,15 +187,15 @@
     }
 }
 
-#pragma mark - 删除了最后一条动态
-- (void)nomydynamic
-{
-    _tableview.hidden = YES;
-    if (_nomyView) {
-        [self nomyView];
-    }
-    _nomyView.hidden = NO;
-}
+//#pragma mark - 删除了最后一条动态
+//- (void)nomydynamic
+//{
+//    _tableview.hidden = YES;
+//    if (_nomyView) {
+//        [self nomyView];
+//    }
+//    _nomyView.hidden = NO;
+//}
 
 
 @end

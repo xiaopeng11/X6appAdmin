@@ -183,9 +183,8 @@
         [_todaydatepicker.subView removeFromSuperview];
     }
     [_todaySalesSearchController.searchBar setHidden:YES];
-    if ([_todaySalesSearchController.searchBar isFirstResponder]) {
-        [_todaySalesSearchController.searchBar resignFirstResponder];
-    }
+    [_todaySalesSearchController setActive:NO];
+
 }
 
 - (void)didReceiveMemoryWarning {
