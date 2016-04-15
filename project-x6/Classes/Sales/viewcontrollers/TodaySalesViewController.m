@@ -174,9 +174,9 @@
     [self getTodaySalesDataWithDate:_dateString];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
     
     if (_todaydatepicker.datePicker != nil) {
         [_todaydatepicker.datePicker removeFromSuperview];
@@ -273,6 +273,7 @@
     [self.companysearchNames removeAllObjects];
     [self.selectTodaySalesSection removeAllObjects];
     [self.todaySalesDic removeAllObjects];
+    [_newtodaySalesDatalist removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.todaySalesSearchController.searchBar.text];
     self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];

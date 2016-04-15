@@ -187,6 +187,7 @@
 {
     [self.OrderreviewSearchNames removeAllObjects];
     [_neworderreviewDatalist removeAllObjects];
+    
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.OrderreviewSearchController.searchBar.text];
     self.OrderreviewSearchNames = [[self.OrderreviewNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
     

@@ -196,7 +196,14 @@
         if (_OutboundDetaildatalist.count == 0) {
             _OutboundDetailTableView.hidden = YES;
             _noOutboundDetailView.hidden = NO;
-        } else {
+        } else {  
+            NSMutableArray *array = [NSMutableArray array];
+            for (NSDictionary *dic in _OutboundDetaildatalist) {
+                if ([[dic valueForKey:@"col8"] boolValue] == 1) {
+                    [array addObject:dic];
+                }
+            }
+            [_OutboundDetaildatalist removeObjectsInArray:array];
             _noOutboundDetailView.hidden = YES;
             _OutboundDetailTableView.hidden = NO;
             NSArray *OutboundDetailArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col1" ascending:NO]];

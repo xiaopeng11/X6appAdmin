@@ -193,6 +193,7 @@
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.searchAcountChoosesNames removeAllObjects];
+    [_newAcountChoosesdatalist removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.AcountChooseSearchViewcontroller.searchBar.text];
     self.searchAcountChoosesNames = [[self.AcountChoosesNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];

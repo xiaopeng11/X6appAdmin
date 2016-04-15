@@ -184,9 +184,9 @@
     
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
     
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
@@ -214,7 +214,7 @@
     [self.companSearchNames removeAllObjects];
     [self.detailDic removeAllObjects];
     [_selectSectionArray removeAllObjects];
-    
+    [_newtodayDatlist removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.companySearchController.searchBar.text];
     self.companSearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];

@@ -49,7 +49,11 @@
     
     //初始化动态详情页面
     [self initWithSubview];
-    
+    //获取数据
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self getReplyDataWithPage:1];
+        
+    });
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -75,12 +79,7 @@
     [super viewWillAppear:animated];
     
     [self drawCollectedButton];
-    
-    //获取数据
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self getReplyDataWithPage:1];
-        
-    });
+
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

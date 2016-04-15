@@ -16,7 +16,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 
@@ -31,9 +31,13 @@
         _cornView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 50, 50)];
         [self.contentView addSubview:_cornView];
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 20, 100, 20)];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 20, KScreenWidth - 200, 20)];
         _nameLabel.font = [UIFont systemFontOfSize:17];
         [self.contentView addSubview:_nameLabel];
+        
+        _dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 130, 20, 120, 20)];
+        _dateLabel.font = [UIFont systemFontOfSize:15];
+        [self.contentView addSubview:_dateLabel];
         
         for (int i = 0; i < 4; i++) {
             _fourlabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 50 + 30 * i, KScreenWidth - 60, 25)];
@@ -59,6 +63,8 @@
     _cornView.image = [UIImage imageNamed:@"corner_circle"];
     
     _nameLabel.text = [_dic valueForKey:@"col4"];
+    
+    _dateLabel.text = [NSString stringWithFormat:@"日期:%@",[_dic valueForKey:@"col2"]];
     
     for (int i = 0; i < 4; i++) {
         UILabel *label = [self.contentView viewWithTag:4610 + i];

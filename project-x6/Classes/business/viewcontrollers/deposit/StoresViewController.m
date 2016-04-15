@@ -178,6 +178,7 @@
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.searchstoresNames removeAllObjects];
+    [_newstoresdatalist removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.storeSearchViewcontroller.searchBar.text];
     self.searchstoresNames = [[self.storesNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];

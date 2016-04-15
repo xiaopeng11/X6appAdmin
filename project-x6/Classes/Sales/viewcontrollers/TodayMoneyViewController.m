@@ -161,9 +161,9 @@
     [self getTodayMoneyDataWithDate:_dateString];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
     
     if (_todayMoneydatepicker.datePicker != nil) {
         [_todayMoneydatepicker.datePicker removeFromSuperview];
@@ -173,6 +173,8 @@
     [_todayMoneySearchController setActive:NO];
 
 }
+
+
 
 #pragma mark - 导航栏按钮
 - (void)creatRightNaviButton
@@ -281,6 +283,7 @@
     [self.companysearchNames removeAllObjects];
     [self.selectTodayMoneySection removeAllObjects];
     [self.todayMoneyDic removeAllObjects];
+    [_newtodayMoneyDatalist removeAllObjects];
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.todayMoneySearchController.searchBar.text];
     self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];

@@ -167,6 +167,7 @@
 {
     self.newdatalist = [NSMutableArray array];
     [self.newdatalist removeAllObjects];
+    
     NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.TexsearchVC.searchBar.text];
     NSMutableArray *array;
     NSMutableSet *set = [NSMutableSet set];

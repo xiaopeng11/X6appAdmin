@@ -61,22 +61,14 @@
     
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
     
     if (_datePicker.datePicker != nil) {
         [_datePicker.datePicker removeFromSuperview];
         [_datePicker.subView removeFromSuperview];
     }
-    
-    
-    
 }
 
 

@@ -90,6 +90,8 @@
     
     _companyNames = [NSMutableArray array];
     _companysearchNames = [NSMutableArray array];
+    _newtodayPayDatalist = [NSMutableArray array];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
 
@@ -128,9 +130,10 @@
  
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
+    
     [self.todayPaySearchController.searchBar setHidden:YES];
     [_todayPaySearchController setActive:NO];
     
@@ -144,9 +147,10 @@
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
     [self.companysearchNames removeAllObjects];
+    [_newtodayPayDatalist removeAllObjects];
+    
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.todayPaySearchController.searchBar.text];
     self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
-    _newtodayPayDatalist = [NSMutableArray array];
     
     for (NSString *title in self.companysearchNames) {
         for (NSDictionary *dic in _todayPayDatalist) {

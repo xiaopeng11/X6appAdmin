@@ -94,7 +94,7 @@
     _gysLabel.text = [NSString stringWithFormat:@"供应商:%@",[_dic valueForKey:@"col3"]];
     
     double pencet;
-    double higherLastPrice = [[_dic valueForKey:@"col8"] doubleValue] - [[_dic valueForKey:@"col7"] doubleValue];
+    double higherLastPrice = [[_dic valueForKey:@"col8"] doubleValue] - [[_dic valueForKey:@"col6"] doubleValue];
     if (higherLastPrice > 0) {
         pencet =  ((higherLastPrice / [[_dic valueForKey:@"col8"] doubleValue]) * 100);
     } else {

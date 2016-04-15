@@ -240,7 +240,7 @@
         } else {
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *dic in _PurchaseDatalist) {
-                if ([[dic valueForKey:@"col10"] boolValue] == 1) {
+                if ([[dic valueForKey:@"col9"] boolValue] == 1) {
                     [array addObject:dic];
                 }
             }

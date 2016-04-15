@@ -376,6 +376,7 @@
     [self.OutboundSearchNames removeAllObjects];
     [self.OutboundDic removeAllObjects];
     [_selectOutboundArray removeAllObjects];
+    [_NewOutboundDatalist removeAllObjects];
     
     NSPredicate *OutboundPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.OutboundSearchController.searchBar.text];
     self.OutboundSearchNames = [[self.OutboundNames filteredArrayUsingPredicate:OutboundPredicate] mutableCopy];

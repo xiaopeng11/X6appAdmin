@@ -12,6 +12,8 @@
 {
     UIImageView *_imageView;
     UIImageView *_cornView;
+    UILabel *_dateLabel;
+
     UILabel *_nameLabel;
     UILabel *_fourlabel;
 }

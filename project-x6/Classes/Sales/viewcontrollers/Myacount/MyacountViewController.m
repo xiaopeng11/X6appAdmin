@@ -160,12 +160,16 @@
     [self.MyacountSearchController.searchBar setHidden:NO];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
     [self.MyacountSearchController.searchBar setHidden:YES];
     [_MyacountSearchController setActive:NO];
-
+    
+    if (_datepicker.datePicker != nil) {
+        [_datepicker.datePicker removeFromSuperview];
+        [_datepicker.subView removeFromSuperview];
+    }
 }
 
 #pragma mark - 导航栏按钮

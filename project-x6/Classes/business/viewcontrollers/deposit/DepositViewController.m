@@ -117,6 +117,16 @@
     }
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    if (_datepicker.datePicker != nil) {
+        [_datepicker.datePicker removeFromSuperview];
+        [_datepicker.subView removeFromSuperview];
+    }
+}
+
 #pragma mark - 增加银行存款
 - (void)adddeposit
 {
