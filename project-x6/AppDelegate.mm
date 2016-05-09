@@ -18,6 +18,7 @@
 #import "JPUSHService.h"
 @interface AppDelegate ()<EMChatManagerDelegate>
 
+
 @end
 
 @implementation AppDelegate

@@ -6,6 +6,8 @@
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
+
+
 #import "SalesViewController.h"
 
 
@@ -22,8 +24,9 @@
 #define imageWidth (KScreenWidth / 12.0)
 @interface SalesViewController ()
 {
-    NSArray *_datalist;
+    NSMutableArray *_datalist;
     UIView *_wraningNumberView;
+    UIScrollView *_bussScrollView;
 }
 
 @property(nonatomic,strong)NSTimer *Usertimer;
@@ -54,7 +57,7 @@
     //获取异常条数
     [self getEarlyWraningNumber];
     
-    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:65 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
+    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
     [_Usertimer setFireDate:[NSDate distantPast]];
     
 }
@@ -62,8 +65,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [_Usertimer setFireDate:[NSDate distantFuture]];
-
+    [_Usertimer invalidate];
 }
 
 - (void)getPersonMessage
@@ -76,11 +78,18 @@
             [self writeWithName:[responseObject valueForKey:@"message"]];
         } else {
             if ([responseObject[@"message"] isEqualToString:@"Y"]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeQXList" object:nil];
+
                 NSString *QXhadchangeList = [NSString stringWithFormat:@"%@%@",baseURL,X6_hadChangeQX];
                 [XPHTTPRequestTool requestMothedWithPost:QXhadchangeList params:nil success:^(id responseObject) {
                     [userdefaluts setObject:[responseObject valueForKey:@"qxlist"] forKey:X6_UserQXList];
                     [userdefaluts synchronize];
-                                        
+                    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                    
+                    [self initWithSubViews];
+                    
+                    [self getEarlyWraningNumber];
+                    
                     //设置极光tags
                     NSMutableDictionary *loaddictionary = [userdefaluts valueForKey:X6_UserMessage];
                     NSString *ssgs = [loaddictionary valueForKey:@"ssgs"];
@@ -120,61 +129,145 @@
 #pragma mark - initWithSubViews
 - (void)initWithSubViews
 {
-    _datalist = @[@{@"text":@"库存",@"image":@"btn_kucun"},
-                  @{@"text":@"战报",@"image":@"btn_zhanbao"},
-                  @{@"text":@"销量",@"image":@"btn_xiaoliang"},
-                  @{@"text":@"营业款",@"image":@"btn_yingyekuan"},
-                  @{@"text":@"付款",@"image":@"btn_fukuan"},
-                  @{@"text":@"提醒",@"image":@"btn_yujingtixing"},
-                  @{@"text":@"帐户",@"image":@"btn_zhanghu"},
-                  @{@"text":@"存款",@"image":@"btn_jinricunkuan_h"}];
- 
-    UIScrollView *bussScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
-    bussScrollView.showsVerticalScrollIndicator = NO;
-    bussScrollView.showsHorizontalScrollIndicator = NO;
-    bussScrollView.contentSize = CGSizeMake(KScreenWidth, 200 + (KScreenWidth / 2.0) + 20);
-    [self.view addSubview:bussScrollView];
+    
+    _datalist = [NSMutableArray array];
+    
+    NSArray *arrayimage = @[@{@"title":@"bb_mykc",@"image":@"btn_kucun"},
+                            @{@"title":@"bb_jrzb",@"image":@"btn_zhanbao"},
+                            @{@"title":@"bb_jrxs",@"image":@"btn_xiaoliang"},
+                            @{@"title":@"bb_jryyk",@"image":@"btn_yingyekuan"},
+                            @{@"title":@"bb_jrcwfk",@"image":@"btn_fukuan"},
+                            @{@"title":@"bb_myzh",@"image":@"btn_zhanghu"},
+                            @{@"title":@"bb_jryhdk",@"image":@"btn_jinricunkuan_h"},
+                            ];
+    
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:arrayimage];
+    for (int i = 0; i < mutableArray.count; i++) {
+        NSMutableDictionary *mutableDic = [NSMutableDictionary dictionaryWithDictionary:mutableArray[i]];
+        for (NSDictionary *diced in qxList) {
+            if ([[diced valueForKey:@"qxid"] isEqualToString:[mutableDic valueForKey:@"title"]]) {
+                if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_mykc"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"0" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jrzb"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"1" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jrxs"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"2" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jryyk"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"3" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jrcwfk"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"4" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_myzh"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"6" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jryhdk"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"7" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                }
+                break;
+            }
+            
+        }
+    }
+    
+    NSMutableArray *pcs = [NSMutableArray array];
+    for (NSDictionary *diced in qxList) {
+        if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
+            [pcs addObject:[diced valueForKey:@"pc"]];
+        } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jxc_klyj"]) {
+            [pcs addObject:[diced valueForKey:@"pc"]];
+        } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jxc_cgyc"]) {
+            [pcs addObject:[diced valueForKey:@"pc"]];
+        } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]) {
+            [pcs addObject:[diced valueForKey:@"pc"]];
+        }
+    }
+
+    NSLog(@"%@",pcs);
+    _bussScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
+    _bussScrollView.showsVerticalScrollIndicator = NO;
+    _bussScrollView.showsHorizontalScrollIndicator = NO;
+    _bussScrollView.contentSize = CGSizeMake(KScreenWidth, 200 + (KScreenWidth / 2.0) + 20);
+    [self.view addSubview:_bussScrollView];
     
     UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 200)];
     imageview.image = [UIImage imageNamed:@"btn_yun-baobiao_h"];
-    [bussScrollView addSubview:imageview];
+    [_bussScrollView addSubview:imageview];
+    
+    if (![pcs containsObject:@(0)]) {
+        NSMutableDictionary *diced = [NSMutableDictionary dictionary];
+        [diced setObject:@"btn_yujingtixing" forKey:@"image"];
+        [diced setObject:@"5" forKey:@"buttonTag"];
+        [_datalist addObject:diced];
+        
+        
+        NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"buttonTag" ascending:YES]];
+        [_datalist sortUsingDescriptors:sortDescriptors];
+        
+        NSUInteger indec = [_datalist indexOfObject:diced];
+        
+        NSUInteger warn_x = indec / 4;
+        NSUInteger warn_y = indec % 4;
+        _wraningNumberView = [[UIView alloc] initWithFrame:CGRectMake((KScreenWidth / 4.0) * (warn_y + 1) - 40, 200 + (KScreenWidth / 4.0 + 20) * warn_x + 10, 20, 20)];
+        _wraningNumberView.clipsToBounds = YES;
+        _wraningNumberView.layer.cornerRadius = 10;
+        _wraningNumberView.backgroundColor = [UIColor redColor];
+        _wraningNumberView.hidden = YES;
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        label.tag = 10001;
+        label.font = [UIFont systemFontOfSize:13];
+        label.textColor = [UIColor whiteColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        [_wraningNumberView addSubview:label];
+        
+        [_bussScrollView addSubview:_wraningNumberView];
+        
+    }
     
     
+    NSArray *titleNames = @[@"库存",@"战报",@"销量",@"营业款",@"付款",@"提醒",@"帐户",@"存款"];
     for (int i = 0; i < _datalist.count; i++) {
+        NSInteger num = [[_datalist[i] valueForKey:@"buttonTag"] integerValue];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         UIImageView *imageView = [[UIImageView alloc] init];
         UILabel *label = [[UILabel alloc] init];
         int sales_x = i / 4;
         int sales_y = i % 4;
         button.frame = CGRectMake((KScreenWidth / 4.0) * sales_y, 200 + (KScreenWidth / 4.0 + 20) * sales_x, KScreenWidth / 4.0, KScreenWidth / 4.0);
-        button.tag = 4000 + i;
+        button.tag = 4000 + num;
         imageView.frame = CGRectMake(imageWidth, imageWidth - 10, imageWidth - 3, imageWidth);
         imageView.image = [UIImage imageNamed:[_datalist[i] valueForKey:@"image"]];
         label.frame = CGRectMake(0, imageWidth * 2, KScreenWidth / 4.0, 20);
-        label.text = [_datalist[i] valueForKey:@"text"];
+        label.text = titleNames[num];
         label.textColor = [UIColor colorWithRed:127 / 255 green:136 / 255 blue:148 / 255 alpha:1];
         label.font = [UIFont systemFontOfSize:15];
         label.textAlignment = NSTextAlignmentCenter;
         [button addSubview:imageView];
         [button addSubview:label];
         [button addTarget:self action:@selector(salesDetailChoose:) forControlEvents:UIControlEventTouchUpInside];
-        [bussScrollView addSubview:button];
+        [_bussScrollView addSubview:button];
     }
-  
-    _wraningNumberView = [[UIView alloc] initWithFrame:CGRectMake((KScreenWidth / 2.0) - 40, 200 + (KScreenWidth / 4.0) + 30, 20, 20)];
-    _wraningNumberView.clipsToBounds = YES;
-    _wraningNumberView.layer.cornerRadius = 10;
-    _wraningNumberView.backgroundColor = [UIColor redColor];
-    _wraningNumberView.hidden = YES;
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    label.tag = 10001;
-    label.font = [UIFont systemFontOfSize:13];
-    label.textColor = [UIColor whiteColor];
-    label.textAlignment = NSTextAlignmentCenter;
-    [_wraningNumberView addSubview:label];
-    
-    [bussScrollView addSubview:_wraningNumberView];
 }
 
 

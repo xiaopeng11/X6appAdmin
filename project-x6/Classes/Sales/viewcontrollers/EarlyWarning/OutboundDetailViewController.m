@@ -74,22 +74,10 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    
-    
-    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
-    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-    for (NSDictionary *dic in qxList) {
-        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
-            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                //异常明细
-                [self getTabelViewData];
-            } else {
-                [self writeWithName:@"您没有查看出库异常详情的权限"];
-            }
-        }
-    }
-    
+    [super viewWillAppear:animated];    
+
+    [self getTabelViewData];
+
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self cleanOutboundWarningNumber];
     });

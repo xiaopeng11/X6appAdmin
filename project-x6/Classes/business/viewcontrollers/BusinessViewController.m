@@ -14,6 +14,7 @@
 
 
 #import "SettingPriceViewController.h"
+#import "JPUSHService.h"
 
 
 #define imageWidth  (((KScreenWidth / 2.0) - 80) / 2.0)
@@ -22,9 +23,13 @@
 {
     NSMutableArray *_busDatalist;
 }
+
+@property(nonatomic,strong)NSTimer *Usertimer;
+
 @end
 
 @implementation BusinessViewController
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,12 +39,107 @@
     
     _busDatalist = [NSMutableArray array];
     
+    [self intBusinessUI];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBusinessList) name:@"changeQXList" object:nil];
+    
+    
+    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(getBusinessMessage) userInfo:nil repeats:YES];
+    [_Usertimer setFireDate:[NSDate distantPast]];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSLog(@"%@",_busDatalist);
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [_Usertimer invalidate];
+}
+
+//权限改变
+- (void)changeBusinessList
+{
+    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self intBusinessUI];
+}
+
+//定时器方法
+- (void)getBusinessMessage
+{
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *userQXchange = [NSString stringWithFormat:@"%@%@",baseURL,X6_userQXchange];
+    [XPHTTPRequestTool requestMothedWithPost:userQXchange params:nil success:^(id responseObject) {
+        if ([responseObject[@"type"] isEqualToString:@"error"]) {
+            [self writeWithName:[responseObject valueForKey:@"message"]];
+        } else {
+            if ([responseObject[@"message"] isEqualToString:@"Y"]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeQXList" object:nil];
+                
+                NSString *QXhadchangeList = [NSString stringWithFormat:@"%@%@",baseURL,X6_hadChangeQX];
+                [XPHTTPRequestTool requestMothedWithPost:QXhadchangeList params:nil success:^(id responseObject) {
+                    [userdefaluts setObject:[responseObject valueForKey:@"qxlist"] forKey:X6_UserQXList];
+                    [userdefaluts synchronize];
+                    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                    
+                    [self intBusinessUI];
+                    
+                    
+                    //设置极光tags
+                    NSMutableDictionary *loaddictionary = [userdefaluts valueForKey:X6_UserMessage];
+                    NSString *ssgs = [loaddictionary valueForKey:@"ssgs"];
+                    NSMutableSet *set = [[NSMutableSet alloc] initWithObjects:ssgs, nil];
+                    for (NSDictionary *dic in [responseObject valueForKey:@"qxlist"]) {
+                        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"XJXC"];
+                            }
+                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_cgyc"]){
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"CGJJ"];
+                            }
+                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]){
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"LSXJ"];
+                            }
+                        }
+                    }
+                    
+                    [JPUSHService setTags:set alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+                        NSLog(@"极光的tags：%@,返回的状态吗：%d",iTags,iResCode);
+                    }];
+                } failure:^(NSError *error) {
+                    NSLog(@"全此案列表失败");
+                }];
+                
+                
+            }
+        }
+    } failure:^(NSError *error) {
+        NSLog(@"获取权限失败");
+    }];
+
+}
+
+- (void)intBusinessUI
+{
     NSArray *arrayimage = @[@{@"title":@"sz_gys",@"image":@"btn_gongyingshan"},
                             @{@"title":@"sz_kh",@"image":@"btn_kehu"},
                             @{@"title":@"cz_cgddsh",@"image":@"btn_dingdan"},
                             @{@"title":@"cz_ywkdk",@"image":@"btn_cunkuan"},
                             @{@"title":@"sz_yjszkhj",@"image":@"btn_shezhi"},
-                             ];
+                            ];
     
     NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
     NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
@@ -75,13 +175,14 @@
                     }
                 }
                 break;
+            }
+            
         }
- 
-    }
     }
     
     NSArray *titleNames = @[@"供应商",@"客户",@"订单审核",@"银行存款",@"设置考核价"];
     for (int i = 0; i < _busDatalist.count; i++) {
+        NSInteger num = [[_busDatalist[i] valueForKey:@"buttonTag"] integerValue];
         int bus_X = i % 2;
         int bus_Y = i / 2;
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -92,14 +193,10 @@
         [self.view addSubview:button];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth - 10 + (imageWidth  * 2 + 80) * bus_X, 90 + 110 * bus_Y, 100, 20)];
         label.textAlignment = NSTextAlignmentCenter;
-        label.text = titleNames[i];
+        label.text = titleNames[num];
         [self.view addSubview:label];
     }
-}
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 

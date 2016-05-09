@@ -13,10 +13,7 @@
 {
     UIImageView *_image;
     UILabel *_label;
-    
-//    UIView *_warningView;
-//    UILabel *_warningLabel;
-    
+ 
 }
 
 @property(nonatomic,copy)NSDictionary *dic;

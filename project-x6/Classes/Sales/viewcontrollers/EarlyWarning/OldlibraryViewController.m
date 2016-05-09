@@ -42,19 +42,9 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
-    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-    for (NSDictionary *dic in qxList) {
-        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_klyj"]) {
-            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                //获取数据
-                [self getOldlibraryData];
-            } else {
-                [self writeWithName:@"您没有查看库龄预警详情的权限"];
-            }
-        }
-    }
-    
+
+     [self getOldlibraryData];
+
 }
 
 #pragma mark - UITableViewDelegate

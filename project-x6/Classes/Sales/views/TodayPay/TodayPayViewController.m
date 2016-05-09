@@ -113,20 +113,9 @@
     
     //绘制UI
     [self initTodayPay];
-    
-    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
-    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-    for (NSDictionary *dic in qxList) {
-        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrcwfk"]) {
-            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                //获取数据
-                [self gettodayPayDataWithDate:_dateString];
-            } else {
-                [self writeWithName:@"您没有查看今日付款详情的权限"];
-            }
-        }
-    }
- 
+
+    [self gettodayPayDataWithDate:_dateString];
+
 }
 
 - (void)viewDidDisappear:(BOOL)animated

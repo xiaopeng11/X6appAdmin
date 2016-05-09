@@ -380,7 +380,7 @@
         NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
         for (NSDictionary *dic in qxList) {
             if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrxs"]) {
-                if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
                     [self getOneSalesDataWithDate:_todaydatepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
                 } else {
                     [self writeWithName:@"您没有查看今日销量详情的权限"];
