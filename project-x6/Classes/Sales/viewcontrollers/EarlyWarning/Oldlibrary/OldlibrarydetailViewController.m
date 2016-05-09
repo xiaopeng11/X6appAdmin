@@ -207,9 +207,10 @@
     [params setObject:@"col0" forKey:@"sidx"];
     [params setObject:@"asc" forKey:@"sord"];
     if (!_OldlibrarydetailTableview.header.isRefreshing && !_OldlibrarydetailTableview.footer.isRefreshing) {
-        [GiFHUD show];
+        [self showProgress];
     }
     [XPHTTPRequestTool requestMothedWithPost:OldlibrarydetailURL params:params success:^(id responseObject) {
+        [self hideProgress];
         if (_OldlibrarydetailDatalist.count == 0 || _OldlibrarydetailTableview.header.isRefreshing) {
             _OldlibrarydetailDatalist = [OldlibraryDetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         } else {
@@ -235,6 +236,7 @@
             _OldlibrarydetailPage = [responseObject[@"page"] doubleValue];
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"库龄预警失败");
     }];
 }

@@ -333,8 +333,9 @@
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *mykucunURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_mykucun];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:mykucunURL params:nil success:^(id responseObject) {
+        [self hideProgress];
         _Kucundatalist = [KucunModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_Kucundatalist.count == 0) {
             _KucunTableview.hidden = YES;
@@ -360,6 +361,7 @@
         }
         
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"我的库存请求失败");
     }];
     
@@ -376,9 +378,10 @@
     NSNumber *spdm = [[array objectAtIndex:[section longLongValue]] valueForKey:@"col0"];
     [params setObject:spdm forKey:@"spdm"];
     dispatch_group_enter(group);
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:mykucunDetailURL params:params success:^(id responseObject) {
         NSLog(@"我的");
+        [self hideProgress];
         NSMutableDictionary *kucundetailDic = [NSMutableDictionary dictionaryWithDictionary:responseObject[@"vo"]];
         NSNumber *jine = [[array objectAtIndex:[section longLongValue]] valueForKey:@"col3"];
         NSNumber *numb = [[array objectAtIndex:[section longLongValue]] valueForKey:@"col2"];
@@ -400,6 +403,7 @@
         dispatch_group_leave(group);
     } failure:^(NSError *error) {
         NSLog(@"行的");
+        [self hideProgress];
         dispatch_group_leave(group);
 
     }];

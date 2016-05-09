@@ -11,6 +11,8 @@
 #import "AppDelegate.h"
 
 #import "JPUSHService.h"
+
+#import "UserRegisterViewController.h"
 @interface LoadViewController ()<UITextFieldDelegate>
 
 @end
@@ -81,7 +83,7 @@
     //输入框
     NSArray *placeholders = @[@" 请输入公司代码",@" 请输入用户名",@" 请输入密码"];
     for (int i = 0; i < placeholders.count; i++) {
-        UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(10, 184 + 20 + 61 * i, KScreenWidth - 20, 60)];
+        UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(15, 184 + 20 + 61 * i, KScreenWidth - 30, 60)];
         textField.borderStyle = UITextBorderStyleNone;
         textField.delegate = self;
         NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
@@ -89,9 +91,10 @@
         if (usedic != nil) {            
             if (i == 0) {
                 textField.text = [usedic valueForKey:@"gsdm"];
-                
+                textField.keyboardType = UIKeyboardTypeNumberPad;
             } else if (i == 1) {
                 textField.text = [usedic valueForKey:@"phone"];
+                textField.keyboardType = UIKeyboardTypeNumberPad;
             } else {
                 textField.placeholder = placeholders[i];
             }
@@ -100,20 +103,20 @@
         }
         textField.layer.cornerRadius = 5;
         textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        textField.keyboardType = UIKeyboardTypeNumberPad;
+        
         textField.tag = 10 + i;
         if (i == placeholders.count - 1) {
             textField.secureTextEntry = YES;
         }
         [self.view addSubview:textField];
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 184 + 20 + 60 * i + 60, KScreenWidth - 20, 1)];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 184 + 20 + 60 * i + 60, KScreenWidth - 30, 1)];
         lineView.backgroundColor = LineColor;
         [self.view addSubview:lineView];
         
     }
     
-    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 394, KScreenWidth - 40, 50)];
+    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 394, (KScreenWidth - 45) / 2.0, 44)];
     loadButton.backgroundColor = Mycolor;
     loadButton.clipsToBounds = YES;
     loadButton.layer.cornerRadius = 15;
@@ -123,12 +126,19 @@
     [loadButton addTarget:self action:@selector(loadAction) forControlEvents:UIControlEventTouchUpInside];
     loadButton.layer.cornerRadius = 5;
     [self.view addSubview:loadButton];
-
+    
+    UIButton *userRegisterButton = [[UIButton alloc] initWithFrame:CGRectMake(30 + (KScreenWidth - 45) / 2.0, 394, (KScreenWidth - 45) / 2.0, 44)];
+    userRegisterButton.backgroundColor = Mycolor;
+    userRegisterButton.clipsToBounds = YES;
+    userRegisterButton.layer.cornerRadius = 15;
+    [userRegisterButton setTitle:@"注     册" forState:UIControlStateNormal];
+    [userRegisterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [userRegisterButton setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
+    [userRegisterButton addTarget:self action:@selector(RegisterAction) forControlEvents:UIControlEventTouchUpInside];
+    userRegisterButton.layer.cornerRadius = 5;
+    [self.view addSubview:userRegisterButton];
 
 }
-
-
-
 
 #pragma mark - loadAction：
 - (void)loadAction
@@ -152,12 +162,11 @@
         NSString *xlstring = @"电信";
         NSData *data = [xlstring dataUsingEncoding:NSUTF8StringEncoding];
         [params setObject:data forKey:@"xl"];
-        [GiFHUD show];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager POST:X6_API_loadmain parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
             //继续网络请求
             if ([[responseObject objectForKey:@"type"] isEqualToString:@"error"]) {
-                [GiFHUD dismiss];
                 [self writeWithName:@"该公司未开通"];
             } else {
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
@@ -169,10 +178,11 @@
                     [paramsload setObject:userid.text forKey:@"uname"];
                     [paramsload setObject:password.text forKey:@"pwd"];
                     AFHTTPRequestOperationManager *managerload = [AFHTTPRequestOperationManager manager];
+                    [self showProgress];
                     [managerload POST:mainURL parameters:paramsload success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        [self hideProgress];
                         //登陆成功
                         if ([[responseObject objectForKey:@"type"] isEqualToString:@"error"]) {
-                            [GiFHUD dismiss];
                             [self writeWithName:[responseObject objectForKey:@"message"]];
                         } else {
                             //保存cookie
@@ -197,8 +207,7 @@
                             [userdefaults setObject:@(0) forKey:X6_refresh];
                             [userdefaults synchronize];
                             
-                            //设置极光tags
-                            
+                            //设置极光tags                            
                             NSString *ssgs = [NSString stringWithFormat:@"%@_%@",[loaddictionary valueForKey:@"gsdm"],[loaddictionary valueForKey:@"ssgs"]];
                             NSMutableSet *set = [[NSMutableSet alloc] initWithObjects:ssgs, nil];
                             NSLog(@"%@",userqxList);
@@ -233,7 +242,7 @@
                                 } onQueue:nil];
                             }
                             
-                                //登录
+                            //登录
                             [[EaseMob sharedInstance].chatManager asyncLoginWithUsername:EaseID password:password completion:^(NSDictionary *loginInfo, EMError *error) {
                                 //设置成自动登录
                                 NSLog(@"自动登录成功");
@@ -250,26 +259,29 @@
                                 //单独设置昵称
                                 [[EaseMob sharedInstance].chatManager setApnsNickname:[loaddictionary valueForKey:@"name"]];
                                 
-                                
                             }onQueue:nil];
                             
-                            [GiFHUD dismiss];
-
                             BaseTabBarViewController *baseVC = [[BaseTabBarViewController alloc] init];
                             UIWindow *window = [UIApplication sharedApplication].keyWindow;
                             window.rootViewController = baseVC;
-                            self.view = nil;
                             }
                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                        [GiFHUD dismiss];
+                        [self hideProgress];
                         [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
                     }];
               }
          }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            [GiFHUD dismiss];
         }];
     }
+}
+
+#pragma mark - 注册
+- (void)RegisterAction
+{
+    UserRegisterViewController *userRegisterVC = [[UserRegisterViewController alloc] init];
+    userRegisterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    [self presentViewController:userRegisterVC animated:YES completion:nil];
 }
 
 @end

@@ -10,4 +10,9 @@
 
 @interface BaseViewController : UIViewController
 
+//显示菊花
+- (void)showProgress;
+
+//隐藏菊花
+- (void)hideProgress;
 @end

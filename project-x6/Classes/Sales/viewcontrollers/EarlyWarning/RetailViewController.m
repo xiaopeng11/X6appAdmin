@@ -240,8 +240,9 @@
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *RetailURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Retail];
 
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:RetailURL params:nil success:^(id responseObject) {
+        [self hideProgress];
         _ReatilDatalist = [RetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         
         if (_ReatilDatalist.count == 0) {
@@ -276,6 +277,7 @@
         }
         
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"获取零售异常失败");
     }];
 }

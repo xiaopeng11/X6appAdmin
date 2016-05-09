@@ -189,14 +189,15 @@
     NSString *umonth = [_dateString substringWithRange:NSMakeRange(5, 2)];
     [params setObject:uyear forKey:@"uyear"];
     [params setObject:umonth forKey:@"accper"];
-    [GiFHUD show];
+    [self showProgress];
 
     [XPHTTPRequestTool requestMothedWithPost:myOutboundDetailURL params:params success:^(id responseObject) {
+        [self hideProgress];
         _OutboundDetaildatalist = [OutboundMoredetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_OutboundDetaildatalist.count == 0) {
             _OutboundDetailTableView.hidden = YES;
             _noOutboundDetailView.hidden = NO;
-        } else {  
+        } else {            
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *dic in _OutboundDetaildatalist) {
                 if ([[dic valueForKey:@"col8"] boolValue] == 1) {
@@ -204,6 +205,7 @@
                 }
             }
             [_OutboundDetaildatalist removeObjectsInArray:array];
+            
             _noOutboundDetailView.hidden = YES;
             _OutboundDetailTableView.hidden = NO;
             NSArray *OutboundDetailArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col1" ascending:NO]];
@@ -212,6 +214,7 @@
         }
         
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"出库异常明细获取失败");
     }];
     

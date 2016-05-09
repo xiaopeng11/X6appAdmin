@@ -38,7 +38,7 @@ extern"C"{
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     
-    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatproduct" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
+    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatdevelop" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
     
     //注册apns
     [self registerRemoteNotification];
@@ -53,9 +53,6 @@ extern"C"{
     
     //设置极光推送
     [self settingJpushMothed:launchOptions];
-    
-    //设置加载动画
-    [GiFHUD setGifWithImageName:@"clock.gif"];
     
     //判断是否已经登陆    
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
@@ -75,8 +72,7 @@ extern"C"{
             [[EaseMob sharedInstance].chatManager setIsAutoLoginEnabled:YES];
             NSLog(@"环信号登录成功");
         } onQueue:nil];
-      
-                
+           
         BaseTabBarViewController *baseTBVC = [[BaseTabBarViewController alloc] init];
         _window.rootViewController = baseTBVC;
     }

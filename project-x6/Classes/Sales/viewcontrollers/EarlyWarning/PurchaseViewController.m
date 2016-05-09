@@ -228,9 +228,10 @@
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *PurchaseURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Purchase];
-    [GiFHUD show];
+    [self showProgress];
 
-    [XPHTTPRequestTool requestMothedWithPost:PurchaseURL params:nil success:^(id responseObject) { 
+    [XPHTTPRequestTool requestMothedWithPost:PurchaseURL params:nil success:^(id responseObject) {
+        [self hideProgress];
         _PurchaseDatalist = [PurchaseModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         
         if (_PurchaseDatalist.count == 0) {
@@ -265,6 +266,7 @@
         
     } failure:^(NSError *error) {
         NSLog(@"获取采购异常失败");
+        [self hideProgress];
     }];
 }
 

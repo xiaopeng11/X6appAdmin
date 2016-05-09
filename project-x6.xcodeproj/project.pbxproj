@@ -250,7 +250,6 @@
 		18789AE91CAB7431006AE74C /* Resoures.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18789AE81CAB7431006AE74C /* Resoures.bundle */; };
 		18798F941CAE386F00ACDCCC /* PersonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18798F931CAE386F00ACDCCC /* PersonTableViewCell.m */; };
 		187B18031CA90C7300E9C557 /* UIImage+XPImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B18021CA90C7300E9C557 /* UIImage+XPImage.m */; };
-		187B18091CA9204B00E9C557 /* GiFHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B18071CA9204B00E9C557 /* GiFHUD.m */; };
 		187CCF911C8D129000B4544C /* jpush-ios-2.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 187CCF8F1C8D129000B4544C /* jpush-ios-2.1.0.a */; };
 		187CCF931C8D12C600B4544C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 187CCF921C8D12C600B4544C /* CoreFoundation.framework */; };
 		187CCF951C8D12DB00B4544C /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 187CCF941C8D12DB00B4544C /* CoreTelephony.framework */; };
@@ -262,6 +261,7 @@
 		189187881C84153D00223CF8 /* TodayMoneyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187871C84153D00223CF8 /* TodayMoneyTableViewCell.m */; };
 		1891878B1C8417C800223CF8 /* TodayMoneyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891878A1C8417C800223CF8 /* TodayMoneyModel.m */; };
 		189187991C84205000223CF8 /* TodayPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187981C84205000223CF8 /* TodayPayViewController.m */; };
+		189834071CD3058B002DE95D /* UserRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189834061CD3058B002DE95D /* UserRegisterViewController.m */; };
 		1899DB1A1C7FE4F900FEB7E3 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */; };
 		1899DB1D1C7FEECC00FEB7E3 /* TodayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB1C1C7FEECC00FEB7E3 /* TodayModel.m */; };
 		1899DB201C7FF31E00FEB7E3 /* KucunDeatilModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB1F1C7FF31E00FEB7E3 /* KucunDeatilModel.m */; };
@@ -387,7 +387,6 @@
 		18C597AA1CACC17700550F07 /* SRRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C597311CACC17700550F07 /* SRRefreshView.m */; };
 		18C597AB1CACC17700550F07 /* SRSlimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C597331CACC17700550F07 /* SRSlimeView.m */; };
 		18C597AC1CACC17700550F07 /* UIImageView+HeadImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C597351CACC17700550F07 /* UIImageView+HeadImage.m */; };
-		18C597AE1CACF94700550F07 /* clock.gif in Resources */ = {isa = PBXBuildFile; fileRef = 18C597AD1CACF94700550F07 /* clock.gif */; };
 		18EECEAC1C93AEB100F66FEB /* PurchaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EECEAB1C93AEB100F66FEB /* PurchaseModel.m */; };
 		18EECEAF1C93AF7600F66FEB /* PurchaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EECEAE1C93AF7600F66FEB /* PurchaseTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -845,8 +844,6 @@
 		18798F931CAE386F00ACDCCC /* PersonTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonTableViewCell.m; sourceTree = "<group>"; };
 		187B18011CA90C7300E9C557 /* UIImage+XPImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+XPImage.h"; sourceTree = "<group>"; };
 		187B18021CA90C7300E9C557 /* UIImage+XPImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+XPImage.m"; sourceTree = "<group>"; };
-		187B18071CA9204B00E9C557 /* GiFHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GiFHUD.m; sourceTree = "<group>"; };
-		187B18081CA9204B00E9C557 /* GiFHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiFHUD.h; sourceTree = "<group>"; };
 		187CCF8F1C8D129000B4544C /* jpush-ios-2.1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-2.1.0.a"; sourceTree = "<group>"; };
 		187CCF901C8D129000B4544C /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
 		187CCF921C8D12C600B4544C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -867,6 +864,8 @@
 		1891878A1C8417C800223CF8 /* TodayMoneyModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayMoneyModel.m; path = "project-x6/Classes/Sales/models/TodayMoneyModel.m"; sourceTree = SOURCE_ROOT; };
 		189187971C84205000223CF8 /* TodayPayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayPayViewController.h; path = ../../views/TodayPay/TodayPayViewController.h; sourceTree = "<group>"; };
 		189187981C84205000223CF8 /* TodayPayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayPayViewController.m; path = ../../views/TodayPay/TodayPayViewController.m; sourceTree = "<group>"; };
+		189834051CD3058B002DE95D /* UserRegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRegisterViewController.h; sourceTree = "<group>"; };
+		189834061CD3058B002DE95D /* UserRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserRegisterViewController.m; sourceTree = "<group>"; };
 		1899DB181C7FE4F900FEB7E3 /* TodayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayViewController.h; path = "project-x6/Classes/Sales/viewcontrollers/TodayViewController.h"; sourceTree = SOURCE_ROOT; };
 		1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayViewController.m; path = "project-x6/Classes/Sales/viewcontrollers/TodayViewController.m"; sourceTree = SOURCE_ROOT; };
 		1899DB1B1C7FEECC00FEB7E3 /* TodayModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayModel.h; path = "project-x6/Classes/Sales/models/TodayModel.h"; sourceTree = SOURCE_ROOT; };
@@ -1202,7 +1201,6 @@
 		18C597331CACC17700550F07 /* SRSlimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRSlimeView.m; sourceTree = "<group>"; };
 		18C597341CACC17700550F07 /* UIImageView+HeadImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+HeadImage.h"; sourceTree = "<group>"; };
 		18C597351CACC17700550F07 /* UIImageView+HeadImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+HeadImage.m"; sourceTree = "<group>"; };
-		18C597AD1CACF94700550F07 /* clock.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = clock.gif; sourceTree = "<group>"; };
 		18EECEAA1C93AEB100F66FEB /* PurchaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PurchaseModel.h; sourceTree = "<group>"; };
 		18EECEAB1C93AEB100F66FEB /* PurchaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PurchaseModel.m; sourceTree = "<group>"; };
 		18EECEAD1C93AF7600F66FEB /* PurchaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PurchaseTableViewCell.h; sourceTree = "<group>"; };
@@ -1595,6 +1593,8 @@
 			children = (
 				1856B8A01C7E96540051A0CB /* LoadViewController.h */,
 				1856B8A11C7E96540051A0CB /* LoadViewController.m */,
+				189834051CD3058B002DE95D /* UserRegisterViewController.h */,
+				189834061CD3058B002DE95D /* UserRegisterViewController.m */,
 			);
 			path = Load;
 			sourceTree = "<group>";
@@ -1851,12 +1851,9 @@
 				1856BD371C7E97620051A0CB /* BDKNotifyHUD.m */,
 				1856B90B1C7E96540051A0CB /* BasicControls.h */,
 				1856B90C1C7E96540051A0CB /* BasicControls.m */,
-				187B18081CA9204B00E9C557 /* GiFHUD.h */,
-				187B18071CA9204B00E9C557 /* GiFHUD.m */,
 				1856B9111C7E96540051A0CB /* NoDataView.h */,
 				1856B9121C7E96540051A0CB /* NoDataView.m */,
 				186753C31CA509DD0000E675 /* MoneyView.h */,
-				18C597AD1CACF94700550F07 /* clock.gif */,
 				186753C41CA509DD0000E675 /* MoneyView.m */,
 				1856B9141C7E96540051A0CB /* UIViewExt.h */,
 				1856B9151C7E96540051A0CB /* UIViewExt.m */,
@@ -2955,7 +2952,6 @@
 				18C597231CACC17700550F07 /* InvitationManager.m */,
 				18C597261CACC17700550F07 /* RealtimeSearchUtil.h */,
 				18C597271CACC17700550F07 /* RealtimeSearchUtil.m */,
-				18C597281CACC17700550F07 /* Resource */,
 				18C5972C1CACC17700550F07 /* SlimeRefresh */,
 				18C597341CACC17700550F07 /* UIImageView+HeadImage.h */,
 				18C597351CACC17700550F07 /* UIImageView+HeadImage.m */,
@@ -3491,37 +3487,6 @@
 			path = GifImage;
 			sourceTree = "<group>";
 		};
-		18C597281CACC17700550F07 /* Resource */ = {
-			isa = PBXGroup;
-			children = (
-				18C597291CACC17700550F07 /* chatListCell */,
-				18C5972A1CACC17700550F07 /* ChatToolbarImages */,
-				18C5972B1CACC17700550F07 /* recordView */,
-			);
-			path = Resource;
-			sourceTree = "<group>";
-		};
-		18C597291CACC17700550F07 /* chatListCell */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = chatListCell;
-			sourceTree = "<group>";
-		};
-		18C5972A1CACC17700550F07 /* ChatToolbarImages */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ChatToolbarImages;
-			sourceTree = "<group>";
-		};
-		18C5972B1CACC17700550F07 /* recordView */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = recordView;
-			sourceTree = "<group>";
-		};
 		18C5972C1CACC17700550F07 /* SlimeRefresh */ = {
 			isa = PBXGroup;
 			children = (
@@ -3633,7 +3598,6 @@
 				18C597A91CACC17700550F07 /* sr_refresh@2X.png in Resources */,
 				185789751C87E61D00EB9CF9 /* icon-small-50@2x.png in Resources */,
 				1804F2D41C8445E500A62609 /* Default@3x.png in Resources */,
-				18C597AE1CACF94700550F07 /* clock.gif in Resources */,
 				18C597A81CACC17700550F07 /* sr_refresh.png in Resources */,
 				18645A5D1CBCA46400908308 /* IQKeyboardManager.bundle in Resources */,
 				1857897E1C87E61D00EB9CF9 /* itunesartwork.png in Resources */,
@@ -3828,7 +3792,6 @@
 				1856BCF01C7E96550051A0CB /* MJDictionaryCache.m in Sources */,
 				1856BD061C7E96550051A0CB /* SDWebImagePrefetcher.m in Sources */,
 				18C5973F1CACC17700550F07 /* GroupSubjectChangingViewController.m in Sources */,
-				187B18091CA9204B00E9C557 /* GiFHUD.m in Sources */,
 				1856BD271C7E96550051A0CB /* ZLPhotoPickerFooterCollectionReusableView.m in Sources */,
 				1856BCF21C7E96550051A0CB /* MJFoundation.m in Sources */,
 				18544A7F1C914A1900F1BD1F /* OldlibraryModel.m in Sources */,
@@ -3950,6 +3913,7 @@
 				1862F9C91C867F5E00365AE8 /* MyacountViewController.m in Sources */,
 				1856BBCB1C7E96540051A0CB /* WriteViewController.m in Sources */,
 				187393701C97A86000CBC320 /* SupplierViewController.m in Sources */,
+				189834071CD3058B002DE95D /* UserRegisterViewController.m in Sources */,
 				18C597521CACC17700550F07 /* amrFileCodec.mm in Sources */,
 				1856BD0A1C7E96550051A0CB /* UIImage+WebP.m in Sources */,
 				1856BD081C7E96550051A0CB /* UIImage+GIF.m in Sources */,
@@ -4007,8 +3971,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4030,7 +3994,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4053,8 +4017,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4069,7 +4033,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -4082,8 +4046,8 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4107,7 +4071,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaopeng.X6admin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -4119,8 +4083,8 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4144,7 +4108,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaopeng.X6admin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};

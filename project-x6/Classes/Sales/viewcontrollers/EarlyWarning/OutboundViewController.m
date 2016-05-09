@@ -314,8 +314,9 @@
     NSString *umonth = [date substringWithRange:NSMakeRange(5, 2)];
     [params setObject:uyear forKey:@"uyear"];
     [params setObject:umonth forKey:@"accper"];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:myOutboundURL params:params success:^(id responseObject) {
+        [self hideProgress];
         _Outbounddatalist = [OutboundModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_Outbounddatalist.count == 0) {
             _OutboundTableview.hidden = YES;
@@ -337,6 +338,7 @@
         }
         
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"我的库存请求失败");
     }];
     

@@ -411,10 +411,11 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *personsURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_persons];
     if (!_tableView.header.isRefreshing) {
-        [GiFHUD show];
+        [self showProgress];
     }
     [XPHTTPRequestTool requestMothedWithPost:personsURL params:nil success:^(id responseObject) {
-        
+        [self hideProgress];
+        NSLog(@"%@",responseObject);
         if (_tableView.header.isRefreshing) {
             [_tableView.header endRefreshing];
         }
@@ -445,6 +446,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         }
         
     } failure:^(NSError *error) {
+        [self hideProgress];
 //        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
     

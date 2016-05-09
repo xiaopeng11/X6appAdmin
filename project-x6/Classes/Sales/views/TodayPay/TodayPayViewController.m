@@ -92,7 +92,6 @@
     _companysearchNames = [NSMutableArray array];
     _newtodayPayDatalist = [NSMutableArray array];
 
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
 
 }
@@ -133,7 +132,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    
     [self.todayPaySearchController.searchBar setHidden:YES];
     [_todayPaySearchController setActive:NO];
     
@@ -268,8 +266,9 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:todayPayURL params:params success:^(id responseObject) {
+        [self hideProgress];
         _todayPayDatalist = [TodayPayModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_todayPayDatalist.count == 0) {
             _todayPayTableView.hidden = YES;
@@ -301,6 +300,7 @@
         }
 
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"我的今日付款为空");
     }];
     

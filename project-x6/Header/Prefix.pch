@@ -35,7 +35,7 @@
 #import "UIView+EventLink.h"
 
 //数据加载中
-#import "GiFHUD.h"
+#import "MBProgressHUD.h"
 #import "BasicControls.h"
 //类目
 #import "UIViewController+ThemeNavigationController.h"
@@ -73,8 +73,6 @@
 //网络请求
 #import "XPHTTPRequestTool.h"
 
-//网络错误
-//#import "Error.h"
 
 //没有纪录
 #import "NoDataView.h"

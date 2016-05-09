@@ -61,16 +61,15 @@
     
 }
 
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    
     if (_datePicker.datePicker != nil) {
         [_datePicker.datePicker removeFromSuperview];
         [_datePicker.subView removeFromSuperview];
     }
 }
-
 
 #pragma mark - initAdddepositUI
 - (void)initAdddepositUI
@@ -155,8 +154,8 @@
     _acountChoose.dataSource = self;
     _acountChoose.backgroundColor = [UIColor clearColor];
     _acountChoose.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    _acountChoose.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_editbgView addSubview:_acountChoose];
-    
     
     //底部线条和右侧图片
     for (int i = 0; i < 3; i++) {
@@ -179,8 +178,6 @@
     [self.view addSubview:uploadsupplier];
 
 }
-
-
 
 #pragma mark - 上传数据
 - (void)uploadsupplier
@@ -220,8 +217,7 @@
         [params setObject:@"" forKey:@"zdrq"];
         [params setObject:@"" forKey:@"comments"];
         [params setObject:rows forKey:@"rows"];
-        
-        
+  
         NSMutableDictionary *diced = [NSMutableDictionary dictionary];
         [diced setObject:params forKey:@"vo"];
         NSMutableDictionary *dics = [NSMutableDictionary dictionary];
@@ -237,7 +233,6 @@
             } else {
                 [self.navigationController popViewControllerAnimated:YES];
             }
-            
         } failure:^(NSError *error) {
         }];
     }
@@ -251,7 +246,6 @@
     StoresViewController *storeVC = [[StoresViewController alloc] init];
     [self.navigationController pushViewController:storeVC animated:YES];
 }
-
 
 - (void)storeChoose:(NSNotification *)noti
 {
@@ -294,7 +288,6 @@
     return NO;
 }
 
-
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -304,7 +297,6 @@
         return _acountAndmoneyDatalist.count;
     }
 }
-
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -319,7 +311,6 @@
         cell = [[AcuntAndMoneyTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:acountAndmoneyCell];
         
     }
-    
     cell.dic = _acountAndmoneyDatalist[indexPath.row];
     return cell;
 }

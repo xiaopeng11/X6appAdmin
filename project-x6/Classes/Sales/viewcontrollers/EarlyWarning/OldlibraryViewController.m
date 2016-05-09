@@ -107,8 +107,9 @@
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *OldlibraryURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_Oldlibrary];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:OldlibraryURL params:nil success:^(id responseObject) {
+        [self hideProgress];
         _OldlibraryDatalist = [OldlibraryModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_OldlibraryDatalist.count == 0) {
             _OldlibraryTabelView.hidden = YES;
@@ -122,6 +123,7 @@
             [_OldlibraryTabelView reloadData];
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"库龄预警获取失败");
     }];
 }

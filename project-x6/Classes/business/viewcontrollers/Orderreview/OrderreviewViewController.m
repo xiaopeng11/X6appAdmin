@@ -307,8 +307,9 @@
         [params setObject:@"zdrq" forKey:@"sidx"];
         [params setObject:@"desc" forKey:@"sord"];
     }
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:examOrderURL params:params success:^(id responseObject) {
+        [self hideProgress];
         if ([_OrderreviewTableView.footer isRefreshing]) {
             [_OrderreviewTableView.footer endRefreshing];
             NSArray *array = [OrderreviewModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
@@ -360,6 +361,7 @@
             });
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"数据获取失败");
     }];
     

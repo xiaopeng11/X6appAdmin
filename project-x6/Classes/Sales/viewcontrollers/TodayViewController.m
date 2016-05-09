@@ -187,7 +187,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
         [_datepicker.subView removeFromSuperview];
@@ -317,8 +316,9 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:todayURL params:params success:^(id responseObject) {
+        [self hideProgress];
         _todayDatalist = [TodayModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_todayDatalist.count == 0) {
             
@@ -358,6 +358,7 @@
         }
         
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"今日战报数据获取失败");
     }];
 }
@@ -380,15 +381,17 @@
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
     [params setObject:storeCode forKey:@"ssgs"];
-    [GiFHUD show];
+    [self showProgress];
     dispatch_group_enter(group);
 
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
+        [self hideProgress];
         _todayDetailDatalist = [TodaydetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
         [_detailDic setObject:_todayDetailDatalist forKey:idnex];
         dispatch_group_leave(group);
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"今日战报数据获取失败");
         dispatch_group_leave(group);
     }];

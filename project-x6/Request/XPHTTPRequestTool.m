@@ -44,7 +44,6 @@
     //发送POST请求
     [requestManager POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (success) {
-            [GiFHUD dismiss];
             success(responseObject);
             NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
@@ -55,7 +54,6 @@
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (failure) {
-            [GiFHUD dismiss];
             failure(error);
 //            [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
 

@@ -167,7 +167,6 @@
 {
     self.newdatalist = [NSMutableArray array];
     [self.newdatalist removeAllObjects];
-    
     NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.TexsearchVC.searchBar.text];
     NSMutableArray *array;
     NSMutableSet *set = [NSMutableSet set];
@@ -253,8 +252,9 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *url = [userDefaults objectForKey:X6_UseUrl];
     NSString *collectionURL = [NSString stringWithFormat:@"%@%@",url,X6_collectionView];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:collectionURL params:nil success:^(id responseObject) {
+        [self hideProgress];
         _txtDatalist = [FocusModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         //处理数据
         [self getPicsAndTxtData];
@@ -265,6 +265,7 @@
             [_picTableview reloadData];
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
 //        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
 }

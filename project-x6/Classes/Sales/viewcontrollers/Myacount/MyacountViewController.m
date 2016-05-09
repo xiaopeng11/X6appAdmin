@@ -165,11 +165,11 @@
     [super viewDidDisappear:animated];
     [self.MyacountSearchController.searchBar setHidden:YES];
     [_MyacountSearchController setActive:NO];
-    
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
         [_datepicker.subView removeFromSuperview];
     }
+    
 }
 
 #pragma mark - 导航栏按钮
@@ -270,9 +270,10 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:myacountURL params:params success:^(id responseObject) {
         NSLog(@"我的帐户%@",responseObject);
+        [self hideProgress];
         _myacountDatalist = [MyacountModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_myacountDatalist.count == 0) {
             if (!_noacountView) {
@@ -307,6 +308,7 @@
             });
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"我的帐户数据失败");
     }];
 }

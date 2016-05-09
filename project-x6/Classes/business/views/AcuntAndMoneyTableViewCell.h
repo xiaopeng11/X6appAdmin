@@ -13,7 +13,9 @@
 {
     UILabel *_acountLabel;
     UILabel *_moneyLabel;
+    UIView *_lineView;
 }
 
 @property(nonatomic,copy)NSDictionary *dic;
+
 @end

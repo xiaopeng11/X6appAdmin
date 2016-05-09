@@ -101,12 +101,6 @@
                 }
                 [_imageView sd_setImageWithURL:[NSURL URLWithString:headerURLString] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
             }
-            
-            
-            
-            
-            
-            
         }
     }
   

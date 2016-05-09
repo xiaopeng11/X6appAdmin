@@ -154,10 +154,11 @@
     [params setObject:@(2) forKey:@"searchType"];
     
     if (!_MycollectionTableview.footer.isRefreshing && !_MycollectionTableview.header.isRefreshing) {
-        [GiFHUD show];
+        [self showProgress];
     }
     
     [XPHTTPRequestTool requestMothedWithPost:MydynamicURL params:params success:^(id responseObject) {
+        [self hideProgress];
         if (_MycollectionTableview.header.isRefreshing || _MycollectionTableview.footer.isRefreshing) {
             [self endrefreshWithTableView:_MycollectionTableview];
         }
@@ -192,7 +193,7 @@
         }
  
     } failure:^(NSError *error) {
-//        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+        [self hideProgress];
     }];
     
 }

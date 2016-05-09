@@ -28,13 +28,18 @@
     if (self) {
         
         self.backgroundColor = [UIColor clearColor];
-        _acountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth - 145 - 40, 30)];
+        _acountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth - 145 - 40, 29)];
         _acountLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_acountLabel];
         
-        _moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 185, 0, 90, 30)];
+        _moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 185, 0, 90, 29)];
         _moneyLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_moneyLabel];
+        
+        _lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 29, KScreenWidth - 145, 1)];
+        _lineView.backgroundColor = LineColor;
+        [self.contentView addSubview:_lineView];
+        
     }
     return self;
 }

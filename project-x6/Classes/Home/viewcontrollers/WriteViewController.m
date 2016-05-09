@@ -403,7 +403,7 @@
     [dic setObject:userArray forKey:@"userList"];
     [dic setObject:uuid forKey:@"uuid"];
     
-    [GiFHUD show];
+    [self showProgress];
 
     NSString *sendMessgaeURL = [NSString stringWithFormat:@"%@%@",baseurl,X6_sendMessage];
     //创建线程组－－等待上传图片完成再发布动态
@@ -443,6 +443,7 @@
         [params setObject:string forKey:@"postdata"];
         [XPHTTPRequestTool requestMothedWithPost:sendMessgaeURL params:params success:^(id responseObject) {
             NSLog(@"发布成功");
+            [self hideProgress];
             _personslist = nil;
             [self deleteImageFile];
             UIAlertController *alertcontroller = [UIAlertController alertControllerWithTitle:@"发布成功" message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -459,6 +460,7 @@
             
 
         } failure:^(NSError *error) {
+            [self hideProgress];
 //            [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
         }];
     });

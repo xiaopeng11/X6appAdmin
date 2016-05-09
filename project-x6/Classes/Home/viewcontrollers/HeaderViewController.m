@@ -23,7 +23,6 @@
 
 @property(nonatomic,strong)NoDataView *noDynamicView; //没有动态提示
 
-
 @end
 
 @implementation HeaderViewController
@@ -328,9 +327,10 @@
     [params setObject:@"zdrq" forKey:@"sidx"];
     [params setObject:@"desc" forKey:@"sord"];
     if (!_personTableView.header.isRefreshing || !_personTableView.footer.isRefreshing) {
-        [GiFHUD show];
+        [self showProgress];
     }
     [XPHTTPRequestTool requestMothedWithPost:personDynamicURL params:params success:^(id responseObject) {
+        [self hideProgress];
         if (_personTableView.header.isRefreshing || _personTableView.footer.isRefreshing) {
             [self endrefreshWithTableView:_personTableView];
         }
@@ -360,7 +360,7 @@
  
     } failure:^(NSError *error) {
         NSLog(@"获取失败");
-//        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
+        [self hideProgress];
     }];
     
 }

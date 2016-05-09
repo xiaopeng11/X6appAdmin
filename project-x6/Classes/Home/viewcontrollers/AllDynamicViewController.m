@@ -14,14 +14,12 @@
 #import "HomeTableViewCell.h"
 #import "WriteViewController.h"
 
-#import "BaseTabBarViewController.h"
 @interface AllDynamicViewController ()<UIScrollViewDelegate>
 
 {
     UIImageView *_unreadViews;
     WJItemsControlView *_itemsControlView;   //眉头试图
     UIScrollView *_scrollView;               //首页滑动式图
-    
 }
 
 @property(nonatomic,strong)NSArray *datalist;
@@ -124,7 +122,6 @@
     [super viewWillDisappear:animated];
     [_timer setFireDate:[NSDate distantFuture]];
     [_URLtimer setFireDate:[NSDate distantFuture]];
-    [GiFHUD dismiss];
 
 }
 
@@ -216,7 +213,6 @@
     } else {
         [self getdataWithPage:1 SearchType:2];
     }
-    
 }
 
 #pragma mark - 提出请求数据方法
@@ -240,10 +236,11 @@
     HomeTableView *tableview = (HomeTableView *)[_scrollView viewWithTag:100 + searchType];
     NoDataView *nodataView = (NoDataView *)[_scrollView viewWithTag:110 + searchType];
     if (_Myfocusdatalist.count == 0 || _Mycollectiondatalist.count == 0 || _datalist.count == 0) {
-        [GiFHUD show];
+        [self showProgress];
     }
     [XPHTTPRequestTool requestMothedWithPost:homeURL params:params success:^(id responseObject) {
         //将刷新参数保存在本地
+        [self hideProgress];
         [userDefaults setObject:@(1) forKey:X6_refresh];
         [userDefaults synchronize];
         if (tableview.header.isRefreshing || tableview.footer.isRefreshing) {
@@ -300,8 +297,9 @@
         });
 
     } failure:^(NSError *error) {
-            tableview.hidden = YES;
-            NSLog(@"首页请求数据失败%@",error);
+        tableview.hidden = YES;
+        NSLog(@"首页请求数据失败%@",error);
+        [self hideProgress];
     }];
 }
 
@@ -402,11 +400,8 @@
     if (_scrollView.contentOffset.x == 0 && [_scrollView isEqual:_tableView]) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
         _URLtimer = [NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(userURLchange:) userInfo:nil repeats:YES];
-
     }
 }
-
-
 
 #pragma mark - 下拉刷新，上拉加载更多
 - (void)homefooterAction

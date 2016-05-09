@@ -164,17 +164,13 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    
     if (_todayMoneydatepicker.datePicker != nil) {
         [_todayMoneydatepicker.datePicker removeFromSuperview];
         [_todayMoneydatepicker.subView removeFromSuperview];
     }
     [_todayMoneySearchController.searchBar setHidden:YES];
     [_todayMoneySearchController setActive:NO];
-
 }
-
-
 
 #pragma mark - 导航栏按钮
 - (void)creatRightNaviButton
@@ -408,8 +404,9 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:todayMoneyDataString params:params success:^(id responseObject) {
+        [self hideProgress];
         _todayMoneyDatalist = [TodayMoneyModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_todayMoneyDatalist.count == 0) {
             _TodayMoneyTabelView.hidden = YES;
@@ -441,6 +438,7 @@
             _companyNames = array;
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"今日销量获取失败");
     }];
     
@@ -464,16 +462,18 @@
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
     [params setObject:storeCode forKey:@"ssgs"];
-    [GiFHUD show];
+    [self showProgress];
     dispatch_group_enter(group);
     
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
+        [self hideProgress];
         NSDictionary *todayMoneydetailDic = [NSDictionary dictionary];
         todayMoneydetailDic = responseObject[@"vo"];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
         [_todayMoneyDic setObject:todayMoneydetailDic forKey:idnex];
         dispatch_group_leave(group);
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"今日战报数据获取失败");
         dispatch_group_leave(group);
     }];

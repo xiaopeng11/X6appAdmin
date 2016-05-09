@@ -177,14 +177,12 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    
     if (_todaydatepicker.datePicker != nil) {
         [_todaydatepicker.datePicker removeFromSuperview];
         [_todaydatepicker.subView removeFromSuperview];
     }
     [_todaySalesSearchController.searchBar setHidden:YES];
     [_todaySalesSearchController setActive:NO];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -274,7 +272,6 @@
     [self.selectTodaySalesSection removeAllObjects];
     [self.todaySalesDic removeAllObjects];
     [_newtodaySalesDatalist removeAllObjects];
-    
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.todaySalesSearchController.searchBar.text];
     self.companysearchNames = [[self.companyNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
     
@@ -416,8 +413,9 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:todaySalesDataString params:params success:^(id responseObject) {
+        [self hideProgress];
         _todaySalesDatalist = [TodayModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         if (_todaySalesDatalist.count == 0) {
             
@@ -458,6 +456,7 @@
         }
     } failure:^(NSError *error) {
         NSLog(@"今日销量获取失败");
+        [self hideProgress];
     }];
     
 }
@@ -480,15 +479,17 @@
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];
     [params setObject:storeCode forKey:@"ssgs"];
-    [GiFHUD show];
+    [self showProgress];
     dispatch_group_enter(group);
     
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
+        [self hideProgress];
         _todaySalesdetailArray = [TodaySalesDetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
         dispatch_group_leave(group);
         [_todaySalesDic setObject:_todaySalesdetailArray forKey:idnex];
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"今日战报数据获取失败");
         dispatch_group_leave(group);
     }];

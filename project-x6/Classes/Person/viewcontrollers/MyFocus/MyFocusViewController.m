@@ -148,9 +148,10 @@
     [params setObject:@(1) forKey:@"searchType"];
     
     if (!_MyFocusTableview.footer.isRefreshing || !_MyFocusTableview.header.isRefreshing) {
-        [GiFHUD show];
+        [self showProgress];
         }
-       [XPHTTPRequestTool requestMothedWithPost:MydynamicURL params:params success:^(id responseObject) {
+    [XPHTTPRequestTool requestMothedWithPost:MydynamicURL params:params success:^(id responseObject) {
+        [self hideProgress];
            if (_MyFocusTableview.header.isRefreshing || _MyFocusTableview.footer.isRefreshing) {
                [self endrefreshWithTableView:_MyFocusTableview];
            }
@@ -187,6 +188,7 @@
             [_MyFocusTableview reloadData];
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
 //        [BasicControls showNDKNotifyWithMsg:@"当前网络不给力 请检查网络" WithDuration:0.5f speed:0.5f];
     }];
     

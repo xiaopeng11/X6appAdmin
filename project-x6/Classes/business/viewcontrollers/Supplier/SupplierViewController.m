@@ -262,8 +262,9 @@
     } else {
         supplierORcostumerURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_customer];
     }
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:supplierORcostumerURL params:nil success:^(id responseObject) {
+        [self hideProgress];
         if (_SupplierTableview.header.isRefreshing) {
             [_SupplierTableview.header endRefreshing];
         }
@@ -293,6 +294,7 @@
             [_SupplierTableview reloadData];
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"数据失败");
     }];
     

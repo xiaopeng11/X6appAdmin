@@ -120,11 +120,11 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
         [_datepicker.subView removeFromSuperview];
     }
+    
 }
 
 #pragma mark - 增加银行存款
@@ -211,8 +211,9 @@
         depositURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_todaydeposit];
         [params setObject:_datepicker.text forKey:@"fsrq"];
     }
-    [GiFHUD show];
+    [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:depositURL params:params success:^(id responseObject) {
+        [self hideProgress];
         if (dateString != nil) {
             _depositDatalist = [DepositModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         } else {
@@ -255,6 +256,7 @@
             [_depositTableView reloadData];
         }
     } failure:^(NSError *error) {
+        [self hideProgress];
         NSLog(@"银行存款");
     }];
     
