@@ -12,7 +12,6 @@
 
 #import "JPUSHService.h"
 
-#import "UserRegisterViewController.h"
 @interface LoadViewController ()<UITextFieldDelegate>
 
 @end
@@ -116,7 +115,7 @@
         
     }
     
-    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 394, (KScreenWidth - 45) / 2.0, 44)];
+    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 394, KScreenWidth - 30, 44)];
     loadButton.backgroundColor = Mycolor;
     loadButton.clipsToBounds = YES;
     loadButton.layer.cornerRadius = 15;
@@ -126,17 +125,6 @@
     [loadButton addTarget:self action:@selector(loadAction) forControlEvents:UIControlEventTouchUpInside];
     loadButton.layer.cornerRadius = 5;
     [self.view addSubview:loadButton];
-    
-    UIButton *userRegisterButton = [[UIButton alloc] initWithFrame:CGRectMake(30 + (KScreenWidth - 45) / 2.0, 394, (KScreenWidth - 45) / 2.0, 44)];
-    userRegisterButton.backgroundColor = Mycolor;
-    userRegisterButton.clipsToBounds = YES;
-    userRegisterButton.layer.cornerRadius = 15;
-    [userRegisterButton setTitle:@"注     册" forState:UIControlStateNormal];
-    [userRegisterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [userRegisterButton setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
-    [userRegisterButton addTarget:self action:@selector(RegisterAction) forControlEvents:UIControlEventTouchUpInside];
-    userRegisterButton.layer.cornerRadius = 5;
-    [self.view addSubview:userRegisterButton];
 
 }
 
@@ -187,10 +175,6 @@
                         } else {
                             //保存cookie
                             NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
-//                            for (NSHTTPCookie *cookie in cookies) {
-//                                NSLog(@"%@",cookie);
-//                            }
-                            
                             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
                             
                          
@@ -276,12 +260,5 @@
     }
 }
 
-#pragma mark - 注册
-- (void)RegisterAction
-{
-    UserRegisterViewController *userRegisterVC = [[UserRegisterViewController alloc] init];
-    userRegisterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    [self presentViewController:userRegisterVC animated:YES completion:nil];
-}
 
 @end

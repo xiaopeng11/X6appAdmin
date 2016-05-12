@@ -62,7 +62,6 @@
         
     _titleLabel.text = [_dic valueForKey:@"col0"];
     
-    long long junmao = [[_dic valueForKey:@"col3"] longLongValue] / [[_dic valueForKey:@"col1"] longLongValue];
     
     for (int i = 0; i < 4; i++) {
         _Label = (UILabel *)[self.contentView viewWithTag:4310 + i];
@@ -75,10 +74,19 @@
             _Label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col2"]];
         } else if (i == 2) {
             _nameLabel.text = @"均毛:";
-            _Label.text = [NSString stringWithFormat:@"￥%lld",junmao];
+            if ([[_dic allKeys] containsObject:@"col3"]) {
+                long long junmao = [[_dic valueForKey:@"col3"] longLongValue] / [[_dic valueForKey:@"col1"] longLongValue];
+                _Label.text = [NSString stringWithFormat:@"￥%lld",junmao];
+            } else {
+                _Label.text = [NSString stringWithFormat:@"￥****"];
+            }
         } else{
             _nameLabel.text = @"毛利:";
-            _Label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col3"]];
+            if ([[_dic allKeys] containsObject:@"col3"]) {
+                _Label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col3"]];
+            } else {
+                _Label.text = [NSString stringWithFormat:@"￥****"];
+            }
         }
     }
 }

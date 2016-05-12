@@ -261,7 +261,6 @@
 		189187881C84153D00223CF8 /* TodayMoneyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187871C84153D00223CF8 /* TodayMoneyTableViewCell.m */; };
 		1891878B1C8417C800223CF8 /* TodayMoneyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891878A1C8417C800223CF8 /* TodayMoneyModel.m */; };
 		189187991C84205000223CF8 /* TodayPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189187981C84205000223CF8 /* TodayPayViewController.m */; };
-		189834071CD3058B002DE95D /* UserRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189834061CD3058B002DE95D /* UserRegisterViewController.m */; };
 		1899DB1A1C7FE4F900FEB7E3 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */; };
 		1899DB1D1C7FEECC00FEB7E3 /* TodayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB1C1C7FEECC00FEB7E3 /* TodayModel.m */; };
 		1899DB201C7FF31E00FEB7E3 /* KucunDeatilModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899DB1F1C7FF31E00FEB7E3 /* KucunDeatilModel.m */; };
@@ -864,8 +863,6 @@
 		1891878A1C8417C800223CF8 /* TodayMoneyModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayMoneyModel.m; path = "project-x6/Classes/Sales/models/TodayMoneyModel.m"; sourceTree = SOURCE_ROOT; };
 		189187971C84205000223CF8 /* TodayPayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayPayViewController.h; path = ../../views/TodayPay/TodayPayViewController.h; sourceTree = "<group>"; };
 		189187981C84205000223CF8 /* TodayPayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayPayViewController.m; path = ../../views/TodayPay/TodayPayViewController.m; sourceTree = "<group>"; };
-		189834051CD3058B002DE95D /* UserRegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRegisterViewController.h; sourceTree = "<group>"; };
-		189834061CD3058B002DE95D /* UserRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserRegisterViewController.m; sourceTree = "<group>"; };
 		1899DB181C7FE4F900FEB7E3 /* TodayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayViewController.h; path = "project-x6/Classes/Sales/viewcontrollers/TodayViewController.h"; sourceTree = SOURCE_ROOT; };
 		1899DB191C7FE4F900FEB7E3 /* TodayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodayViewController.m; path = "project-x6/Classes/Sales/viewcontrollers/TodayViewController.m"; sourceTree = SOURCE_ROOT; };
 		1899DB1B1C7FEECC00FEB7E3 /* TodayModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodayModel.h; path = "project-x6/Classes/Sales/models/TodayModel.h"; sourceTree = SOURCE_ROOT; };
@@ -1593,8 +1590,6 @@
 			children = (
 				1856B8A01C7E96540051A0CB /* LoadViewController.h */,
 				1856B8A11C7E96540051A0CB /* LoadViewController.m */,
-				189834051CD3058B002DE95D /* UserRegisterViewController.h */,
-				189834061CD3058B002DE95D /* UserRegisterViewController.m */,
 			);
 			path = Load;
 			sourceTree = "<group>";
@@ -3913,7 +3908,6 @@
 				1862F9C91C867F5E00365AE8 /* MyacountViewController.m in Sources */,
 				1856BBCB1C7E96540051A0CB /* WriteViewController.m in Sources */,
 				187393701C97A86000CBC320 /* SupplierViewController.m in Sources */,
-				189834071CD3058B002DE95D /* UserRegisterViewController.m in Sources */,
 				18C597521CACC17700550F07 /* amrFileCodec.mm in Sources */,
 				1856BD0A1C7E96550051A0CB /* UIImage+WebP.m in Sources */,
 				1856BD081C7E96550051A0CB /* UIImage+GIF.m in Sources */,
@@ -3971,8 +3965,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3994,7 +3988,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4017,8 +4011,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -4033,7 +4027,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -4046,8 +4040,8 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4071,7 +4065,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaopeng.X6admin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -4083,8 +4077,8 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: wu zongan (ML877RK47G)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: wu zongan (ML877RK47G)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4108,7 +4102,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaopeng.X6admin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "741b9cfa-f501-46d0-932c-daf8331fd7a3";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};

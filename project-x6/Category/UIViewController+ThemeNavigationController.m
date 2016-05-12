@@ -206,4 +206,32 @@
         }
     }
 }
+
+
+/**
+ *  数据加密
+ *
+ *  @param datalist 加密的数组
+ *  @param key 加密的键
+ *  @param jmdx 加密的对象
+ */
+- (void)passwordTodayDatalistWithDataList:(NSMutableArray *)datalist
+                                      Key:(NSString *)key
+                                     Jmdx:(NSString *)jmdx
+{
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:jmdx]) {
+            if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
+                for (int i  = 0; i < datalist.count; i++) {
+                    NSMutableDictionary *dicede = [NSMutableDictionary dictionaryWithDictionary:datalist[i]];
+                    [dicede removeObjectForKey:key];
+                    [datalist replaceObjectAtIndex:i withObject:dicede];
+                }
+            }
+        }
+    }
+}
+
 @end

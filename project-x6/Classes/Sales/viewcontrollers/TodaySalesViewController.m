@@ -31,7 +31,7 @@
 @property(nonatomic,strong)UIView *totalTodaySalesView;        //总计
 
 @property(nonatomic,copy)NSMutableArray *todaySalesDatalist;          //门店销量数据
-@property(nonatomic,copy)NSArray *todaySalesdetailArray;    //指定门店销量
+@property(nonatomic,copy)NSMutableArray *todaySalesdetailArray;    //指定门店销量
 @property(nonatomic,copy)NSMutableDictionary *todaySalesDic;
 @property(nonatomic,copy)NSMutableArray *selectTodaySalesSection;
 
@@ -337,7 +337,11 @@
             nameLabel.text = @"毛利:";
             label.frame = CGRectMake(125 + todaySaleswidth * 3, 40, todaySaleswidth * 2, 30);
             label.textColor = Mycolor;
-            label.text = [NSString stringWithFormat:@"￥%@",[mutableArray[section] valueForKey:@"col4"]];
+            if ([[mutableArray[section] allKeys] containsObject:@"col4"]) {
+                label.text = [NSString stringWithFormat:@"￥%@",[mutableArray[section] valueForKey:@"col4"]];
+            } else {
+                label.text = [NSString stringWithFormat:@"￥****"];
+            }
         }
         label.font = [UIFont systemFontOfSize:13];
         nameLabel.font = [UIFont systemFontOfSize:13];
@@ -376,18 +380,9 @@
         dispatch_group_t grouped = dispatch_group_create();
         
         [_selectTodaySalesSection addObject:string];
-        NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
-        NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-        for (NSDictionary *dic in qxList) {
-            if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrxs"]) {
-                if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
-                    [self getOneSalesDataWithDate:_todaydatepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
-                } else {
-                    [self writeWithName:@"您没有查看今日销量详情的权限"];
-                }
-            }
-        }
-        
+
+        [self getOneSalesDataWithDate:_todaydatepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
+    
         dispatch_group_notify(grouped, dispatch_get_main_queue(), ^{
             [_TodaySalesTabelView reloadData];
             
@@ -430,6 +425,9 @@
             _TodaySalesTabelView.hidden = NO;
             NSArray *sorttodaysalesArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col4" ascending:NO]];
             [_todaySalesDatalist sortUsingDescriptors:sorttodaysalesArray];
+            
+            [self passwordTodayDatalistWithDataList:_todaySalesDatalist Key:@"col4" Jmdx:@"bb_jrxs"];
+            
             [_TodaySalesTabelView reloadData];
             [self totalTodaySalesView];
             
@@ -446,7 +444,19 @@
             UILabel *maolilabel = (UILabel *)[_totalTodaySalesView viewWithTag:4316];
             numlabel.text = [NSString stringWithFormat:@"%lld个",totalNum];
             jinelabel.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
-            maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+        
+            NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+            NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+            for (NSDictionary *dic in qxList) {
+                if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrxs"]) {
+                    if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
+                        maolilabel.text = [NSString stringWithFormat:@"￥****"];
+                    } else {
+                        maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+                    }
+                }
+            }
+            
             
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *dic in _todaySalesDatalist) {
@@ -486,6 +496,9 @@
         [self hideProgress];
         _todaySalesdetailArray = [TodaySalesDetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
+        
+        [self passwordTodayDatalistWithDataList:_todaySalesdetailArray Key:@"col3" Jmdx:@"bb_jrxs"];
+        
         dispatch_group_leave(group);
         [_todaySalesDic setObject:_todaySalesdetailArray forKey:idnex];
     } failure:^(NSError *error) {

@@ -293,7 +293,7 @@
         NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
         for (NSDictionary *dic in qxList) {
             if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_mykc"]) {
-                if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
+                if ([[dic valueForKey:@"pcb"] integerValue] == 0) {
                     [self getkucunDetailWithArray:array Section:string group:grouped];
                 } else {
                     [self writeWithName:@"您没有查看我的库存详情的权限"];

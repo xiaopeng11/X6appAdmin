@@ -18,6 +18,8 @@
 #import "JPUSHService.h"
 @interface AppDelegate ()<EMChatManagerDelegate>
 
+@property(nonatomic,strong)NSTimer *Usertimer;
+
 
 @end
 
@@ -39,7 +41,7 @@ extern"C"{
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     
-    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatdevelop" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
+    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatproduct" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
     
     //注册apns
     [self registerRemoteNotification];
@@ -80,7 +82,59 @@ extern"C"{
     [NSThread sleepForTimeInterval:1.5];
     
     [_window makeKeyAndVisible];
+    
+    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
+    [_Usertimer setFireDate:[NSDate distantPast]];
+    
     return YES;
+}
+
+#pragma mark - 定时器
+
+- (void)getPersonMessage
+{
+    NSLog(@"主页面定时器");
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *userQXchange = [NSString stringWithFormat:@"%@%@",baseURL,X6_userQXchange];
+    [XPHTTPRequestTool requestMothedWithPost:userQXchange params:nil success:^(id responseObject) {
+            if ([responseObject[@"message"] isEqualToString:@"Y"]) {
+                NSString *QXhadchangeList = [NSString stringWithFormat:@"%@%@",baseURL,X6_hadChangeQX];
+                [XPHTTPRequestTool requestMothedWithPost:QXhadchangeList params:nil success:^(id responseObject) {
+                    [userdefaluts setObject:[responseObject valueForKey:@"qxlist"] forKey:X6_UserQXList];
+                    [userdefaluts synchronize];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeQXList" object:nil];
+
+                    //设置极光tags
+                    NSMutableDictionary *loaddictionary = [userdefaluts valueForKey:X6_UserMessage];
+                    NSString *ssgs = [loaddictionary valueForKey:@"ssgs"];
+                    NSMutableSet *set = [[NSMutableSet alloc] initWithObjects:ssgs, nil];
+                    for (NSDictionary *dic in [responseObject valueForKey:@"qxlist"]) {
+                        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"XJXC"];
+                            }
+                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_cgyc"]){
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"CGJJ"];
+                            }
+                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]){
+                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
+                                [set addObject:@"LSXJ"];
+                            }
+                        }
+                    }
+                    [JPUSHService setTags:set alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+                        NSLog(@"极光的tags：%@,返回的状态吗：%d",iTags,iResCode);
+                    }];
+                } failure:^(NSError *error) {
+                    NSLog(@"全此案列表失败");
+                }];
+            }
+        } failure:^(NSError *error) {
+            NSLog(@"获取权限失败");
+        }];
+
 }
 
 #pragma mark - 检测网络状态
@@ -254,6 +308,7 @@ extern"C"{
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -269,11 +324,17 @@ extern"C"{
     [[EaseMob sharedInstance] applicationWillEnterForeground:application];
     [application setApplicationIconBadgeNumber:0];
     [application cancelAllLocalNotifications];
+    
+    [_Usertimer setFireDate:[NSDate distantFuture]];
+
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [JPUSHService resetBadge];
+    
+    [_Usertimer setFireDate:[NSDate distantPast]];
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

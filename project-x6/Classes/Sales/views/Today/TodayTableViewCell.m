@@ -79,7 +79,11 @@
             _label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col4"]];
         } else if (i == 2) {
             _nameLabel.text = @"毛利:";
-            _label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col5"]];
+            if ([[_dic allKeys] containsObject:@"col5"]) {
+                _label.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col5"]];
+            } else {
+                _label.text = [NSString stringWithFormat:@"￥****"];
+            }
         }
     }
     

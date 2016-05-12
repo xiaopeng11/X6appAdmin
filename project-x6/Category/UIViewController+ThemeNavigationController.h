@@ -64,4 +64,16 @@
  *
  */
 - (void)deleteImageFile;
+
+
+/**
+ *  数据加密
+ *
+ *  @param datalist 加密的数组
+ *  @param key 加密的键
+ *  @param jmdx 加密的对象
+ */
+- (void)passwordTodayDatalistWithDataList:(NSMutableArray *)datalist
+                                      Key:(NSString *)key
+                                     Jmdx:(NSString *)jmdx;
 @end

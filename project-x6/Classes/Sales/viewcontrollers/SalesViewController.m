@@ -29,8 +29,6 @@
     UIScrollView *_bussScrollView;
 }
 
-@property(nonatomic,strong)NSTimer *Usertimer;
-
 @end
 
 @implementation SalesViewController
@@ -41,6 +39,8 @@
     [self naviTitleWhiteColorWithText:@"报表"];
     //初始化子视图
     [self initWithSubViews];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(qxlisthadchanged) name:@"changeQXList" object:nil];
     
 
 }
@@ -53,77 +53,18 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     //获取异常条数
     [self getEarlyWraningNumber];
-    
-    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
-    [_Usertimer setFireDate:[NSDate distantPast]];
-    
+   
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)qxlisthadchanged
 {
-    [super viewWillDisappear:animated];
-    [_Usertimer invalidate];
-}
-
-- (void)getPersonMessage
-{
-    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
-    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-    NSString *userQXchange = [NSString stringWithFormat:@"%@%@",baseURL,X6_userQXchange];
-    [XPHTTPRequestTool requestMothedWithPost:userQXchange params:nil success:^(id responseObject) {
-        if ([responseObject[@"type"] isEqualToString:@"error"]) {
-            [self writeWithName:[responseObject valueForKey:@"message"]];
-        } else {
-            if ([responseObject[@"message"] isEqualToString:@"Y"]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeQXList" object:nil];
-
-                NSString *QXhadchangeList = [NSString stringWithFormat:@"%@%@",baseURL,X6_hadChangeQX];
-                [XPHTTPRequestTool requestMothedWithPost:QXhadchangeList params:nil success:^(id responseObject) {
-                    [userdefaluts setObject:[responseObject valueForKey:@"qxlist"] forKey:X6_UserQXList];
-                    [userdefaluts synchronize];
-                    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-                    
-                    [self initWithSubViews];
-                    
-                    [self getEarlyWraningNumber];
-                    
-                    //设置极光tags
-                    NSMutableDictionary *loaddictionary = [userdefaluts valueForKey:X6_UserMessage];
-                    NSString *ssgs = [loaddictionary valueForKey:@"ssgs"];
-                    NSMutableSet *set = [[NSMutableSet alloc] initWithObjects:ssgs, nil];
-                    for (NSDictionary *dic in [responseObject valueForKey:@"qxlist"]) {
-                        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
-                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                                [set addObject:@"XJXC"];
-                            }
-                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_cgyc"]){
-                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                                [set addObject:@"CGJJ"];
-                            }
-                        } else if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]){
-                            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                                [set addObject:@"LSXJ"];
-                            }
-                        }
-                    }
-                    
-                    [JPUSHService setTags:set alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
-                        NSLog(@"极光的tags：%@,返回的状态吗：%d",iTags,iResCode);
-                    }];
-                } failure:^(NSError *error) {
-                    NSLog(@"全此案列表失败");
-                }];
-               
-                
-            }
-        }
-    } failure:^(NSError *error) {
-        NSLog(@"获取权限失败");
-    }];
+    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
+    [self initWithSubViews];
+    
+    [self getEarlyWraningNumber];
 }
 
 #pragma mark - initWithSubViews
@@ -190,6 +131,8 @@
         }
     }
     
+    NSLog(@"报表%@",_datalist);
+    
     NSMutableArray *pcs = [NSMutableArray array];
     for (NSDictionary *diced in qxList) {
         if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jxc_ckyc"]) {
@@ -214,7 +157,7 @@
     imageview.image = [UIImage imageNamed:@"btn_yun-baobiao_h"];
     [_bussScrollView addSubview:imageview];
     
-    if (![pcs containsObject:@(0)]) {
+    if ([pcs containsObject:@(1)]) {
         NSMutableDictionary *diced = [NSMutableDictionary dictionary];
         [diced setObject:@"btn_yujingtixing" forKey:@"image"];
         [diced setObject:@"5" forKey:@"buttonTag"];

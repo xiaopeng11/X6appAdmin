@@ -368,17 +368,9 @@
         
         [_selectTodayMoneySection addObject:string];
         
-        NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
-        NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-        for (NSDictionary *dic in qxList) {
-            if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jryyk"]) {
-                if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
-                    [self getOneMoneyDataWithDate:_todayMoneydatepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
-                } else {
-                    [self writeWithName:@"您没有查看今日营业款详情的权限"];
-                }
-            }
-        }
+
+        [self getOneMoneyDataWithDate:_todayMoneydatepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
+   
         
         dispatch_group_notify(grouped, dispatch_get_main_queue(), ^{
             [_TodayMoneyTabelView reloadData];

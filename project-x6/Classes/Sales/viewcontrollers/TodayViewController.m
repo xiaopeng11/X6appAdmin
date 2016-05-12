@@ -27,7 +27,7 @@
 @property(nonatomic,copy)NSString *dateString;            //今日日期
 @property(nonatomic,copy)NSMutableArray *todayDatalist;          //今日战报门店数据
 @property(nonatomic,copy)NSMutableDictionary *detailDic;
-@property(nonatomic,copy)NSArray *todayDetailDatalist;    //今日战报门店详情数据
+@property(nonatomic,copy)NSMutableArray *todayDetailDatalist;    //今日战报门店详情数据
 
 
 @property(nonatomic,strong)NoDataView *NotodayView;       //今日战报为空
@@ -136,7 +136,7 @@
     [self creatRightNaviButton];
     
     _selectSectionArray = [NSMutableArray array];
-    _todayDetailDatalist = [NSArray array];
+    _todayDetailDatalist = [NSMutableArray array];
     _detailDic = [NSMutableDictionary dictionary];
     
     _companyNames = [NSMutableArray array];
@@ -155,7 +155,7 @@
     [_companySearchController.searchBar sizeToFit];
     [self.view addSubview:_companySearchController.searchBar];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTodayData) name:@"changeTodayData" object:nil];
     
 }
 
@@ -180,7 +180,6 @@
   
     //获取数据
     [self getTodayDataWithDate:_dateString];
-    
     
 }
 
@@ -333,6 +332,9 @@
             _TodayTableView.hidden = NO;
             NSArray *sorttodayArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col4" ascending:NO]];
             [_todayDatalist sortUsingDescriptors:sorttodayArray];
+            
+            [self passwordTodayDatalistWithDataList:_todayDatalist Key:@"col4" Jmdx:@"bb_jrzb"];
+            
             [_TodayTableView reloadData];
             [self totalView];
             
@@ -348,8 +350,18 @@
             UILabel *maolilabel = (UILabel *)[_totalView viewWithTag:4216];
             numlabel.text = [NSString stringWithFormat:@"%lld个",totalNum];
             jinelabel.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
-            maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
-      
+            
+            NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+            NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+            for (NSDictionary *dic in qxList) {
+                if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrzb"]) {
+                    if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
+                        maolilabel.text = [NSString stringWithFormat:@"￥****"];
+                    } else {
+                        maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+                    }
+                }
+            }      
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *dic in _todayDatalist) {
                 [array addObject:[dic valueForKey:@"col1"]];
@@ -387,6 +399,9 @@
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
         [self hideProgress];
         _todayDetailDatalist = [TodaydetailModel mj_keyValuesArrayWithObjectArray:responseObject[@"rows"]];
+    
+        [self passwordTodayDatalistWithDataList:_todayDetailDatalist Key:@"col5" Jmdx:@"bb_jrzb"];
+
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
         [_detailDic setObject:_todayDetailDatalist forKey:idnex];
         dispatch_group_leave(group);
@@ -399,7 +414,7 @@
 }
 
 #pragma mark - 日期选择响应事件
-- (void)changeData
+- (void)changeTodayData
 {
     NSLog(@"改变了日期");
     [self getTodayDataWithDate:_datepicker.text];
@@ -430,17 +445,9 @@
         dispatch_group_t grouped = dispatch_group_create();
 
         [_selectSectionArray addObject:string];
-        NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
-        NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-        for (NSDictionary *dic in qxList) {
-            if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrzb"]) {
-                if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
-                    [self getYuanGongDataWithDate:_datepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
-                } else {
-                    [self writeWithName:@"您没有查看今日战报详情的权限"];
-                }
-            }
-        }
+        
+        [self getYuanGongDataWithDate:_datepicker.text StoreCode:comStore Section:[string longLongValue] group:grouped];
+
         dispatch_group_notify(grouped, dispatch_get_main_queue(), ^{
             [_TodayTableView reloadData];
 
@@ -498,6 +505,7 @@
     for (int i = 0; i < 3; i++) {
         UILabel *nameLabel = [[UILabel alloc] init];
         UILabel *label = [[UILabel alloc] init];
+        NSDictionary *mutabledic = mutableArray[section];
         if (i == 0) {
             nameLabel.frame = CGRectMake(35, 40, 30, 30);
             nameLabel.text = @"数量:";
@@ -515,7 +523,11 @@
             nameLabel.text = @"毛利:";
             label.frame = CGRectMake(125 + todaywidth * 3, 40, todaywidth * 2, 30);
             label.textColor = Mycolor;
-            label.text = [NSString stringWithFormat:@"￥%@",[mutableArray[section] valueForKey:@"col4"]];
+            if ([[mutabledic allKeys] containsObject:@"col4"]) {
+                label.text = [NSString stringWithFormat:@"￥%@",[mutableArray[section] valueForKey:@"col4"]];
+            } else {
+                label.text = [NSString stringWithFormat:@"￥****"];
+            }
         }
         label.font = [UIFont systemFontOfSize:13];
         nameLabel.font = [UIFont systemFontOfSize:13];
@@ -530,8 +542,6 @@
 
     return view;
 }
-
-
 
 
 @end

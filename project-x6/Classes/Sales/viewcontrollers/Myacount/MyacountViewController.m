@@ -188,6 +188,7 @@
 - (void)changeData
 {
     [self getMyacountDataWithDate:_datepicker.text];
+
 }
 
 #pragma mark - UITextFieldDelegate
