@@ -27,9 +27,6 @@
         //代理
         self.delegate = self;
         self.dataSource = self;
-        
-        
-        
     }
     return self;
 }
@@ -174,6 +171,7 @@
     scrollToToping = YES;
     return YES;
 }
+//scrollview =
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
     scrollToToping = NO;
@@ -209,10 +207,6 @@
         }
     }
 }
-
-
-
-
 
 - (void)removeFromSuperview{
     for (UIView *temp in self.subviews) {

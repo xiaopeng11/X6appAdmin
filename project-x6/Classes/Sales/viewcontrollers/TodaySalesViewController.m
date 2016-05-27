@@ -174,9 +174,9 @@
     [self getTodaySalesDataWithDate:_dateString];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     if (_todaydatepicker.datePicker != nil) {
         [_todaydatepicker.datePicker removeFromSuperview];
         [_todaydatepicker.subView removeFromSuperview];

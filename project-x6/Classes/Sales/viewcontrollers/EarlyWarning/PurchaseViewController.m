@@ -131,7 +131,7 @@
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewRowAction *ignore = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"忽略" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-            NSMutableArray *array = [NSMutableArray array];
+            NSMutableArray *array = nil;
             if (_PurchaseSearchController.active) {
                 array = _NewPurchaseDatalist;
             } else {
@@ -202,15 +202,15 @@
     
     NSPredicate *PurchasePredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.PurchaseSearchController.searchBar.text];
     self.PurchaseSearchNames = [[self.PurchaseNames filteredArrayUsingPredicate:PurchasePredicate] mutableCopy];
-    
+    NSMutableSet *purchaseSet = [NSMutableSet set];
     for (NSString *title in self.PurchaseSearchNames) {
         for (NSDictionary *dic in _PurchaseDatalist) {
             if ([title isEqualToString:[dic valueForKey:@"col1"]] || [title isEqualToString:[dic valueForKey:@"col3"]]) {
-                [_NewPurchaseDatalist addObject:dic];
+                [purchaseSet addObject:dic];
             }
         }
     }
-    
+    _NewPurchaseDatalist = [[purchaseSet allObjects] mutableCopy];
     [_PurchaseTabelView reloadData];
     
 }

@@ -48,15 +48,15 @@
         long long totolNum = 0;
         for (int i = 0; i < array.count; i++) {
             NSDictionary *dic = array[i];
-            _acountLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 130 + 30 * i, (KScreenWidth - 60) / 2.0 + 40, 30)];
+            _acountLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 130 + 30 * i, (KScreenWidth - 100) / 2.0, 30)];
             _acountLabel.font = [UIFont systemFontOfSize:15];
             _acountLabel.text = [NSString stringWithFormat:@"帐户:%@",[dic valueForKey:@"zhname"]];
             [self.contentView addSubview:_acountLabel];
-            _moneyTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80 + (KScreenWidth - 60) / 2.0, 130 + 30 * i, 40, 30)];
+            _moneyTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40 + (KScreenWidth - 100) / 2.0, 130 + 30 * i, 40, 30)];
             _moneyTitleLabel.text = @"金额:";
             _moneyTitleLabel.font = [UIFont systemFontOfSize:15];
             [self.contentView addSubview:_moneyTitleLabel];
-            _moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(120 + (KScreenWidth - 60) / 2.0, 130 + 30 * i, (KScreenWidth - 60) / 2.0 - 80, 30)];
+            _moneyLabel = [[UILabel alloc] initWithFrame:CGRectMake(80 + (KScreenWidth - 100) / 2.0, 130 + 30 * i, (KScreenWidth - 100) / 2.0, 30)];
             _moneyLabel.font = [UIFont systemFontOfSize:15];
             _moneyLabel.text = [NSString stringWithFormat:@"￥%@",[dic valueForKey:@"je"]];
             _moneyLabel.textColor = Mycolor;

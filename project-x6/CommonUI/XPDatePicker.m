@@ -16,8 +16,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        
-        
+ 
         //默认日期格式为yyyy-MM-dd
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setLocale:[[NSLocale alloc]initWithLocaleIdentifier:@"zh_CN"]];//location设置为中国
@@ -34,6 +33,7 @@
         self.datePicker.datePickerMode = UIDatePickerModeDate;
         self.datePicker.maximumDate = [NSDate date];
         self.datePicker.backgroundColor = [UIColor clearColor];
+        self.datePicker.date = self.date;
         
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 240 - 64, KScreenWidth, 200)];
         view.backgroundColor = [UIColor whiteColor];
@@ -66,25 +66,17 @@
         [chooseDate setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [chooseDate addTarget:self action:@selector(dateChange:) forControlEvents:UIControlEventTouchUpInside];
         [self.subView addSubview:chooseDate];
-        
-       
 
         UITapGestureRecognizer *pickerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancledateChange)];
         [self.subView addGestureRecognizer:pickerTap];
         [view addSubview:self.datePicker];
 
-        
-       
         [self.subView addSubview:view];
         
         //设置输入框
         self.delegate=self;
         
         self.borderStyle=UITextBorderStyleRoundedRect;
-        
-        
-
-        
         
     }
     return self;
@@ -94,7 +86,16 @@
 {
     if (_labelString != labelString) {
         _labelString = labelString;
-         label.text = _labelString;
+        label.text = _labelString;
+    }
+}
+
+
+- (void)setMyColor:(UIColor *)myColor
+{
+    if (_myColor != myColor) {
+        _myColor = myColor;
+        self.textColor = _myColor;
     }
 }
 

@@ -30,6 +30,11 @@
 @implementation BusinessViewController
 
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -57,7 +62,12 @@
 //权限改变
 - (void)changeBusinessList
 {
-    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    for (UIView *view in self.view.subviews) {
+        if ([view isKindOfClass:[UIScrollView class]]) {
+            [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        }
+    }
+//    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self intBusinessUI];
 }
 
@@ -68,6 +78,7 @@
     NSArray *arrayimage = @[@{@"title":@"sz_gys",@"image":@"btn_gongyingshan"},
                             @{@"title":@"sz_kh",@"image":@"btn_kehu"},
                             @{@"title":@"cz_cgddsh",@"image":@"btn_dingdan"},
+                            @{@"title":@"cz_pfddsh",@"image":@"btn_shezhi"},
                             @{@"title":@"cz_ywkdk",@"image":@"btn_cunkuan"},
                             @{@"title":@"sz_yjszkhj",@"image":@"btn_shezhi"},
                             ];
@@ -94,14 +105,19 @@
                         [mutableDic setObject:@"2" forKey:@"buttonTag"];
                         [_busDatalist addObject:mutableDic];
                     }
-                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"cz_ywkdk"]) {
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"cz_pfddsh"]) {
                     if ([[diced valueForKey:@"pc"] integerValue] == 1) {
                         [mutableDic setObject:@"3" forKey:@"buttonTag"];
                         [_busDatalist addObject:mutableDic];
                     }
-                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"sz_yjszkhj"]) {
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"cz_ywkdk"]) {
                     if ([[diced valueForKey:@"pc"] integerValue] == 1) {
                         [mutableDic setObject:@"4" forKey:@"buttonTag"];
+                        [_busDatalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"sz_yjszkhj"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"5" forKey:@"buttonTag"];
                         [_busDatalist addObject:mutableDic];
                     }
                 }
@@ -110,20 +126,19 @@
             
         }
     }
-    
-    NSLog(@"%@\n%@",_busDatalist,qxList);
-    
+        
     _businessScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
     _businessScrollView.showsVerticalScrollIndicator = NO;
     _businessScrollView.showsHorizontalScrollIndicator = NO;
     _businessScrollView.contentSize = CGSizeMake(KScreenWidth, 110 * (_busDatalist.count / 2));
     [self.view addSubview:_businessScrollView];
     
-    NSArray *titleNames = @[@"供应商",@"客户",@"订单审核",@"银行存款",@"设置考核价"];
+    NSArray *titleNames = @[@"供应商",@"客户",@"订单审核",@"订单审核(批发)",@"银行存款",@"设置考核价"];
     for (int i = 0; i < _busDatalist.count; i++) {
         NSInteger num = [[_busDatalist[i] valueForKey:@"buttonTag"] integerValue];
         int bus_X = i % 2;
         int bus_Y = i / 2;
+        
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectMake(imageWidth + (imageWidth * 2 + 80) * bus_X, 10 + 110 * bus_Y, 80, 80);
         [button setImage:[UIImage imageNamed:[_busDatalist[i] valueForKey:@"image"]] forState:UIControlStateNormal];
@@ -132,6 +147,7 @@
         [_businessScrollView addSubview:button];
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth - 10 + (imageWidth  * 2 + 80) * bus_X, 90 + 110 * bus_Y, 100, 20)];
         label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:15];
         label.text = titleNames[num];
         [_businessScrollView addSubview:label];
     }
@@ -154,10 +170,14 @@
         OrderreviewViewController *orderreviewVC = [[OrderreviewViewController alloc] init];
         [self.navigationController pushViewController:orderreviewVC animated:YES];
     } else if (button.tag == 3003) {
+        OrderreviewViewController *orderreviewVC = [[OrderreviewViewController alloc] init];
+        orderreviewVC.isWholesale = YES;
+        [self.navigationController pushViewController:orderreviewVC animated:YES];
+    } else if (button.tag == 3004) {
         DepositViewController *depositVC = [[DepositViewController alloc] init];
         depositVC.isBusiness = YES;
         [self.navigationController pushViewController:depositVC animated:YES];
-    } else if (button.tag == 3004) {
+    } else if (button.tag == 3005) {
         SettingPriceViewController *settingPriceVC = [[SettingPriceViewController alloc] init];
         [self.navigationController pushViewController:settingPriceVC animated:YES];
     }

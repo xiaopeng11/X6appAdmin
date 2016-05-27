@@ -26,4 +26,5 @@
 }
 
 @property(nonatomic,copy)NSDictionary *dic;
+@property(nonatomic,assign)BOOL iswhosalecell;
 @end

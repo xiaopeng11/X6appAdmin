@@ -161,9 +161,9 @@
     [self getTodayMoneyDataWithDate:_dateString];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     if (_todayMoneydatepicker.datePicker != nil) {
         [_todayMoneydatepicker.datePicker removeFromSuperview];
         [_todayMoneydatepicker.subView removeFromSuperview];
@@ -459,7 +459,7 @@
     
     [XPHTTPRequestTool requestMothedWithPost:todaydetailURL params:params success:^(id responseObject) {
         [self hideProgress];
-        NSDictionary *todayMoneydetailDic = [NSDictionary dictionary];
+        NSDictionary *todayMoneydetailDic = nil;
         todayMoneydetailDic = responseObject[@"vo"];
         NSString *idnex = [NSString stringWithFormat:@"%ld",section];
         [_todayMoneyDic setObject:todayMoneydetailDic forKey:idnex];

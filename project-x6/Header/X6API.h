@@ -11,11 +11,11 @@
 
 
 //appstore中的代码
-#define APP_URL @"http://itunes.apple.com/lookup?id=com.xiaopeng.X6ptdemo"
+#define APP_URL @"http://itunes.apple.com/lookup?id=1103122494"
 
 //主服务器上线地址和测试地址
-//#define X6basemain_API @"http://192.168.1.199:8080"
-#define X6basemain_API @"http://www.x6pt.cn"
+#define X6basemain_API @"http://192.168.1.199:8080"
+//#define X6basemain_API @"http://www.x6pt.cn"
 
 //登陆接口
 #define X6_API_loadmain [NSString stringWithFormat:@"%@/yxmain/getAppUrl.action",X6basemain_API]
@@ -31,6 +31,9 @@
 
 //操作员头像url接口
 #define X6_czyURL @"http://x6pt.oss-cn-hangzhou.aliyuncs.com/userpic/"
+
+//判断是否已经关注
+#define X6_whetherConcerned @"/msg/attentionAction_hadAttention.action"
 
 //关注接口
 #define X6_focus @"/msg/attentionAction_attention.action"
@@ -62,15 +65,8 @@
 //回复接口
 #define X6_reply @"/msg/msgReplyAction_saveMsgReply.action"
 
-
-
-
 //2.联系人页面
 #define X6_persons @"/xtgl/appSelectPersonAction_SelectPerson.action"
-
-
-
-
 
 //3.业务员页面
 //供应商
@@ -97,6 +93,14 @@
 #define X6_revokeOrder @"/jxc/jxcPreInStockAction_QxShBill.action"
 
 
+//批发订单（未审核）
+#define X6_wholesalenoOrder @"/jxc/jxcPreOutStockAction_getDsList.action"
+//批发订单(审核)
+#define X6_wholesaleOrder @"/jxc/jxcPreOutStockAction_getYsList.action"
+//批发订单审核
+#define X6_wholesaleexamineOrder @"/jxc/jxcPreOutStockAction_shBill.action"
+//批发订单撤审
+#define X6_wholesalerevokeOrder @"/jxc/jxcPreOutStockAction_QxShBill.action"
 
 
 //银行存款
@@ -105,8 +109,6 @@
 #define X6_savedeposit @"/cw/cwMddkAction_save.action"
 //银行存款删除
 #define X6_deletedeposit @"/cw/cwMddkAction_delete.action"
-
-
 
 //银行账户列表
 #define X6_banksList @"/jcxx/dmYhzhAction_getMyDkzh.action"
@@ -151,9 +153,23 @@
 //我的帐户
 #define X6_myAcount @"/report/reportCwAction_myzh.action"
 
-//今日付款
+//今日存款
 #define X6_todaydeposit @"/cw/cwMddkAction_getTodayList.action"
 
+//批发战报
+#define X6_WholesaleUnits @"/report/reportPfAction_pfzb.action"
+
+//批发销量
+#define X6_WholesaleSales @"/report/reportPfAction_pfxl.action"
+
+//批发汇总
+#define X6_WholesaleSummary @"/report/reportPfAction_pfhz.action"
+
+//应收明细
+#define X6_MissyReceivable @"/report/reportCwAction_myysk.action"
+
+//今日收款
+#define X6_todayReceivable @"/report/reportCwAction_mysk.action"
 
 //我的提醒
 
@@ -168,9 +184,6 @@
 #define X6_Outbounddetail @"/report/reportXttxAction_lsckycDetail.action"
 //出库异常明细
 #define X6_OutboundMoredetail @"/report/reportXttxAction_lsckycMx.action"
-//门店负责人
-#define X6_MDPersondetail @"/xtgl/appSelectPersonAction_getMdFzr.action"
-
 
 //库龄逾期
 #define X6_Oldlibrary @"/report/reportXttxAction_klyj.action"
@@ -185,7 +198,8 @@
 
 #define X6_ignore @"/report/reportXttxAction_txpass.action"
 
-
+//应收逾期
+#define X6_OverdueRecieved @"/report/reportXttxAction_ysyqtx.action"
 
 
 
@@ -201,7 +215,7 @@
 
 
 
-//6.检测全县变化
+//6.检测权限变化
 #define X6_userQXchange @"/xtgl/xtuserAction_CheckMbQxChanged.action"
 
 #define X6_hadChangeQX @"/xtgl/xtuserAction_getMyMbSsgsAndQx.action"

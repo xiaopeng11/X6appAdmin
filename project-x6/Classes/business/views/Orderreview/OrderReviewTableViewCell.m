@@ -80,6 +80,8 @@
 
         _orderButton = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 100, 165, 80, 30)];
         [_orderButton setBackgroundColor:Mycolor];
+        _orderButton.clipsToBounds = YES;
+        _orderButton.layer.cornerRadius = 5;
         [_orderButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_OrderbgView addSubview:_orderButton];
         
@@ -97,17 +99,29 @@
     _dateImageview.image = [UIImage imageNamed:@"btn_riqi_h"];
     _dateLabel.text = [NSString stringWithFormat:@"日期:%@",[_dic valueForKey:@"col2"]];
     
-    _gysLabel.text = [NSString stringWithFormat:@"供应商:%@",[_dic valueForKey:@"col3"]];
+    if (_iswhosalecell) {
+        _gysLabel.text = [NSString stringWithFormat:@"客户:%@",[_dic valueForKey:@"col3"]];
+    } else {
+        _gysLabel.text = [NSString stringWithFormat:@"供应商:%@",[_dic valueForKey:@"col3"]];
+    }
     
     _huopinLabel.text = [NSString stringWithFormat:@"货品:%@",[_dic valueForKey:@"col4"]];
     
     if ([[_dic valueForKey:@"isexam"] boolValue] == 1) {
-        _gysImageView.image = [UIImage imageNamed:@"btn_gys_h"];
+        if (_iswhosalecell) {
+            _gysImageView.image = [UIImage imageNamed:@"btn_kehu_h"];
+        } else {
+            _gysImageView.image = [UIImage imageNamed:@"btn_gys_h"];
+        }
         _huopiImageview.image = [UIImage imageNamed:@"btn_huopin_h"];
         [_orderButton addTarget:self action:@selector(orderAction) forControlEvents:UIControlEventTouchUpInside];
         [_orderButton setTitle:@"审核" forState:UIControlStateNormal];
     } else {
-        _gysImageView.image = [UIImage imageNamed:@"btn_gys_h2"];
+        if (_iswhosalecell) {
+            _gysImageView.image = [UIImage imageNamed:@"btn_kehu_h2"];
+        } else {
+            _gysImageView.image = [UIImage imageNamed:@"btn_gys_h2"];
+        }
         _huopiImageview.image = [UIImage imageNamed:@"btn_huopin_h2"];
         [_orderButton addTarget:self action:@selector(revokeorderAction) forControlEvents:UIControlEventTouchUpInside];
         [_orderButton setTitle:@"撤审" forState:UIControlStateNormal];

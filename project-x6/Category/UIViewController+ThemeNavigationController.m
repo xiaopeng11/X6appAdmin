@@ -107,7 +107,7 @@
  */
 - (void)naviTitleWhiteColorWithText:(NSString *)text
 {
-    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 200) / 2.0, 0, 200, 44)];
     title.text = text;
     title.textColor = [UIColor whiteColor];
     title.textAlignment = NSTextAlignmentCenter;

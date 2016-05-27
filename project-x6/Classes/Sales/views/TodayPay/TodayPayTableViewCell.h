@@ -21,4 +21,5 @@
     UILabel *_textLabel;
 }
 @property(nonatomic,copy)NSDictionary *dic;
+@property(nonatomic,copy)NSString *source;
 @end

@@ -79,7 +79,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self naviTitleWhiteColorWithText:@"今日付款"];
+    if ([self.titletext isEqualToString:X6_todayPay]) {
+        [self naviTitleWhiteColorWithText:@"今日付款"];
+    } else {
+        [self naviTitleWhiteColorWithText:@"今日收款"];
+    }
     
     NSDate *date = [NSDate date];
     _dateString = [NSString stringWithFormat:@"%@",date];
@@ -93,6 +97,11 @@
     _newtodayPayDatalist = [NSMutableArray array];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeData) name:@"changeTodayData" object:nil];
+    
+    //绘制UI
+    [self initTodayPay];
+    
+    [self gettodayPayDataWithDate:_dateString LastURL:self.titletext];
 
 }
 
@@ -110,17 +119,12 @@
 {
     [super viewWillAppear:animated];
     [self.todayPaySearchController.searchBar setHidden:NO];
-    
-    //绘制UI
-    [self initTodayPay];
-
-    [self gettodayPayDataWithDate:_dateString];
 
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     [self.todayPaySearchController.searchBar setHidden:YES];
     [_todayPaySearchController setActive:NO];
     
@@ -166,7 +170,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 75;
+    return 80;
 }
 
 #pragma mark - UITableViewDataSource
@@ -182,25 +186,24 @@
     } else {
         cell.dic = _todayPayDatalist[indexPath.row];
     }
+    cell.source = self.titletext;
     return cell;
 }
 
 #pragma mark - 导航栏按钮
 - (void)creatRightNaviButton
 {
-    
     _datePicker = [[XPDatePicker alloc] initWithFrame:CGRectMake(0, 7, 80, 30) Date:_dateString];
     
     _datePicker.delegate = self;
     _datePicker.labelString = @"选择查询日期:";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_datePicker];
-    
 }
 
 #pragma mark - 日期选择响应事件
 - (void)changeData
 {
-    [self gettodayPayDataWithDate:_datePicker.text];
+    [self gettodayPayDataWithDate:_datePicker.text LastURL:self.titletext];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -241,17 +244,22 @@
     [self.view addSubview:_todayPayTableView];
     
     _notodayPayView = [[NoDataView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44)];
-    _notodayPayView.text = @"您今日没有付款";
+    if ([self.titletext isEqualToString:X6_todayPay]) {
+        _notodayPayView.text = @"您今日没有付款";
+    } else {
+        _notodayPayView.text = @"您今日没有收款";
+    }
     _notodayPayView.hidden = YES;
     [self.view addSubview:_notodayPayView];
 }
 
 #pragma mark - 获取数据
 - (void)gettodayPayDataWithDate:(NSString *)date
+                        LastURL:(NSString *)lastURL
 {
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-    NSString *todayPayURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_todayPay];
+    NSString *todayPayURL = [NSString stringWithFormat:@"%@%@",baseURL,lastURL];
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:date forKey:@"fsrqq"];
     [params setObject:date forKey:@"fsrqz"];

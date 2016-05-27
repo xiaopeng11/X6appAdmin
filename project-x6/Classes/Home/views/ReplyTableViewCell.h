@@ -21,6 +21,6 @@
     
 }
 
-@property(nonatomic,strong)NSString *faburen;
+@property(nonatomic,assign)long faburen;
 @property(nonatomic,strong)NSDictionary *dic;
 @end

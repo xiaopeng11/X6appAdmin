@@ -10,4 +10,6 @@
 
 @interface OrderreviewViewController : BaseViewController
 
+@property(nonatomic,assign)BOOL isWholesale;
+
 @end

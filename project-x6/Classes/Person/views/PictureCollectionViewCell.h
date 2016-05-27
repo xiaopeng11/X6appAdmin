@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "FocusModel.h"
-#import "X6ImageView.h"
 @interface PictureCollectionViewCell : UICollectionViewCell
 {
     UIView *_view;

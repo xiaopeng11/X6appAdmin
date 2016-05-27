@@ -27,26 +27,29 @@
         
         self.backgroundColor = GrayColor;
         
-        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 65)];
+        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 70)];
         _bgView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:_bgView];
         
-        _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 11, 20, 18)];
+        _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 9, 30, 30)];
         [_bgView addSubview:_headerView];
         
-        _headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, KScreenWidth - 40 - 20, 20)];
+        _headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 10, KScreenWidth - 50 - 20, 20)];
         [_bgView addSubview:_headerLabel];
 
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 41, 20, 18)];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(30, 41, 20, 18)];
         [_bgView addSubview:_imageView];
 
-        _label = [[UILabel alloc] initWithFrame:CGRectMake(50, 40, (KScreenWidth - 70) / 2.0, 20)];
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(60, 40, (KScreenWidth - 80) / 2.0, 20)];
+        _label.font = [UIFont systemFontOfSize:14];
         [_bgView addSubview:_label];
 
         _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(50 + ((KScreenWidth - 70) / 2.0), 40, 40, 20)];
+        _nameLabel.font = [UIFont systemFontOfSize:14];
         [_bgView addSubview:_nameLabel];
         
         _textLabel = [[UILabel alloc] initWithFrame:CGRectMake(50 + ((KScreenWidth - 70) / 2.0) + 40, 40, KScreenWidth - (50 + ((KScreenWidth - 70) / 2.0) + 40), 20)];
+        _textLabel.font = [UIFont systemFontOfSize:14];
         _textLabel.textColor = [UIColor redColor];
         [_bgView addSubview:_textLabel];
 
@@ -58,12 +61,15 @@
 {
     [super layoutSubviews];
     
-    _headerView.image = [UIImage imageNamed:@"btn_gys_h"];
-    
-
-    _headerLabel.text = [NSString stringWithFormat:@"供应商:%@",[_dic valueForKey:@"col1"]];
+    if ([self.source isEqualToString:X6_todayPay]) {
+        _headerView.image = [UIImage imageNamed:@"btn_gys_h"];
+        _headerLabel.text = [NSString stringWithFormat:@"供应商:%@",[_dic valueForKey:@"col2"]];
+    } else {
+        _headerView.image = [UIImage imageNamed:@"btn_kehu_h"];
+        _headerLabel.text = [NSString stringWithFormat:@"客户:%@",[_dic valueForKey:@"col2"]];
+    }
     _imageView.image = [UIImage imageNamed:@"btn_zhanghu_h"];
-    _label.text = [NSString stringWithFormat:@"帐户:%@",[_dic valueForKey:@"col2"]];
+    _label.text = [NSString stringWithFormat:@"帐户:%@",[_dic valueForKey:@"col1"]];
     _nameLabel.text = @"金额:";
     _textLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col3"]];
     

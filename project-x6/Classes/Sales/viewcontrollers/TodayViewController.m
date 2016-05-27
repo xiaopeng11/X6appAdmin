@@ -77,7 +77,8 @@
         _totalView.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.2];
         [self.view addSubview:_totalView];
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++)
+        {
             UILabel *Label = [[UILabel alloc] init];
             Label.font = [UIFont systemFontOfSize:13];
             if (i == 0) {
@@ -183,9 +184,9 @@
     
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
         [_datepicker.subView removeFromSuperview];

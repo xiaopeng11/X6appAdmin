@@ -61,6 +61,19 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.AcountChooseSearchViewcontroller.searchBar setHidden:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.AcountChooseSearchViewcontroller.searchBar setHidden:YES];
+    [_AcountChooseSearchViewcontroller setActive:NO];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

@@ -22,7 +22,7 @@
 }
 
 @property(nonatomic,strong)NoDataView *noDynamicView; //没有动态提示
-
+@property(nonatomic,assign)BOOL isConcerned;          //是否被关注
 @end
 
 @implementation HeaderViewController
@@ -47,6 +47,8 @@
     [self getPersonDynamicDataWithPage:1];
     //初始化子视图
     [self initSubViews];
+    //是否关注
+    [self judgewhetherconcerned];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -126,7 +128,7 @@
         [_bgView addSubview:label];
     }
 
-    
+
     //个人信息功能－打电话，关注，即时消息
     NSArray *buttonLabel = @[@"电话",@"消息",@"关注"];
     NSArray *buttonImages = @[@"btn_dianhua_n",@"btn_xinxi_h",@"btn_guanzhu_h"];
@@ -137,9 +139,15 @@
         [button setImage:[UIImage imageNamed:buttonImages[i]] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(HeaderbuttonAction:) forControlEvents:UIControlEventTouchUpInside];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth /2.0 - 125 + 90 * i, button.bottom + 5, 40, 20)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth /2.0 - 125 + 90 * i, button.bottom + 5, 50, 20)];
+        label.font = [UIFont systemFontOfSize:14];
         label.textAlignment = NSTextAlignmentCenter;
-        label.text = buttonLabel[i];
+        if (i < 2) {
+            label.text = buttonLabel[i];
+        } else {
+            label.tag = 12313;
+        }
+
         [_bgView addSubview:button];
         [_bgView addSubview:label];
     }
@@ -248,7 +256,16 @@
             }
             [XPHTTPRequestTool requestMothedWithPost:focusURL params:params success:^(id responseObject) {
                 //关注成功
-                [self writeWithName:@"关注成功"];
+                UILabel *concrened = [_bgView viewWithTag:12313];
+                if (_isConcerned == NO) {
+                    [self writeWithName:@"关注成功"];
+                    _isConcerned = YES;
+                    concrened.text = @"已关注";
+                } else {
+                    [self writeWithName:@"取消关注成功"];
+                    _isConcerned = NO;
+                    concrened.text = @"关注";
+                }
             } failure:^(NSError *error) {
 //                [BasicControls showNDKNotifyWithMsg:@"关注失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
             }];
@@ -363,6 +380,34 @@
         [self hideProgress];
     }];
     
+}
+
+//判断是否已经关注
+- (void)judgewhetherconcerned
+{
+    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+    NSString *judgeconcernURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_whetherConcerned];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    if (_type) {
+        [params setObject:[_dic valueForKey:@"id"] forKey:@"msguserid"];
+        [params setObject:[_dic valueForKey:@"usertype"] forKey:@"msgusertype"];
+    } else {
+        [params setObject:[_dic valueForKey:@"senderid"] forKey:@"msguserid"];
+        [params setObject:[_dic valueForKey:@"userType"] forKey:@"msgusertype"];
+    }
+    [XPHTTPRequestTool requestMothedWithPost:judgeconcernURL params:params success:^(id responseObject) {
+        UILabel *concrened = [_bgView viewWithTag:12313];
+        if ([responseObject[@"message"] isEqualToString:@"exist"]) {
+            _isConcerned = YES;
+            concrened.text = @"已关注";
+        } else {
+            _isConcerned = NO;
+            concrened.text = @"关注";
+        }
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 

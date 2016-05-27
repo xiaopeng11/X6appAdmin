@@ -12,6 +12,8 @@
 
 #import "JPUSHService.h"
 
+#import "UserRegisterViewController.h"
+#import "ForgetpasswordViewController.h"
 @interface LoadViewController ()<UITextFieldDelegate>
 
 @end
@@ -93,7 +95,6 @@
                 textField.keyboardType = UIKeyboardTypeNumberPad;
             } else if (i == 1) {
                 textField.text = [usedic valueForKey:@"phone"];
-                textField.keyboardType = UIKeyboardTypeNumberPad;
             } else {
                 textField.placeholder = placeholders[i];
             }
@@ -115,21 +116,52 @@
         
     }
     
-    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 394, KScreenWidth - 30, 44)];
+    UIButton *userRegisterButton = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 70, 25, 60, 34)];
+    userRegisterButton.backgroundColor = [UIColor clearColor];
+    [userRegisterButton setTitle:@"立即注册" forState:UIControlStateNormal];
+    userRegisterButton.titleLabel.font = [UIFont systemFontOfSize:13];
+    [userRegisterButton addTarget:self action:@selector(RegisterAction) forControlEvents:UIControlEventTouchUpInside];
+    [titleView addSubview:userRegisterButton];
+    
+    
+    UIButton *forgetPas = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 115, 394 + 44, 100, 34)];
+    forgetPas.backgroundColor = [UIColor clearColor];
+    UILabel *forgetPasLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 34)];
+    forgetPasLabel.text = @"忘记密码?";
+    forgetPasLabel.textColor = Mycolor;
+    forgetPasLabel.textAlignment = NSTextAlignmentRight;
+    forgetPasLabel.font = [UIFont systemFontOfSize:13];
+    [forgetPas addSubview:forgetPasLabel];
+    [forgetPas addTarget:self action:@selector(forgetPassword) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:forgetPas];
+    
+    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 394 , KScreenWidth - 30, 44)];
     loadButton.backgroundColor = Mycolor;
     loadButton.clipsToBounds = YES;
     loadButton.layer.cornerRadius = 15;
-    [loadButton setTitle:@"登     陆" forState:UIControlStateNormal];
+    [loadButton setTitle:@"登陆" forState:UIControlStateNormal];
     [loadButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [loadButton setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
-    [loadButton addTarget:self action:@selector(loadAction) forControlEvents:UIControlEventTouchUpInside];
+    [loadButton addTarget:self action:@selector(loadtabAction) forControlEvents:UIControlEventTouchUpInside];
     loadButton.layer.cornerRadius = 5;
     [self.view addSubview:loadButton];
+    
+ 
+    UIButton *userHelp = [[UIButton alloc] initWithFrame:CGRectMake((KScreenWidth - 100) / 2.0, KScreenHeight - 50, 100, 40)];
+    userHelp.backgroundColor = [UIColor clearColor];
+    UILabel *userHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 34)];
+    userHelpLabel.text = @"使用帮助";
+    userHelpLabel.textColor = Mycolor;
+    userHelpLabel.textAlignment = NSTextAlignmentCenter;
+    userHelpLabel.font = [UIFont systemFontOfSize:13];
+    [userHelp addSubview:userHelpLabel];
+    [userHelp addTarget:self action:@selector(userHelp) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:userHelp];
 
 }
 
 #pragma mark - loadAction：
-- (void)loadAction
+- (void)loadtabAction
 {
     [self.view endEditing:YES];
     
@@ -175,6 +207,10 @@
                         } else {
                             //保存cookie
                             NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+//                            for (NSHTTPCookie *cookie in cookies) {
+//                                NSLog(@"%@",cookie);
+//                            }
+                            
                             NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
                             
                          
@@ -260,5 +296,27 @@
     }
 }
 
+#pragma mark - 注册
+- (void)RegisterAction
+{
+    UserRegisterViewController *userRegisterVC = [[UserRegisterViewController alloc] init];
+    userRegisterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    [self presentViewController:userRegisterVC animated:YES completion:nil];
+}
+
+#pragma mark - 忘记密码
+- (void)forgetPassword
+{
+    NSLog(@"忘记密码");
+    ForgetpasswordViewController *forgetPSVC = [[ForgetpasswordViewController alloc] init];
+    forgetPSVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    [self presentViewController:forgetPSVC animated:YES completion:nil]; 
+}
+
+#pragma amrk - 使用帮助
+- (void)userHelp
+{
+    NSLog(@"使用帮助");
+}
 
 @end

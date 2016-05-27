@@ -108,19 +108,6 @@
     //绘制UI
     [self initWithMyacountView];
 
-    
-    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
-    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
-    for (NSDictionary *dic in qxList) {
-        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_myzh"]) {
-            if ([[dic valueForKey:@"pc"] integerValue] == 1) {
-                //获取数据
-                [self getMyacountDataWithDate:_dateString];
-            } else {
-                [self writeWithName:@"您没有查看帐户详情的权限"];
-            }
-        }
-    }
 }
 
 #pragma mark - UISearchResultsUpdating
@@ -142,7 +129,27 @@
     
     [_myacountTableView reloadData];
     
+    float totalMoney = 0;
+    if (_newmyacountDatalist.count != 0) {
+        for (NSDictionary *dic in _newmyacountDatalist) {
+            totalMoney += [[dic valueForKey:@"col4"] floatValue];
+        }
+        UILabel *label = (UILabel *)[_totalacountView viewWithTag:4711];
+        label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
+    }
+    
 }
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    float totalMoney = 0;
+    for (NSDictionary *dic in _myacountDatalist) {
+        totalMoney += [[dic valueForKey:@"col4"] floatValue];
+    }
+    UILabel *label = (UILabel *)[_totalacountView viewWithTag:4711];
+    label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -158,11 +165,13 @@
 {
     [super viewWillAppear:animated];
     [self.MyacountSearchController.searchBar setHidden:NO];
+    [self getMyacountDataWithDate:_dateString];
+
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     [self.MyacountSearchController.searchBar setHidden:YES];
     [_MyacountSearchController setActive:NO];
     if (_datepicker.datePicker != nil) {
@@ -292,12 +301,12 @@
             _myacountTableView.hidden = NO;
             [self totalacountView];
             _totalacountView.hidden = NO;
-            long long totalMoney = 0;
+            float totalMoney = 0;
             for (NSDictionary *dic in _myacountDatalist) {
-                totalMoney += [[dic valueForKey:@"col4"] longLongValue];
+                totalMoney += [[dic valueForKey:@"col4"] floatValue];
             }
             UILabel *label = (UILabel *)[_totalacountView viewWithTag:4711];
-            label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+            label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
             
             NSArray *sortacountArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col4" ascending:NO]];
             [_myacountDatalist sortUsingDescriptors:sortacountArray];

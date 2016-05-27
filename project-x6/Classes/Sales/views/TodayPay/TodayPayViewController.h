@@ -10,4 +10,5 @@
 
 @interface TodayPayViewController : BaseViewController
 
+@property(nonatomic,copy)NSString *titletext;
 @end

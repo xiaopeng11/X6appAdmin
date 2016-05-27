@@ -9,9 +9,12 @@
 #import "MianDynamicViewController.h"
 #import "ReplyModel.h"
 #import "ReplyTableView.h"
-#import "X6ImageView.h"
+#import "XPPhotoViews.h"
 #import "StockViewController.h"
 #import "TxtViewController.h"
+
+#import "IQKeyboardManager.h"
+
 @interface MianDynamicViewController ()<UITextViewDelegate>
 
 @property(nonatomic,copy)NSArray *personList;
@@ -79,7 +82,10 @@
     [super viewWillAppear:animated];
     
     [self drawCollectedButton];
+    
+    [[IQKeyboardManager sharedManager] setEnable:NO];
 
+    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -207,9 +213,9 @@
     [_replyTableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(headerAction)];
     [_replyTableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(footerAction)];
     _replyTableView.frame = CGRectMake(0, 0 , KScreenWidth, KScreenHeight - 64 - 40);
-    _replyTableView.fabuName = [_dic valueForKey:@"name"];
+    NSNumber *fb = [_dic valueForKey:@"zdrdm"];
+    _replyTableView.fabuName = [fb longValue];
     [self.view addSubview:_replyTableView];
-    
     
     
     _nodataView = [[NoDataView alloc] init];
@@ -250,23 +256,27 @@
                     [wengdanView setBackgroundImage:[UIImage imageNamed:@"btn-wendang4-n"] forState:UIControlStateNormal];
                 }
             } else {
-                X6ImageView *x6imageView;
+                XPPhotoViews *XPimageViews = [[XPPhotoViews alloc] init];
                 if (fileprop.count == 4) {
                     _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + 170 + 10);
-                    filepropwidth = i / 2;
-                    filepropheight = i % 2;
-                    x6imageView = [[X6ImageView alloc] initWithFrame:CGRectMake(20 + 85 * filepropheight, upheight + 85 * filepropwidth, 80, 80)];
+                    XPimageViews.frame = CGRectMake(20, upheight, 170, 170);
                 } else {
                     _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + 80 + 10);
-                    x6imageView = [[X6ImageView alloc] initWithFrame:CGRectMake(20 + 85 * i, upheight, 80, 80)];
+                    XPimageViews.frame = CGRectMake(20, upheight, 170, 170);
                 }
-                [_bgView addSubview:x6imageView];
                 //获取图片url,截取拼接
-                NSDictionary *dic = [fileprop objectAtIndex:i];
-                NSString *imageurlString = [dic objectForKey:@"name"];
-                NSString *imageUrl = [NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString];
-                NSURL *url = [NSURL URLWithString:imageUrl];
-                [x6imageView sd_setImageWithURL:url placeholderImage:[UIImage imageNamed:@"moren_tupian_"]];
+                NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+                NSDictionary *dic = [userdefaults objectForKey:X6_UserMessage];
+                NSString *companyString = [dic objectForKey:@"gsdm"];
+                NSMutableArray *picsURL = [NSMutableArray array];
+                for (NSDictionary *dic in fileprop) {
+                    NSString *imageurlString = [dic objectForKey:@"name"];
+                    NSString *picURLString = [NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString];
+                    [picsURL addObject:picURLString];
+                }
+                XPimageViews.picsArray = picsURL;
+                [_bgView addSubview:XPimageViews];
+
             }
             _nodataView.frame = CGRectMake(0, _bgView.bottom, KScreenWidth, KScreenHeight - _bgView.height - 40 - 64);
         }
@@ -345,13 +355,18 @@
 {
     //获取键盘的高度
     CGFloat boardHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+//    if (boardHeight < 300) {
+//        boardHeight = 327.66;
+//    }
+    NSLog(@"%f",boardHeight);
     //获取键盘的大小
     float duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
     [UIView animateWithDuration:duration animations:^{
-        _replyView.transform = CGAffineTransformMakeTranslation(0, -boardHeight);
-        //出现半透明遮罩
+        _replyView.transform = CGAffineTransformMakeTranslation(0, - boardHeight);
+        //出现半透明遮罩`
         _alphaView.hidden = NO;
     }];
+  
 }
 
 #pragma mark - 键盘消失事件
@@ -363,6 +378,7 @@
         //隐藏版遮罩视图
         _alphaView.hidden = YES;
     }];
+  
     
 }
 

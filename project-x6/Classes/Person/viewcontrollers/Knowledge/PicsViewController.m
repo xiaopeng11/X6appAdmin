@@ -31,14 +31,6 @@
     
     [self naviTitleWhiteColorWithText:@"图片"];
     
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    [_searchVC.searchBar setHidden:NO];
     [self initSearchView];
     [self initCollectionView];
     
@@ -54,6 +46,13 @@
     for (NSDictionary *dic in nameArray) {
         [_nameArray addObject:[dic valueForKey:@"shortname"]];
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [_searchVC.searchBar setHidden:NO];
   
 }
 

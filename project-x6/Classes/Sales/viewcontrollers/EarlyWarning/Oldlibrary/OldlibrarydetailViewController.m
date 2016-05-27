@@ -101,7 +101,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 40)];
-    view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.1];
+    view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.05];
     
     UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, ((KScreenWidth - 20) * 2 )/ 5, 30)];
     label1.text = @"串号";

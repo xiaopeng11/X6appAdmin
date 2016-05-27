@@ -10,6 +10,6 @@
 
 @interface ReplyTableView : UITableView<UITableViewDataSource,UITableViewDelegate>
 
-@property(nonatomic,copy)NSString *fabuName;
+@property(nonatomic,assign)long fabuName;
 @property(nonatomic,strong)NSArray *datalist;
 @end

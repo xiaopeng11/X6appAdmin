@@ -51,18 +51,22 @@
 {
     NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
     CFShow((__bridge CFTypeRef)(infoDic));
-    NSString *appVersion = [infoDic objectForKey:@"CFBundleVersion"];
-    
+    NSString *appVersionString = [infoDic objectForKey:@"CFBundleShortVersionString"];
+    NSArray *array = [appVersionString componentsSeparatedByString:@"."];
+    NSString *appVersion = [NSString stringWithFormat:@"%@%@",array[1],array[2]];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager POST:APP_URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSArray *infoArray = [responseObject objectForKey:@"results"];
         if ([infoArray count]) {
             NSDictionary *releaseinfo = [infoArray objectAtIndex:0];
-            NSString *lastVersion = [releaseinfo objectForKey:@"version"];
-            if (![lastVersion isEqualToString:appVersion]) {
+            NSString *lastVersionSting = [releaseinfo objectForKey:@"version"];
+            
+            NSArray *arrayed = [lastVersionSting componentsSeparatedByString:@"."];
+            NSString *lastVersion = [NSString stringWithFormat:@"%@%@",arrayed[1],arrayed[2]];
+            if ([lastVersion longLongValue] > [appVersion longLongValue]) {
                 UIAlertController *alertcontroller = [UIAlertController alertControllerWithTitle:@"更新" message:@"有新的版本更新，是否前往更新？" preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction *okaction = [UIAlertAction actionWithTitle:@"更新" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    NSURL *url = [NSURL URLWithString:[releaseinfo objectForKey:@"trackViewUrl"]];
+                     NSURL *url = [NSURL URLWithString:[releaseinfo objectForKey:@"trackViewUrl"]];
                     [[UIApplication sharedApplication] openURL:url];
                 }];
                 UIAlertAction *cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
@@ -115,7 +119,6 @@
     [self addOneChildVC:personVC title:@"我" selectedImageName:@"btn_wo_n" unselectedImageName:@"btn_wo_h"];
 }
 
-
 /**
  *  添加一个子控制器
  *
@@ -149,9 +152,6 @@
     //添加tabbar控制器的字控制器
     BaseNavigationController *naviVC = [[BaseNavigationController alloc] initWithRootViewController:childVC];
     [self addChildViewController:naviVC];
-    
 }
-
-
 
 @end

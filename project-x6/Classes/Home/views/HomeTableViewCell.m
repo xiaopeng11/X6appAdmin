@@ -14,7 +14,8 @@
 #import "TxtViewController.h"
 
 #import "NSString+Additions.h"
-#import "X6ImageView.h"
+
+#import "XPPhotoViews.h"
 
 @implementation HomeTableViewCell
 {
@@ -264,22 +265,15 @@
                 NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
                 NSDictionary *dic = [userdefaults objectForKey:X6_UserMessage];
                 NSString *companyString = [dic objectForKey:@"gsdm"];
-                X6ImageView *x6imageView = nil;
-                if (fileprop.count == 4) {
-                    filepropwidth = i / 2;
-                    filepropheight = i % 2;
-                    x6imageView = [[X6ImageView alloc] initWithFrame:CGRectMake(85 * filepropheight, 85 * filepropwidth, 80, 80)];
-                } else {
-                    x6imageView = [[X6ImageView alloc] initWithFrame:CGRectMake(85 * i, 0, 80, 80)];
+                NSMutableArray *picsURL = [NSMutableArray array];
+                for (NSDictionary *dic in fileprop) {
+                    NSString *imageurlString = [dic objectForKey:@"name"];
+                    NSString *picURLString = [NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString];
+                    [picsURL addObject:picURLString];
                 }
-                [_filepropImageView addSubview:x6imageView];
-                //获取图片url,截取拼接
-                NSDictionary *diced = [fileprop objectAtIndex:i];
-                NSString *imageurlString = [diced objectForKey:@"name"];
-                [x6imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString]] placeholderImage:nil];
-                x6imageView.bgImageURL = [NSString stringWithFormat:@"%@%@/%@",X6_personMessage,companyString,imageurlString];
-                
-                
+                XPPhotoViews *photos = [[XPPhotoViews alloc] initWithFrame:_filepropImageView.bounds];
+                photos.picsArray = picsURL;
+                [_filepropImageView addSubview:photos];
             }
         }
     } else {
@@ -322,10 +316,16 @@
         return;
     }
     postBGView.frame = CGRectZero;
-    for (UIImageView *imagview in _filepropImageView.subviews) {
-        if (!imagview.hidden) {
-            [imagview sd_cancelCurrentImageLoad];
+    postBGView.image = nil;
+    for (UIView *imagview in _filepropImageView.subviews) {
+        if ([imagview isKindOfClass:[XPPhotoViews class]]) {
+            for (UIImageView *photo in imagview.subviews) {
+                if (!photo.hidden) {
+                    [photo sd_cancelCurrentImageLoad];
+                }
+            }
         }
+        
     }
     
     _filepropImageView.hidden = YES;
@@ -335,16 +335,13 @@
 
 - (void)releaseMemory{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    //	if ([self.delegate keepCell:self]) {
-    //		return;
-    //	}
+
     [self clear];
     [super removeFromSuperview];
 }
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-//    NSLog(@"postview dealloc %@", self);
 }
 
 @end

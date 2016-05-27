@@ -30,7 +30,7 @@
     
     layout.itemSize = CGSizeMake(KScreenWidth + 10, KScreenHeight);
     layout.minimumInteritemSpacing = 0;
-    layout.minimumLineSpacing =0;
+    layout.minimumLineSpacing = 0;
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
     //创建瀑布流视图

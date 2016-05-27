@@ -56,6 +56,19 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.storeSearchViewcontroller.searchBar setHidden:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.storeSearchViewcontroller.searchBar setHidden:YES];
+    [_storeSearchViewcontroller setActive:NO];
+}
+
 
 
 - (void)didReceiveMemoryWarning {

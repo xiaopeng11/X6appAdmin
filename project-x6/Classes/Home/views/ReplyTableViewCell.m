@@ -57,7 +57,8 @@
     CGSize size = [[_dic valueForKey:@"content"] boundingRectWithSize:CGSizeMake(KScreenWidth - 50, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
     
     //判断评论人是否为发布人自己
-    if ([_faburen isEqualToString:[self.dic valueForKey:@"name"]]) {
+    NSNumber *ficfb = [self.dic valueForKey:@"zdrdm"];
+    if (_faburen == [ficfb longLongValue]) {
         //所有的子视图位置靠右
         _headerView.frame = CGRectMake(KScreenWidth - 40, 10, 30, 30);
         cornerImage.frame = CGRectMake(KScreenWidth - 42.5, 7.5, 35, 35);
@@ -78,12 +79,16 @@
         _headerView.frame = CGRectMake(10, 10, 30, 30);
         cornerImage.frame = CGRectMake(7.5, 7.5, 35, 35);
         _nameLabel.frame = CGRectMake(_headerView.right + 10, _headerView.top - 5, KScreenWidth - 40 - 10, 20);
+        _nameLabel.textAlignment = NSTextAlignmentLeft;
         
         _gwLabel.frame = CGRectMake(_nameLabel.left, _nameLabel.bottom + 3, _nameLabel.width, 7);
+        _gwLabel.textAlignment = NSTextAlignmentLeft;
         
         _timeLabel.frame = CGRectMake(_nameLabel.left, _gwLabel.bottom + 3, _gwLabel.width, 7);
+        _timeLabel.textAlignment = NSTextAlignmentLeft;
         
         _contentLabel.frame = CGRectMake(_nameLabel.left, _headerView.bottom + 10, KScreenWidth - 50, size.height);
+        _contentLabel.textAlignment = NSTextAlignmentLeft;
     }
     
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];

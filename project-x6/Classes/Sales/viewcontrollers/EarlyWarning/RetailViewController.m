@@ -143,7 +143,7 @@
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
      UITableViewRowAction *ignore = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"忽略" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-            NSMutableArray *array = [NSMutableArray array];
+            NSMutableArray *array = nil;
             if (_ReatilSearchController.active) {
                 array = _NewReatilDatalist;
             } else {
@@ -214,14 +214,15 @@
     [self.NewReatilDatalist removeAllObjects];
     NSPredicate *ReatilPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.ReatilSearchController.searchBar.text];
     self.ReatilSearchNames = [[self.ReatilNames filteredArrayUsingPredicate:ReatilPredicate] mutableCopy];
-    
+    NSMutableSet *reatilSet = [NSMutableSet set];
     for (NSString *title in self.ReatilSearchNames) {
         for (NSDictionary *dic in _ReatilDatalist) {
             if ([title isEqualToString:[dic valueForKey:@"col1"]] || [title isEqualToString:[dic valueForKey:@"col3"]] || [title isEqualToString:[dic valueForKey:@"col4"]]) {
-                [_NewReatilDatalist addObject:dic];
+                [reatilSet addObject:dic];
             }
         }
     }
+    _NewReatilDatalist = [[reatilSet allObjects] mutableCopy];
     [_RetailTabelView reloadData];
     
 }
@@ -283,7 +284,7 @@
 }
 
 /**
- *  清除采购异常条数
+ *  清除零售异常条数
  */
 - (void)cleanRetailWarningNumber
 {

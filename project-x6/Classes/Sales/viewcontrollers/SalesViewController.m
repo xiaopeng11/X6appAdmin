@@ -19,6 +19,8 @@
 #import "EarlyWarningViewController.h"
 #import "MyacountViewController.h"
 #import "DepositViewController.h"
+#import "WholesaleViewController.h"
+#import "MissyReceivableViewController.h"
 
 #import "JPUSHService.h"
 #define imageWidth (KScreenWidth / 12.0)
@@ -32,6 +34,11 @@
 @end
 
 @implementation SalesViewController
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -62,6 +69,11 @@
 {
     [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
+//    for (UIView *view in self.view.subviews) {
+//        if ([view isKindOfClass:[UIScrollView class]]) {
+//            [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+//        }
+//    }
     [self initWithSubViews];
     
     [self getEarlyWraningNumber];
@@ -80,6 +92,11 @@
                             @{@"title":@"bb_jrcwfk",@"image":@"btn_fukuan"},
                             @{@"title":@"bb_myzh",@"image":@"btn_zhanghu"},
                             @{@"title":@"bb_jryhdk",@"image":@"btn_jinricunkuan_h"},
+                            @{@"title":@"bb_pfzb",@"image":@"btn_pifazhanbao_h"},
+                            @{@"title":@"bb_pfxl",@"image":@"btn_pifaxiaoliang_h"},
+                            @{@"title":@"bb_pfhz",@"image":@"btn_pifahuizong_h"},
+                            @{@"title":@"bb_pfysmx",@"image":@"btn_yingshoumingxi_h"},
+                            @{@"title":@"bb_jrsk",@"image":@"btn_jinricunkuan_h"}
                             ];
     
     NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
@@ -96,42 +113,67 @@
                     }
                 } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jrzb"]) {
                     if ([[diced valueForKey:@"pc"] integerValue] == 1) {
-                        [mutableDic setObject:@"1" forKey:@"buttonTag"];
+                        [mutableDic setObject:@"01" forKey:@"buttonTag"];
                         [_datalist addObject:mutableDic];
                     }
                 } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jrxs"]) {
                     if ([[diced valueForKey:@"pc"] integerValue] == 1) {
-                        [mutableDic setObject:@"2" forKey:@"buttonTag"];
+                        [mutableDic setObject:@"02" forKey:@"buttonTag"];
                         [_datalist addObject:mutableDic];
                     }
                 } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jryyk"]) {
                     if ([[diced valueForKey:@"pc"] integerValue] == 1) {
-                        [mutableDic setObject:@"3" forKey:@"buttonTag"];
+                        [mutableDic setObject:@"03" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                }  else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_pfzb"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"04" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_pfxl"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"05" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_pfhz"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"06" forKey:@"buttonTag"];
                         [_datalist addObject:mutableDic];
                     }
                 } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jrcwfk"]) {
                     if ([[diced valueForKey:@"pc"] integerValue] == 1) {
-                        [mutableDic setObject:@"4" forKey:@"buttonTag"];
-                        [_datalist addObject:mutableDic];
-                    }
-                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_myzh"]) {
-                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
-                        [mutableDic setObject:@"6" forKey:@"buttonTag"];
+                        [mutableDic setObject:@"07" forKey:@"buttonTag"];
                         [_datalist addObject:mutableDic];
                     }
                 } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jryhdk"]) {
                     if ([[diced valueForKey:@"pc"] integerValue] == 1) {
-                        [mutableDic setObject:@"7" forKey:@"buttonTag"];
+                        [mutableDic setObject:@"08" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jrsk"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"09" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_pfysmx"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"10" forKey:@"buttonTag"];
+                        [_datalist addObject:mutableDic];
+                    }
+                } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_myzh"]) {
+                    if ([[diced valueForKey:@"pc"] integerValue] == 1) {
+                        [mutableDic setObject:@"12" forKey:@"buttonTag"];
                         [_datalist addObject:mutableDic];
                     }
                 }
+                
                 break;
             }
             
         }
     }
     
-    NSLog(@"报表%@",_datalist);
     
     NSMutableArray *pcs = [NSMutableArray array];
     for (NSDictionary *diced in qxList) {
@@ -143,14 +185,15 @@
             [pcs addObject:[diced valueForKey:@"pc"]];
         } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jxc_lsyc"]) {
             [pcs addObject:[diced valueForKey:@"pc"]];
+        } else if ([[diced valueForKey:@"qxid"] isEqualToString:@"bb_jxc_yskyj"]) {
+            [pcs addObject:[diced valueForKey:@"pc"]];
         }
     }
 
-    NSLog(@"%@",pcs);
     _bussScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64)];
-    _bussScrollView.showsVerticalScrollIndicator = NO;
+    _bussScrollView.alwaysBounceVertical = YES;
     _bussScrollView.showsHorizontalScrollIndicator = NO;
-    _bussScrollView.contentSize = CGSizeMake(KScreenWidth, 200 + (KScreenWidth / 2.0) + 20);
+    _bussScrollView.contentSize = CGSizeMake(KScreenWidth, 200 + ((_datalist.count / 4) + 1) * (KScreenWidth / 4.0 + 20) + 20);
     [self.view addSubview:_bussScrollView];
     
     UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 200)];
@@ -160,8 +203,8 @@
     if ([pcs containsObject:@(1)]) {
         NSMutableDictionary *diced = [NSMutableDictionary dictionary];
         [diced setObject:@"btn_yujingtixing" forKey:@"image"];
-        [diced setObject:@"5" forKey:@"buttonTag"];
-        [_datalist addObject:diced];
+        [diced setObject:@"11" forKey:@"buttonTag"];
+        [_datalist addObject:diced];    
         
         
         NSArray *sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"buttonTag" ascending:YES]];
@@ -188,8 +231,7 @@
         
     }
     
-    
-    NSArray *titleNames = @[@"库存",@"战报",@"销量",@"营业款",@"付款",@"提醒",@"帐户",@"存款"];
+    NSArray *titleNames = @[@"我的库存",@"今日战报",@"今日销量",@"营业款",@"批发战报",@"批发销量",@"批发汇总",@"今日付款",@"今日存款",@"今日收款",@"应收明细",@"提醒",@"我的帐户"];
     for (int i = 0; i < _datalist.count; i++) {
         NSInteger num = [[_datalist[i] valueForKey:@"buttonTag"] integerValue];
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -213,8 +255,6 @@
     }
 }
 
-
-
 - (void)salesDetailChoose:(UIButton *)button
 {
     if (button.tag == 4000) {
@@ -230,18 +270,38 @@
         TodayMoneyViewController *todayMoneyVC = [[TodayMoneyViewController alloc] init];
         [self.navigationController pushViewController:todayMoneyVC animated:YES];
     } else if (button.tag == 4004) {
-        TodayPayViewController *todayPayVC = [[TodayPayViewController alloc] init];
-        [self.navigationController pushViewController:todayPayVC animated:YES];
+        WholesaleViewController *wholesalesVC = [[WholesaleViewController alloc] init];
+        wholesalesVC.Viewtitle = X6_WholesaleUnits;
+        [self.navigationController pushViewController:wholesalesVC animated:YES];
     } else if (button.tag == 4005) {
-        EarlyWarningViewController *earlyWarningVC = [[EarlyWarningViewController alloc] init];
-        [self.navigationController pushViewController:earlyWarningVC animated:YES];
+        WholesaleViewController *wholesalesVC = [[WholesaleViewController alloc] init];
+        wholesalesVC.Viewtitle = X6_WholesaleSales;
+        [self.navigationController pushViewController:wholesalesVC animated:YES];
     } else if (button.tag == 4006) {
-        MyacountViewController *myacountVC = [[MyacountViewController alloc] init];
-        [self.navigationController pushViewController:myacountVC animated:YES];
-    }  else {
+        WholesaleViewController *wholesalesVC = [[WholesaleViewController alloc] init];
+        wholesalesVC.Viewtitle = X6_WholesaleSummary;
+        [self.navigationController pushViewController:wholesalesVC animated:YES];
+    } else if (button.tag == 4007) {
+        TodayPayViewController *todayPayVC = [[TodayPayViewController alloc] init];
+        todayPayVC.titletext = X6_todayPay;
+        [self.navigationController pushViewController:todayPayVC animated:YES];
+    } else if (button.tag == 4008) {
         DepositViewController *depositVC = [[DepositViewController alloc] init];
         depositVC.isBusiness = NO;
         [self.navigationController pushViewController:depositVC animated:YES];
+    } else if (button.tag == 4009) {
+        TodayPayViewController *todayPayVC = [[TodayPayViewController alloc] init];
+        todayPayVC.titletext = X6_todayReceivable;
+        [self.navigationController pushViewController:todayPayVC animated:YES];
+    } else if (button.tag == 4010) {
+        MissyReceivableViewController *missyReceivableVC = [[MissyReceivableViewController alloc] init];
+        [self.navigationController pushViewController:missyReceivableVC animated:YES];
+    } else if (button.tag == 4011) {
+        EarlyWarningViewController *earlyWarningVC = [[EarlyWarningViewController alloc] init];
+        [self.navigationController pushViewController:earlyWarningVC animated:YES];
+    } else if (button.tag == 4012) {
+        MyacountViewController *myacountVC = [[MyacountViewController alloc] init];
+        [self.navigationController pushViewController:myacountVC animated:YES];
     }
 }
 

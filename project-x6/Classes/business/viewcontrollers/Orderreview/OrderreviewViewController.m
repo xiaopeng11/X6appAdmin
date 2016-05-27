@@ -39,7 +39,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self naviTitleWhiteColorWithText:@"订单审核"];
+    if (self.isWholesale) {
+        [self naviTitleWhiteColorWithText:@"批发订单订单审核"];
+    } else {
+        [self naviTitleWhiteColorWithText:@"订单审核"];
+    }
     
     [self initOrderreviewUI];
     
@@ -80,7 +84,9 @@
     _OrderreviewSearchController.searchBar.hidden = NO;
     
     _number = 0;
-    [self getOrderreviewDataWithOrderreview:YES Page:0];
+    
+    [self getOrderreviewDataWithOrderreview:YES Page:0 Iswhosales:_isWholesale];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -177,6 +183,7 @@
     } else {
         cell.dic = _OrderreviewDatalist[indexPath.row];
     }
+    cell.iswhosalecell = _isWholesale;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -190,15 +197,15 @@
     
     NSPredicate *kucunPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.OrderreviewSearchController.searchBar.text];
     self.OrderreviewSearchNames = [[self.OrderreviewNames filteredArrayUsingPredicate:kucunPredicate] mutableCopy];
-    
+    NSMutableSet *orderreviewSet = [NSMutableSet set];
     for (NSString *title in self.OrderreviewSearchNames) {
         for (NSDictionary *dic in _OrderreviewDatalist) {
             if ([title isEqualToString:[dic valueForKey:@"col1"]] || [title isEqualToString:[dic valueForKey:@"col3"]] || [title isEqualToString:[dic valueForKey:@"col4"]]) {
-                [_neworderreviewDatalist addObject:dic];
+                [orderreviewSet addObject:dic];
             }
         }
     }
-    
+    _neworderreviewDatalist = [[orderreviewSet allObjects] mutableCopy];
     [_OrderreviewTableView reloadData];
     
 }
@@ -207,15 +214,23 @@
 - (void)getrevokeorderdata
 {
     if (_number % 2 == 0) {
-        [self naviTitleWhiteColorWithText:@"撤审列表"];
+        if (_isWholesale) {
+            [self naviTitleWhiteColorWithText:@"批发撤审列表"];
+        } else {
+            [self naviTitleWhiteColorWithText:@"撤审列表"];
+        }
         [_button setTitle:@"审核" forState:UIControlStateNormal];
         _number++;
-        [self getOrderreviewDataWithOrderreview:NO Page:1];
+        [self getOrderreviewDataWithOrderreview:NO Page:1 Iswhosales:_isWholesale];
     } else {
-        [self naviTitleWhiteColorWithText:@"订单审核"];
+        if (_isWholesale) {
+            [self naviTitleWhiteColorWithText:@"批发订单审核"];
+        } else {
+            [self naviTitleWhiteColorWithText:@"订单审核"];
+        }
         [_button setTitle:@"撤审" forState:UIControlStateNormal];
         _number--;
-        [self getOrderreviewDataWithOrderreview:YES Page:1];
+        [self getOrderreviewDataWithOrderreview:YES Page:1 Iswhosales:_isWholesale];
 
     }
 }
@@ -281,8 +296,6 @@
     } failure:^(NSError *error) {
         NSLog(@"审核失败");
     }];
-    
-   
 }
 
 #pragma mark - 获取数据
@@ -291,21 +304,36 @@
  *
  *  @param Orderreview 是审核
  */
-- (void)getOrderreviewDataWithOrderreview:(BOOL)Orderreview Page:(NSInteger)page
+- (void)getOrderreviewDataWithOrderreview:(BOOL)Orderreview
+                                     Page:(NSInteger)page
+                               Iswhosales:(BOOL)iswhosales
 {
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
     NSString *examOrderURL;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    if (Orderreview == YES) {
-        examOrderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_orderreviewone];
-        params = nil;
+    if (iswhosales) {
+        if (Orderreview == YES) {
+            examOrderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_wholesalenoOrder];
+            params = nil;
+        } else {
+            examOrderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_wholesaleOrder];
+            [params setObject:@(8) forKey:@"rows"];
+            [params setObject:@(page) forKey:@"page"];
+            [params setObject:@"zdrq" forKey:@"sidx"];
+            [params setObject:@"desc" forKey:@"sord"];
+        }
     } else {
-        examOrderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_orderreviewtwo];
-        [params setObject:@(8) forKey:@"rows"];
-        [params setObject:@(page) forKey:@"page"];
-        [params setObject:@"zdrq" forKey:@"sidx"];
-        [params setObject:@"desc" forKey:@"sord"];
+        if (Orderreview == YES) {
+            examOrderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_orderreviewone];
+            params = nil;
+        } else {
+            examOrderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_orderreviewtwo];
+            [params setObject:@(8) forKey:@"rows"];
+            [params setObject:@(page) forKey:@"page"];
+            [params setObject:@"zdrq" forKey:@"sidx"];
+            [params setObject:@"desc" forKey:@"sord"];
+        }
     }
     [self showProgress];
     [XPHTTPRequestTool requestMothedWithPost:examOrderURL params:params success:^(id responseObject) {
@@ -364,15 +392,13 @@
         [self hideProgress];
         NSLog(@"数据获取失败");
     }];
-    
 }
-
 
 #pragma mark - 加载更多
 - (void)getmoreOrderDatalist
 {
     if (_page < _pages) {
-        [self getOrderreviewDataWithOrderreview:NO Page:(_page + 1)];
+        [self getOrderreviewDataWithOrderreview:NO Page:(_page + 1) Iswhosales:_isWholesale];
     } else {
         [_OrderreviewTableView.footer noticeNoMoreData];
     }

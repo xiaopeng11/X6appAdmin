@@ -19,6 +19,7 @@
 @property(nonatomic,strong)UIView *subView;                   //背景
 @property(nonatomic,strong)NSDate *date;                       //日期
 @property(nonatomic,strong)NSDateFormatter *dateFormatter;     //日期的样式
+@property(nonatomic,strong)UIColor *myColor;                 //文本颜色
 
 
 - (instancetype)initWithFrame:(CGRect)frame Date:(NSString *)dateString;

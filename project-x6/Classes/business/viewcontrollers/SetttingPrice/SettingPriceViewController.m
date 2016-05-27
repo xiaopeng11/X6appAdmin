@@ -85,31 +85,40 @@
     [setButton setTitle:@"一键设置" forState:UIControlStateNormal];
     [setButton addTarget:self action:@selector(setPrice) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:setButton];
-    
-    
+  
 }
 
 #pragma mark - 一键设置
 - (void)setPrice
 {
-    UILabel *label = (UILabel *)[self.view viewWithTag:3710];
-    NSDate *date = [NSDate date];
-    NSString *dateString = [NSString stringWithFormat:@"%@",date];
-    dateString = [dateString substringToIndex:10];
-    label.text = dateString;
     
-    dateLabel = (UILabel *)[self.view viewWithTag:3711];
-    dateLabel.text = @"0天没有设置";
-    
-    NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
-    NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-    NSString *setPriceURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_resetPrice];
-    [XPHTTPRequestTool requestMothedWithPost:setPriceURL params:nil success:^(id responseObject) {
-        NSLog(@"设置考核价成功");
-        [self writeWithName:@"设置成功"];
-    } failure:^(NSError *error) {
-        NSLog(@"设置考核价失败");
+    UIAlertController *sureSetPrice = [UIAlertController alertControllerWithTitle:@"您当前设置的考核价是基于库存均价的考核" message:@"是否继续？" preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UILabel *label = (UILabel *)[self.view viewWithTag:3710];
+        NSDate *date = [NSDate date];
+        NSString *dateString = [NSString stringWithFormat:@"%@",date];
+        dateString = [dateString substringToIndex:10];
+        label.text = dateString;
+        
+        dateLabel = (UILabel *)[self.view viewWithTag:3711];
+        
+        NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
+        NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
+        NSString *setPriceURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_resetPrice];
+        [self showProgress];
+        [XPHTTPRequestTool requestMothedWithPost:setPriceURL params:nil success:^(id responseObject) {
+            [self hideProgress];
+            [self writeWithName:@"设置成功"];
+            dateLabel.text = @"0天没有设置";
+        } failure:^(NSError *error) {
+            [self hideProgress];
+        }];
     }];
+    UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil];
+    [sureSetPrice addAction:sureAction];
+    [sureSetPrice addAction:cancleAction];
+    [self presentViewController:sureSetPrice animated:YES completion:nil];
+ 
 }
 
 #pragma mark - 获取上一次设置日期
