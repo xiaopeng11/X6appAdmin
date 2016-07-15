@@ -22,6 +22,13 @@
 
 @implementation CompanyPersonsViewController
 
+- (void)dealloc
+{
+    _companyPersonTableview = nil;
+    _personNameArray = nil;
+    _selectpersons = nil;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -125,7 +132,7 @@
     _personNameArray = [NSMutableArray array];
     for (NSDictionary *dic in _datalist) {
         if ([[dic valueForKey:@"ssgs"] isEqualToString:daima]) {
-            [_personNameArray addObject:[dic valueForKey:@"name"]];
+            [_personNameArray addObject:dic];
         }
     }
     
@@ -150,8 +157,7 @@
     if (cell == nil) {
         cell = [[PersonsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:companyPersonID];
     }
-    cell.name = _personNameArray[indexPath.row];
-    cell.datalist = _datalist;
+    cell.dic = _personNameArray[indexPath.row];
     cell.comdatalist = _kuangjiadatalist;
     return cell;
 }
@@ -163,11 +169,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     HeaderViewController *headerVC = [[HeaderViewController alloc] init];
     headerVC.type = YES;
-    for (NSDictionary *dic in _datalist) {
-        if ([[dic valueForKey:@"name"] isEqualToString:_personNameArray[indexPath.row]]) {
-            headerVC.dic = dic;
-        }
-    }
+    headerVC.dic = _personNameArray[indexPath.row];
     [self.navigationController pushViewController:headerVC animated:YES];
     }
 }

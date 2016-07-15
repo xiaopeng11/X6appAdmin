@@ -16,8 +16,9 @@
     UIImageView *_imageView;        //头像
     UILabel *_companyLabel;         //公司岗位
 }
-@property(nonatomic,strong)NSString *name;  //需要的数据
-@property(nonatomic,strong)NSArray *datalist;     //所有的数据
+@property(nonatomic,strong)NSDictionary *dic;     //所有的数据
+
+
 @property(nonatomic,strong)NSArray *comdatalist;
 @property(nonatomic,strong)NSArray *gwdatalist;  
 @property(nonatomic,assign)BOOL type;       //判断当前页面的来源

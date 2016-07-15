@@ -107,6 +107,8 @@
     
     //绘制UI
     [self initWithMyacountView];
+    
+    [self getMyacountDataWithDate:_dateString];
 
 }
 
@@ -129,23 +131,20 @@
     
     [_myacountTableView reloadData];
     
-    float totalMoney = 0;
     if (_newmyacountDatalist.count != 0) {
-        for (NSDictionary *dic in _newmyacountDatalist) {
-            totalMoney += [[dic valueForKey:@"col4"] floatValue];
-        }
+        double totalMoney = 0;
+        totalMoney = [self leijiaNumDataList:_newmyacountDatalist Code:@"col4"];
         UILabel *label = (UILabel *)[_totalacountView viewWithTag:4711];
         label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
     }
+
     
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
-    float totalMoney = 0;
-    for (NSDictionary *dic in _myacountDatalist) {
-        totalMoney += [[dic valueForKey:@"col4"] floatValue];
-    }
+    double totalMoney = 0;
+    totalMoney = [self leijiaNumDataList:_myacountDatalist Code:@"col4"];
     UILabel *label = (UILabel *)[_totalacountView viewWithTag:4711];
     label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
 }
@@ -165,8 +164,6 @@
 {
     [super viewWillAppear:animated];
     [self.MyacountSearchController.searchBar setHidden:NO];
-    [self getMyacountDataWithDate:_dateString];
-
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -174,12 +171,17 @@
     [super viewWillDisappear:animated];
     [self.MyacountSearchController.searchBar setHidden:YES];
     [_MyacountSearchController setActive:NO];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];    
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
         [_datepicker.subView removeFromSuperview];
     }
-    
 }
+
 
 #pragma mark - 导航栏按钮
 - (void)creatRightNaviButton
@@ -197,20 +199,17 @@
 - (void)changeData
 {
     [self getMyacountDataWithDate:_datepicker.text];
-
 }
 
 #pragma mark - UITextFieldDelegate
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    
     if (_datepicker.subView.tag == 0) {
         //置tag标志为1，并显示子视
         _datepicker.subView.tag=1;
         
         [[[UIApplication sharedApplication] keyWindow] addSubview:_datepicker.subView];
     }
-    
     return NO;
 }
 
@@ -259,7 +258,6 @@
     [_MyacountSearchController.searchBar sizeToFit];
     [self.view addSubview:_MyacountSearchController.searchBar];
     
-    
     _myacountTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 40) style:UITableViewStylePlain];
     _myacountTableView.delegate = self;
     _myacountTableView.dataSource = self;
@@ -301,10 +299,9 @@
             _myacountTableView.hidden = NO;
             [self totalacountView];
             _totalacountView.hidden = NO;
-            float totalMoney = 0;
-            for (NSDictionary *dic in _myacountDatalist) {
-                totalMoney += [[dic valueForKey:@"col4"] floatValue];
-            }
+
+            double totalMoney = 0;
+            totalMoney = [self leijiaNumDataList:_myacountDatalist Code:@"col4"];
             UILabel *label = (UILabel *)[_totalacountView viewWithTag:4711];
             label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
             

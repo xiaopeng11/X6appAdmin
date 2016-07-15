@@ -21,7 +21,6 @@
     self.navigationBar.translucent = NO;
     self.navigationBar.barTintColor = Mycolor;
     
-    
 }
 
 - (void)didReceiveMemoryWarning {

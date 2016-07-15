@@ -31,7 +31,7 @@
         _bgView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:_bgView];
         
-        _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 9, 30, 30)];
+        _headerView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 5, 30, 30)];
         [_bgView addSubview:_headerView];
         
         _headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 10, KScreenWidth - 50 - 20, 20)];

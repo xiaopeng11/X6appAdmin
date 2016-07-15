@@ -86,7 +86,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.    
+    // Do any additional setup after loading the view.
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+
     [self naviTitleWhiteColorWithText:@"工作圈"];
     
     [self insertNaviButton];
@@ -108,12 +111,13 @@
     
     //接受通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableview:) name:@"reloadTableview" object:nil];
-    
-   
 }
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [_timer setFireDate:[NSDate distantPast]];
+    [_URLtimer setFireDate:[NSDate distantPast]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -123,7 +127,6 @@
     [_URLtimer setFireDate:[NSDate distantFuture]];
 
 }
-
 
 #pragma mark - 通知刷新页面
 - (void)reloadTableview:(NSNotification *)noti
@@ -175,7 +178,6 @@
             [userdefault synchronize];
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        
     }];
 }
 
@@ -310,7 +312,7 @@
     NSArray *array = @[@"全部动态",@"我的关注",@"我的收藏"];
     NSArray *nodataNames = @[@"您无动态信息",@"您无关注信息",@"您无收藏信息"];
     //3页内容的scrollview
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 36)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 45)];
     _scrollView.delegate = self;
     _scrollView.pagingEnabled = YES;
     _scrollView.showsHorizontalScrollIndicator = NO;
@@ -318,7 +320,7 @@
     _scrollView.contentSize = CGSizeMake(KScreenWidth * array.count, 100);
     _scrollView.bounces = NO;
     for (int i = 0; i < array.count; i++) {
-        _tableView = [[HomeTableView alloc] initWithFrame:CGRectMake(KScreenWidth * i, 36, KScreenWidth, KScreenHeight - 149) style:UITableViewStylePlain];
+        _tableView = [[HomeTableView alloc] initWithFrame:CGRectMake(KScreenWidth * i, 45, KScreenWidth, KScreenHeight - 158) style:UITableViewStylePlain];
         _tableView.tag = 100 + i;
         _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
         _tableView.hidden = YES;
@@ -327,7 +329,7 @@
         [_tableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(homeheaderAction)];
         [_scrollView addSubview:_tableView];
         
-        _nodataView = [[NoDataView alloc] initWithFrame:CGRectMake(KScreenWidth * i, 36, KScreenWidth, KScreenHeight - 149)];
+        _nodataView = [[NoDataView alloc] initWithFrame:CGRectMake(KScreenWidth * i, 45, KScreenWidth, KScreenHeight - 158)];
         _nodataView.text = nodataNames[i];
         _nodataView.hidden = YES;
         _nodataView.tag = 110 + i;
@@ -341,9 +343,9 @@
     WJItemsConfig *config = [[WJItemsConfig alloc] init];
     config.itemWidth = KScreenWidth / 3.0;
     
-    _itemsControlView = [[WJItemsControlView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 36)];
+    _itemsControlView = [[WJItemsControlView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 45)];
     _itemsControlView.tapAnimation = NO;
-    _itemsControlView.backgroundColor = GrayColor;
+    _itemsControlView.backgroundColor = [UIColor whiteColor];
     _itemsControlView.config = config;
     _itemsControlView.titleArray = array;
     
@@ -360,13 +362,17 @@
 {
     if ([scrollView isEqual:_scrollView]) {
         float offset = scrollView.contentOffset.x;
-        offset = offset/CGRectGetWidth(scrollView.frame);
+        offset = offset / KScreenWidth;
         [_itemsControlView moveToIndex:offset];
         if (offset == 1 || offset == 2) {
-            if (_MyfocusPages == 0) {
-                [self getdataWithPage:1 SearchType:1];
-            } else if (_MycollectPages == 0) {
-                [self getdataWithPage:1 SearchType:2];
+            if (offset == 1) {
+                if (_MyfocusPages == 0) {
+                    [self getdataWithPage:1 SearchType:1];
+                }
+            } else {
+                if (_MycollectPages == 0) {
+                    [self getdataWithPage:1 SearchType:2];
+                }
             }
         }
     }
@@ -485,7 +491,7 @@
  */
 - (void)insertNaviButton
 {
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImageName:@"btn-dongtai-n" highImageName:nil target:self action:@selector(writeMessage)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImageName:@"g1_a" highImageName:nil target:self action:@selector(writeMessage)];
 }
 
 #pragma mark - 写动态
@@ -494,8 +500,5 @@
     WriteViewController *writeVC = [[WriteViewController alloc] init];
     [self.navigationController pushViewController:writeVC animated:YES];
 }
-
-
-
 
 @end

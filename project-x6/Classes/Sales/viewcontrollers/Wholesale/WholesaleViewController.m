@@ -43,6 +43,16 @@
 
 @implementation WholesaleViewController
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    _WholesalePersonNames = nil;
+    _WholesalePersonSearchNames = nil;
+    _NewWholesaleDatlist = nil;
+    _WholesaleDatalist = nil;
+}
+
+
 - (UIView *)totalWholesaleView
 {
     if (!_totalWholesaleView) {
@@ -110,16 +120,6 @@
     return _NoWholesaleView;
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    _WholesalePersonNames = nil;
-    _WholesalePersonSearchNames = nil;
-    _NewWholesaleDatlist = nil;
-    _WholesaleDatalist = nil;
-}
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -157,6 +157,12 @@
     [self.view addSubview:_WholesalePersonSearchController.searchBar];
 
     [self intWholesaleUI];
+    
+    //获取当前月份的所有数据
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self getWholesaleDatalistWithFirstDay:_firstDayString LastDay:_dateString Source:self.Viewtitle];
+        
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -179,6 +185,13 @@
     
     [_WholesalePersonSearchController setActive:NO];
     
+
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
     if (_FirstDatePicker.datePicker != nil || _SecondDatePicker.datePicker != nil) {
         [_FirstDatePicker.datePicker removeFromSuperview];
         [_SecondDatePicker.datePicker removeFromSuperview];
@@ -187,19 +200,12 @@
     }
 }
 
-
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [_WholesalePersonSearchController.searchBar setHidden:NO];
     //搜索框
     
-    //获取当前月份的所有数据
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self getWholesaleDatalistWithFirstDay:_firstDayString LastDay:_dateString Source:self.Viewtitle];
-
-    });
 }
 
 #pragma mark - UITableViewDelegate
@@ -256,7 +262,7 @@
     [_WholesaleTableView reloadData];
     
     if (_NewWholesaleDatlist.count != 0) {
-        long long totalNum = 0,totalMoney = 0,totalProfit = 0;
+        float totalNum = 0,totalMoney = 0,totalProfit = 0;
         for (NSDictionary *dic in _NewWholesaleDatlist) {
             if ([_Viewtitle isEqualToString:X6_WholesaleUnits]) {
                 totalNum += [[dic valueForKey:@"col3"] longLongValue];
@@ -273,11 +279,11 @@
         UILabel *numlabel = (UILabel *)[_totalWholesaleView viewWithTag:49012];
         UILabel *jinelabel = (UILabel *)[_totalWholesaleView viewWithTag:49014];
         UILabel *maolilabel = (UILabel *)[_totalWholesaleView viewWithTag:49016];
-        numlabel.text = [NSString stringWithFormat:@"%lld个",totalNum];
-        jinelabel.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+        numlabel.text = [NSString stringWithFormat:@"%.0f个",totalNum];
+        jinelabel.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
         
         if (![maolilabel.text isEqualToString:@"￥****"]) {
-            maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+            maolilabel.text = [NSString stringWithFormat:@"￥%.2f",totalProfit];
         }
     
     }
@@ -286,7 +292,7 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
-    long long totalNum = 0,totalMoney = 0,totalProfit = 0;
+    float totalNum = 0,totalMoney = 0,totalProfit = 0;
     for (NSDictionary *dic in _WholesaleDatalist) {
         if ([_Viewtitle isEqualToString:X6_WholesaleUnits]) {
             totalNum += [[dic valueForKey:@"col3"] longLongValue];
@@ -303,11 +309,11 @@
     UILabel *numlabel = (UILabel *)[_totalWholesaleView viewWithTag:49012];
     UILabel *jinelabel = (UILabel *)[_totalWholesaleView viewWithTag:49014];
     UILabel *maolilabel = (UILabel *)[_totalWholesaleView viewWithTag:49016];
-    numlabel.text = [NSString stringWithFormat:@"%lld个",totalNum];
-    jinelabel.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+    numlabel.text = [NSString stringWithFormat:@"%.0f个",totalNum];
+    jinelabel.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
     
     if (![maolilabel.text isEqualToString:@"￥****"]) {
-        maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+        maolilabel.text = [NSString stringWithFormat:@"￥%.2f",totalProfit];
     }
 }
 
@@ -400,7 +406,7 @@
                 [self totalWholesaleView];
                 
                 
-                long long totalNum = 0,totalMoney = 0,totalProfit = 0;
+                float totalNum = 0,totalMoney = 0,totalProfit = 0;
                 for (NSDictionary *dic in _WholesaleDatalist) {
                     if ([_Viewtitle isEqualToString:X6_WholesaleUnits]) {
                         totalNum += [[dic valueForKey:@"col3"] longLongValue];
@@ -417,8 +423,8 @@
                 UILabel *numlabel = (UILabel *)[_totalWholesaleView viewWithTag:49012];
                 UILabel *jinelabel = (UILabel *)[_totalWholesaleView viewWithTag:49014];
                 UILabel *maolilabel = (UILabel *)[_totalWholesaleView viewWithTag:49016];
-                numlabel.text = [NSString stringWithFormat:@"%lld个",totalNum];
-                jinelabel.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+                numlabel.text = [NSString stringWithFormat:@"%.0f个",totalNum];
+                jinelabel.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
                 
                 NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
                 NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
@@ -427,7 +433,7 @@
                         if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
                             maolilabel.text = [NSString stringWithFormat:@"￥****"];
                         } else {
-                            maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+                            maolilabel.text = [NSString stringWithFormat:@"￥%.2f",totalProfit];
                         }
                     }
                 }

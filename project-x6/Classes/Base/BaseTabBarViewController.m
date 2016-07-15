@@ -100,23 +100,23 @@
 {
     //首页
     AllDynamicViewController *homeVC = [[AllDynamicViewController alloc] init];
-    [self addOneChildVC:homeVC title:@"工作圈" selectedImageName:@"btn_gongzuo_n" unselectedImageName:@"btn_gongzuo_h"];
+    [self addOneChildVC:homeVC title:@"工作圈" selectedImageName:@"a_2" unselectedImageName:@"a_1"];
     
     //联系人
     StockViewController *stockVC = [[StockViewController alloc] init];
-    [self addOneChildVC:stockVC title:@"联系人" selectedImageName:@"btn_lianxiren_n" unselectedImageName:@"btn_lianxiren_h"];
+    [self addOneChildVC:stockVC title:@"联系人" selectedImageName:@"b_2" unselectedImageName:@"b_1"];
     
     //业务
     BusinessViewController *BusinessVC = [[BusinessViewController alloc] init];
-    [self addOneChildVC:BusinessVC title:@"业务" selectedImageName:@"btn_yewu_n" unselectedImageName:@"btn_yewu_h"];
+    [self addOneChildVC:BusinessVC title:@"业务" selectedImageName:@"c_2" unselectedImageName:@"c_1"];
     
     //销量
     SalesViewController *salesVC = [[SalesViewController alloc] init];
-    [self addOneChildVC:salesVC title:@"报表" selectedImageName:@"btn_baobiao_n" unselectedImageName:@"btn_baobiao_h"];
+    [self addOneChildVC:salesVC title:@"报表" selectedImageName:@"d_2" unselectedImageName:@"d_1"];
     
     //我
     PersonViewController *personVC = [[PersonViewController alloc] init];
-    [self addOneChildVC:personVC title:@"我" selectedImageName:@"btn_wo_n" unselectedImageName:@"btn_wo_h"];
+    [self addOneChildVC:personVC title:@"我" selectedImageName:@"e_2" unselectedImageName:@"e_1"];
 }
 
 /**

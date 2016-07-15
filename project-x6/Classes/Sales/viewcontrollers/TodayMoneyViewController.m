@@ -137,6 +137,12 @@
     _todayMoneySearchController.searchBar.placeholder = @"搜索";
     [_todayMoneySearchController.searchBar sizeToFit];
     [self.view addSubview:_todayMoneySearchController.searchBar];
+    
+    
+    [self noTodayMoneyView];
+    [self TodayMoneyTabelView];
+    
+    [self getTodayMoneyDataWithDate:_dateString];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -154,22 +160,24 @@
     [super viewWillAppear:animated];
     
     [_todayMoneySearchController.searchBar setHidden:NO];
-    
-    [self noTodayMoneyView];
-    [self TodayMoneyTabelView];
-    
-    [self getTodayMoneyDataWithDate:_dateString];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [_todayMoneySearchController.searchBar setHidden:YES];
+    [_todayMoneySearchController setActive:NO];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
     if (_todayMoneydatepicker.datePicker != nil) {
         [_todayMoneydatepicker.datePicker removeFromSuperview];
         [_todayMoneydatepicker.subView removeFromSuperview];
     }
-    [_todayMoneySearchController.searchBar setHidden:YES];
-    [_todayMoneySearchController setActive:NO];
 }
 
 #pragma mark - 导航栏按钮
@@ -294,6 +302,20 @@
     
     [_TodayMoneyTabelView reloadData];
     
+    if (_newtodayMoneyDatalist.count != 0) {
+        float totalMoney = 0;
+        totalMoney = [self leijiaNumDataList:_newtodayMoneyDatalist Code:@"col2"];
+        UILabel *label = (UILabel *)[_totalTodayMoneyView viewWithTag:4411];
+        label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
+    }
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    float totalMoney = 0;
+    totalMoney = [self leijiaNumDataList:_newtodayMoneyDatalist Code:@"col2"];
+    UILabel *label = (UILabel *)[_totalTodayMoneyView viewWithTag:4411];
+    label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
 }
 
 
@@ -415,12 +437,10 @@
             [_TodayMoneyTabelView reloadData];
             [self totalTodayMoneyView];
             
-            long long totalMoney = 0;
-            for (NSDictionary *dic in _todayMoneyDatalist) {
-                totalMoney += [[dic valueForKey:@"col2"] longLongValue];
-            }
+            float totalMoney = 0;
+            totalMoney = [self leijiaNumDataList:_todayMoneyDatalist Code:@"col2"];
             UILabel *label = (UILabel *)[_totalTodayMoneyView viewWithTag:4411];
-            label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+            label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
 
             
             NSMutableArray *array = [NSMutableArray array];

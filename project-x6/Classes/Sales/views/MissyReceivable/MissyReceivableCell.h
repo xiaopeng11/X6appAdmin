@@ -15,6 +15,7 @@
     UILabel *_customerLabel;
     
     UILabel *_textLabel;
+    UILabel *_kemuLabel;
     UILabel *_messageLabel;
     
     UILabel *_dateLabel;

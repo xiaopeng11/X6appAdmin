@@ -23,7 +23,7 @@
     if (self) {
         
         needloadArray = [NSMutableArray array];
-        
+        self.separatorStyle = NO;
         //代理
         self.delegate = self;
         self.dataSource = self;
@@ -120,7 +120,8 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [_datalist removeObjectAtIndex:indexPath.row];
 
-                    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationTop];
+//                    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationMiddle];
+                    [tableView reloadData];
                 });
             } failure:^(NSError *error) {
                 NSLog(@"删除失败");

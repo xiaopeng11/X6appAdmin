@@ -29,7 +29,7 @@
         
         self.backgroundColor = GrayColor;
         
-        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 85)];
+        _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 106)];
         _bgView.backgroundColor = [UIColor whiteColor];
         [self.contentView addSubview:_bgView];
         
@@ -39,15 +39,12 @@
         _customerLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 5, KScreenWidth - 60, 30)];
         [_bgView addSubview:_customerLabel];
         
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             _textLabel = [[UILabel alloc] init];
             _messageLabel = [[UILabel alloc] init];
-            if (i == 0) {
-                _textLabel.frame = CGRectMake(50, 37, 40, 20);
-                _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(95, 37, KScreenWidth - 100, 20)];
-            } else if (i == 1) {
-                _textLabel.frame = CGRectMake(50, 60, 40, 20);
-                _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(95, 60, KScreenWidth - 100, 20)];
+            _textLabel.frame = CGRectMake(50, 37 + 23 * i, 40, 20);
+            _messageLabel.frame = CGRectMake(95, 37 + 23 * i, KScreenWidth - 100, 20);
+            if (i == 2) {
                 _messageLabel.textColor = Mycolor;
             }
             _textLabel.tag = 48720 + i;
@@ -80,6 +77,9 @@
             _textLabel.text = @"单号:";
             _messageLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col1"]];
         } else if (i == 1) {
+            _textLabel.text = @"科目:";
+            _messageLabel.text = [NSString stringWithFormat:@"%@",[_dic valueForKey:@"col5"]];
+        } else if (i == 2) {
             _textLabel.text = @"未收:";
             _messageLabel.text = [NSString stringWithFormat:@"￥%@",[_dic valueForKey:@"col4"]];
         }

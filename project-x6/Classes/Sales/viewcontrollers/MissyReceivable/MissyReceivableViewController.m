@@ -35,6 +35,16 @@
 
 @implementation MissyReceivableViewController
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    _customers = nil;
+    _searchcustomers = nil;
+    
+    _MissyReceivableDatalist = nil;
+    _NewMissyReceivableDatalist = nil;
+}
 
 - (NoDataView *)noMissyReceivableView
 {
@@ -91,17 +101,6 @@
     return _totalMissyReceivableView;
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    _customers = nil;
-    _searchcustomers = nil;
-    
-    _MissyReceivableDatalist = nil;
-    _NewMissyReceivableDatalist = nil;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -153,11 +152,15 @@
     [super viewWillDisappear:animated];
     [self.MissyReceivableSearchController.searchBar setHidden:YES];
     [_MissyReceivableSearchController setActive:NO];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
     if (_MissyReceivabledatepicker.datePicker != nil) {
         [_MissyReceivabledatepicker.datePicker removeFromSuperview];
         [_MissyReceivabledatepicker.subView removeFromSuperview];
     }
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -182,7 +185,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 95;
+    return 116;
 }
 
 #pragma mark - UITableViewDataSource
@@ -253,10 +256,8 @@
             _MissyReceivableTabelView.hidden = NO;
             _totalMissyReceivableView.hidden = NO;
 
-            float totalMoney = 0;
-            for (NSDictionary *dic in _MissyReceivableDatalist) {
-                totalMoney += [[dic valueForKey:@"col4"] floatValue];
-            }
+            double totalMoney = 0;
+            totalMoney = [self leijiaNumDataList:_MissyReceivableDatalist Code:@"col4"];
             UILabel *label = (UILabel *)[_totalMissyReceivableView viewWithTag:48201];
             label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
             
@@ -296,26 +297,24 @@
             }
         }
     }
-    _NewMissyReceivableDatalist = [[set allObjects] mutableCopy];
+    _NewMissyReceivableDatalist = [[set allObjects] mutableCopy];    
+    NSArray *sortacountArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col0" ascending:YES]];
+    [_NewMissyReceivableDatalist sortUsingDescriptors:sortacountArray];
     [_MissyReceivableTabelView reloadData];
     
-    float totalMoney = 0;
     if (_NewMissyReceivableDatalist.count != 0) {
+        double totalMoney =0;
         for (NSDictionary *dic in _NewMissyReceivableDatalist) {
-            totalMoney += [[dic valueForKey:@"col4"] floatValue];
+            totalMoney += [[dic valueForKeyPath:@"col4"] doubleValue];
         }
         UILabel *label = (UILabel *)[_totalMissyReceivableView viewWithTag:48201];
         label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
-    }   
+    }
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
-
-    float totalMoney = 0;
-    for (NSDictionary *dic in _MissyReceivableDatalist) {
-        totalMoney += [[dic valueForKey:@"col4"] floatValue];
-    }
+    double totalMoney = [self leijiaNumDataList:_MissyReceivableDatalist Code:@"col4"];
     UILabel *label = (UILabel *)[_totalMissyReceivableView viewWithTag:48201];
     label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
 }

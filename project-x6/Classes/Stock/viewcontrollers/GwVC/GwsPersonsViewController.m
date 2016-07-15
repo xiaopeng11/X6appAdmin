@@ -23,6 +23,12 @@
 
 @implementation GwsPersonsViewController
 
+- (void)dealloc
+{
+    _gwPersons = nil;
+    _selectgwPersons = nil;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -116,9 +122,10 @@
 - (void)selectgwsPersonsData
 {
     _gwPersons = [NSMutableArray array];
+    
     for (NSDictionary *dic in _datalist) {
         if ([[dic valueForKey:@"gw"] isEqualToString:_titleName]) {
-            [_gwPersons addObject:[dic valueForKey:@"name"]];
+            [_gwPersons addObject:dic];
         }
     }
 }
@@ -145,8 +152,8 @@
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
         }
     }
-    cell.name = _gwPersons[indexPath.row];
-    cell.datalist = _datalist;
+
+    cell.dic = _gwPersons[indexPath.row];
     cell.comdatalist = _comdatalist;
     cell.gwdatalist = _gwdatalist;
     return cell;
@@ -159,11 +166,7 @@
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         HeaderViewController *headerVC = [[HeaderViewController alloc] init];
         headerVC.type = YES;
-        for (NSDictionary *dic in _datalist) {
-            if ([[dic valueForKey:@"name"] isEqualToString:_gwPersons[indexPath.row]]) {
-                headerVC.dic = dic;
-            }
-        }
+        headerVC.dic = _gwPersons[indexPath.row];
         [self.navigationController pushViewController:headerVC animated:YES];
     }
 }

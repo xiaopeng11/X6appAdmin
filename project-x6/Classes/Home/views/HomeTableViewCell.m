@@ -20,14 +20,13 @@
 @implementation HomeTableViewCell
 {
     UIImageView *postBGView;            //整个的背景
+    UIView *_lineView;                   //灰色分隔栏
     UIButton *_userHeaderButton;        //用户头像
     UIImageView *cornerImage;           //头像的边框图片
 
-    UILabel *_userNameLabel;            //用户姓名
-    UILabel *_companyLabel;             //公司
-    UILabel *_dateLabel;                //发布时间
-    MLEmojiLabel *_contentLabel;              //发布内容
-    UIImageView *_filepropImageView;         //图片背景
+    MLEmojiLabel *_contentLabel;        //发布内容
+    UIImageView *_filepropImageView;    //图片背景
+    UIImageView *_replyImageView;       //回复图片
     UILabel *_replyCounts;              //回复数
     
     BOOL drawed;
@@ -42,31 +41,40 @@
         //清楚背景试图
         
         self.backgroundView = nil;
+        self.backgroundColor = GrayColor;
         self.userInteractionEnabled = YES;
         
         //设置子视图
         postBGView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        postBGView.backgroundColor = [UIColor whiteColor];
+        postBGView.userInteractionEnabled = YES;
         [self.contentView insertSubview:postBGView atIndex:0];
         [self addlabel];
         
+        _lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 10)];
+        _lineView.backgroundColor = GrayColor;
+        [postBGView addSubview:_lineView];
+        
         _userHeaderButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _userHeaderButton.frame = CGRectMake(10, 10, 40, 40);
+        _userHeaderButton.frame = CGRectMake(10, 25, 39, 39);
         [_userHeaderButton addTarget:self action:@selector(HeaderAction:) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:_userHeaderButton];
+        [postBGView addSubview:_userHeaderButton];
         
         //头像背景视图
-        cornerImage = [[UIImageView alloc] initWithFrame:CGRectMake(7.5, 7.5, 45, 45)];
+        cornerImage = [[UIImageView alloc] initWithFrame:CGRectMake(7.5, 22.5, 44, 44)];
         cornerImage.image = [UIImage imageNamed:@"corner_circle"];
-        [self.contentView addSubview:cornerImage];
+        [postBGView addSubview:cornerImage];
         
         //图片
         _filepropImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _filepropImageView.hidden = YES;
         _filepropImageView.userInteractionEnabled = YES;
-        _filepropImageView.backgroundColor = self.backgroundColor;
-        [self.contentView addSubview:_filepropImageView];
+        _filepropImageView.backgroundColor = [UIColor whiteColor];
+        [postBGView addSubview:_filepropImageView];
     
-        
+        //回复图片
+        _replyImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        [postBGView addSubview:_replyImageView];
     }
     return self;
 }
@@ -81,8 +89,8 @@
     _contentLabel = [[MLEmojiLabel alloc] initWithFrame:[_data[@"contentframe"] CGRectValue]];
     _contentLabel.numberOfLines = 0;
     _contentLabel.lineSpacing = 8;
-    _contentLabel.font = [UIFont systemFontOfSize:16];
-    [self.contentView addSubview:_contentLabel];
+    _contentLabel.font = MainFont;
+    [postBGView addSubview:_contentLabel];
 }
 
 - (void)setData:(NSDictionary *)data{
@@ -128,9 +136,16 @@
             
         }
         
+        //回复图片位置
+        NSValue *frame = _data[@"frame"];
+        CGRect rect = [frame CGRectValue];
+        CGFloat reply_y = rect.size.height - 15 - 20;
+        CGFloat reply_x = KScreenWidth - 30 - 8 - 25;
+        _replyImageView.frame = CGRectMake(reply_x, reply_y, 21, 20);
+        _replyImageView.image = [UIImage imageNamed:@"g1_b"];
+        
     }
-    
-    
+  
 }
 
 - (void)draw
@@ -147,33 +162,41 @@
         CGContextRef context = UIGraphicsGetCurrentContext();
         [[UIColor whiteColor] set];
         CGContextFillRect(context, rect);
-        //发布人的性命 岗位 公司 时间
+        //发布人的名称 时间
         {
-            float leftX = 60;
+            float leftX = 59;
             float x = leftX;
-            float y = 5;
-            float size = KScreenWidth - leftX - 60;
-            [_data[@"name"] drawInContext:context withPosition:CGPointMake(x, y) andFont:[UIFont systemFontOfSize:16] andTextColor:[UIColor blackColor] andHeight:rect.size.height andWidth:size];
-            y += 20;
-            float fromeX = leftX;
-            NSString *xinxi = [NSString stringWithFormat:@"%@  %@",[_data valueForKey:@"ssgsname"],[_data valueForKey:@"gw"]];
-            [xinxi drawInContext:context withPosition:CGPointMake(fromeX, y) andFont:[UIFont systemFontOfSize:11] andTextColor:Mycolor andHeight:rect.size.height andWidth:size];
+            float y = 30;
+            float size = KScreenWidth - leftX - 10;
+            [_data[@"name"] drawInContext:context withPosition:CGPointMake(x, y) andFont:MainFont andTextColor:[UIColor blackColor] andHeight:rect.size.height andWidth:size];
             
-            y += 17;
-            [_data[@"fsrq"] drawInContext:context withPosition:CGPointMake(fromeX, y) andFont:[UIFont systemFontOfSize:11] andTextColor:[UIColor grayColor] andHeight:rect.size.height andWidth:size];
+            y += 20;
+            NSString *dateString = [_data[@"fsrq"] substringFromIndex:5];
+            [dateString drawInContext:context withPosition:CGPointMake(x, y) andFont:ExtitleFont andTextColor:ExtraTitleColor andHeight:rect.size.height andWidth:size];
         }
+        
+        //公司 岗位
         {
-            float leftX = KScreenWidth - 50 - 20;
-            float y = 10;
+            CGFloat totalheight = rect.size.height - 20 - 15;
+            float fromeX = 10;
+            float size = KScreenWidth - 20 - 63;
+            NSString *xinxi = [NSString stringWithFormat:@"%@  %@",[_data valueForKey:@"ssgsname"],[_data valueForKey:@"gw"]];
+            [xinxi drawInContext:context withPosition:CGPointMake(fromeX, totalheight) andFont:ExtitleFont andTextColor:ExtraTitleColor andHeight:rect.size.height andWidth:size];
+        }
+        
+        //评论
+        {
+            float leftX = KScreenWidth - 20 - 10;
+            CGFloat y = rect.size.height - 15 - 20;
             float replyCount = [_data[@"replayCount"] doubleValue];
-            float size = KScreenWidth - 60 - 60;
+            float size = 20;
             NSString *replycount = nil;
             if (replyCount < 100) {
-                replycount = [NSString stringWithFormat:@"评论数:%.0f",replyCount];
+                replycount = [NSString stringWithFormat:@"%.0f",replyCount];
             } else {
-                replycount = @"评论数:99+";
+                replycount = @"99+";
             }
-            [replycount drawInContext:context withPosition:CGPointMake(leftX, y) andFont:[UIFont systemFontOfSize:14] andTextColor:[UIColor blackColor] andHeight:rect.size.height andWidth:size];
+            [replycount drawInContext:context withPosition:CGPointMake(leftX, y) andFont:ExtitleFont andTextColor:[UIColor blackColor] andHeight:rect.size.height andWidth:size];
             
         }
         {
@@ -219,19 +242,19 @@
     NSString *content = _data[@"content"];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineSpacing = 8;
-    NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16],NSParagraphStyleAttributeName:paragraphStyle};
-    CGSize size = [content boundingRectWithSize:CGSizeMake(KScreenWidth - 40, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
+    NSDictionary *attributes = @{NSFontAttributeName:MainFont,NSParagraphStyleAttributeName:paragraphStyle};
+    CGSize size = [content boundingRectWithSize:CGSizeMake(KScreenWidth - 20, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
     
-    float y = 60 + size.height + 10;
+    float y = 74 + size.height + 10;
     NSString *filepropstring = [_data valueForKey:@"fileprop"];
     NSArray *fileprop = [filepropstring objectFromJSONString];
     if (fileprop.count > 0) {
         _filepropImageView.hidden = NO;
 
         if (fileprop.count == 4) {
-            _filepropImageView.frame = CGRectMake(20, y, 170, 170);
+            _filepropImageView.frame = CGRectMake(10, y, (PuretureSize * 2) + 5, (PuretureSize * 2) + 5);
         } else {
-            _filepropImageView.frame = CGRectMake(20, y, 85 * fileprop.count, 80);
+            _filepropImageView.frame = CGRectMake(10, y, ((PuretureSize + 5) * (fileprop.count - 1)) + PuretureSize, PuretureSize);
         }
         
         int filepropwidth,filepropheight;
@@ -243,9 +266,9 @@
                 if (fileprop.count == 4) {
                     filepropwidth = i / 2;
                     filepropheight = i % 2;
-                    wengdanView.frame = CGRectMake(85 * filepropheight, 85 * filepropwidth, 80, 80);
+                    wengdanView.frame = CGRectMake((PuretureSize + 5) * filepropheight, (PuretureSize + 5) * filepropwidth, PuretureSize, PuretureSize);
                 } else {
-                    wengdanView.frame = CGRectMake(85 * i, 0, 80, 80);
+                    wengdanView.frame = CGRectMake((PuretureSize + 5) * i, 0, PuretureSize, PuretureSize);
                 }
                 wengdanView.tag = 5100 + i;
                 UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(wendangtapAction:)];
@@ -289,8 +312,6 @@
  */
 - (void)wendangtapAction:(UITapGestureRecognizer *)tap
 {
-    NSLog(@"点击了");
-    
     TxtViewController *knowledVC = [[TxtViewController alloc] init];
     NSString *filepropstring = _data[@"fileprop"];
     NSArray *fileprop = [filepropstring objectFromJSONString];
@@ -303,7 +324,6 @@
  */
 - (void)HeaderAction:(UIButton *)button
 {
-    NSLog(@"点击了头像");
     HeaderViewController *headerVC = [[HeaderViewController alloc] init];
     headerVC.dic = _data;
     [self.ViewController.navigationController pushViewController:headerVC animated:YES];

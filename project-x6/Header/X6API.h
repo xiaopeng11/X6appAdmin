@@ -14,8 +14,26 @@
 #define APP_URL @"http://itunes.apple.com/lookup?id=1103122494"
 
 //主服务器上线地址和测试地址
-#define X6basemain_API @"http://192.168.1.199:8080"
-//#define X6basemain_API @"http://www.x6pt.cn"
+//#define X6basemain_API @"http://192.168.1.199:8080"
+#define X6basemain_API @"http://www.x6pt.cn:8080"
+
+//注册（取验证吗）
+#define X6register_getsmscode @"/x6RegistAction_getMobileJzm.action"
+
+//注册（验证码校验）
+#define X6register_checksmscode @"/x6RegistAction_checkMobileJzm.action"
+
+//注册
+#define X6register @"/x6RegistAction_regist.action"
+
+//忘记密码（取验证吗）
+#define X6forgetps_getsmscode @"/pwdAction_getMobileJzm.action"
+
+//忘记密码（验证码校验）
+#define X6forgetps_checksmscode @"/pwdAction_checkMobileJzm.action"
+
+//忘记密码（修改密码）
+#define X6forgetps @"/pwdAction_ModifyX6UserPwd.action"
 
 //登陆接口
 #define X6_API_loadmain [NSString stringWithFormat:@"%@/yxmain/getAppUrl.action",X6basemain_API]

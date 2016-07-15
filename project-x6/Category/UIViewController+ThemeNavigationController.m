@@ -96,9 +96,7 @@
             dispatch_group_leave(group);
         }
     }];
-
 }
-
 
 /**
  *  标题
@@ -110,6 +108,7 @@
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 200) / 2.0, 0, 200, 44)];
     title.text = text;
     title.textColor = [UIColor whiteColor];
+    title.font = [UIFont systemFontOfSize:17];
     title.textAlignment = NSTextAlignmentCenter;
     self.navigationItem.titleView = title;
 }
@@ -164,9 +163,9 @@
 - (void)saveImage:(UIImage *)currentImage withName:(NSString *)imageName
 {
     //压缩图片
-    currentImage = [self imageCompressForWidth:currentImage targetWidth:KScreenWidth];
-    NSData *imageData = UIImageJPEGRepresentation(currentImage,0.75);
+    NSData *imageData = UIImageJPEGRepresentation(currentImage,0.1);
     
+    NSLog(@"%lu",(unsigned long)imageData.length);
     // 获取沙盒目录
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     //获取文件夹路径
@@ -207,7 +206,6 @@
     }
 }
 
-
 /**
  *  数据加密
  *
@@ -232,6 +230,19 @@
             }
         }
     }
+}
+
+//合计
+- (double)leijiaNumDataList:(NSMutableArray *)dataList
+                       Code:(NSString *)code
+{
+    double totalMoney = 0;
+    if (dataList.count != 0) {
+        for (NSDictionary *dic in dataList) {
+            totalMoney += [[dic valueForKey:code] doubleValue];
+        }
+    }
+    return totalMoney;
 }
 
 @end

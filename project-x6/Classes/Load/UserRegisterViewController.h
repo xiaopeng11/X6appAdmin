@@ -10,7 +10,4 @@
 
 @interface UserRegisterViewController : BaseViewController
 
-
-
-
 @end

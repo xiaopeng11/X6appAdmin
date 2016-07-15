@@ -73,12 +73,6 @@
         _MykucuntotalView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 104, KScreenWidth, 40)];
         _MykucuntotalView.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.2];
         [self.view addSubview:_MykucuntotalView];
-        
-        long long totalNum = 0,totalMoney = 0;
-        for (NSDictionary *dic in _Kucundatalist) {
-            totalNum += [[dic valueForKey:@"col2"] longLongValue];
-            totalMoney += [[dic valueForKey:@"col3"] longLongValue];
-        }
         for (int i = 0; i < 5; i++) {
             UILabel *Label = [[UILabel alloc] init];
             Label.font = [UIFont systemFontOfSize:13];
@@ -90,14 +84,15 @@
                 Label.text = @"数量:";
             } else if (i == 2) {
                 Label.frame = CGRectMake(70, 0, (KScreenWidth - 110) / 2.0, 40);
-                Label.text = [NSString stringWithFormat:@"%lld个",totalNum];
+                Label.tag = 4102;
             } else if (i == 3) {
                 Label.text = @"金额:";
                 Label.frame = CGRectMake(70 + ((KScreenWidth - 110) / 2.0), 0, 30, 40);
             } else {
                 Label.frame = CGRectMake(100 + ((KScreenWidth - 110) / 2.0), 0, (KScreenWidth - 110) / 2.0, 40);
-                Label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
                 Label.textColor = [UIColor redColor];
+                Label.tag = 4104;
+
             }
             [_MykucuntotalView addSubview:Label];
         }
@@ -357,6 +352,15 @@
                 [_KucunNames addObject:[dic valueForKey:@"col1"]];
                 
             }
+    
+           float totalNum = 0,totalMoney = 0;
+           totalNum = [self leijiaNumDataList:_Kucundatalist Code:@"col2"];
+           totalMoney = [self leijiaNumDataList:_Kucundatalist Code:@"col3"];
+           UILabel *label1 = [_MykucuntotalView viewWithTag:4102];
+           UILabel *label2 = [_MykucuntotalView viewWithTag:4104];
+           label1.text = [NSString stringWithFormat:@"%.2f",totalNum];
+           label2.text = [NSString stringWithFormat:@"%.2f",totalMoney];
+
         });
 
         }
@@ -430,6 +434,27 @@
     }
     [_KucunTableview reloadData];
     
+    if (_newkucunDatalist.count != 0) {
+        float totalNum = 0,totalMoney = 0;
+        totalNum = [self leijiaNumDataList:_newkucunDatalist Code:@"col2"];
+        totalMoney = [self leijiaNumDataList:_newkucunDatalist Code:@"col3"];
+        UILabel *label1 = [_MykucuntotalView viewWithTag:4102];
+        UILabel *label2 = [_MykucuntotalView viewWithTag:4104];
+        label1.text = [NSString stringWithFormat:@"%.2f",totalNum];
+        label2.text = [NSString stringWithFormat:@"%.2f",totalMoney];
+    }
+   
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    float totalNum = 0,totalMoney = 0;
+    totalNum = [self leijiaNumDataList:_Kucundatalist Code:@"col2"];
+    totalMoney = [self leijiaNumDataList:_Kucundatalist Code:@"col3"];
+    UILabel *label1 = [_MykucuntotalView viewWithTag:4102];
+    UILabel *label2 = [_MykucuntotalView viewWithTag:4104];
+    label1.text = [NSString stringWithFormat:@"%.2f",totalNum];
+    label2.text = [NSString stringWithFormat:@"%.2f",totalMoney];
 }
 
 @end

@@ -77,8 +77,8 @@
     [super layoutSubviews];
     CGFloat x = 0;
     CGFloat y = 0;
-    CGFloat w = 80;
-    CGFloat h = 80;
+    CGFloat w = PuretureSize;
+    CGFloat h = PuretureSize;
     CGFloat margin = 5;
     int col = 0;
     int rol = 0;

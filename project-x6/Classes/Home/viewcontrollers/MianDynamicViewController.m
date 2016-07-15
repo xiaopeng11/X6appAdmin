@@ -7,6 +7,9 @@
 //
 
 #import "MianDynamicViewController.h"
+
+#import "UIButton+WebCache.h"
+
 #import "ReplyModel.h"
 #import "ReplyTableView.h"
 #import "XPPhotoViews.h"
@@ -105,7 +108,7 @@
     [self initHeaderView];
     
     //回复按钮
-    _replyView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 50 - 64, KScreenWidth, 50)];
+    _replyView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 49 - 64, KScreenWidth, 49)];
     _replyView.backgroundColor = GrayColor;
     if (_nodataView.hidden == NO) {
         [self.view insertSubview:_replyView aboveSubview:_nodataView];
@@ -114,7 +117,7 @@
     }
     
     //回复按钮上面添加半透明的遮罩
-    _alphaView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64 - 50)];
+    _alphaView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64 - 49)];
     _alphaView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.3];
     _alphaView.hidden = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
@@ -130,21 +133,23 @@
     
     _textfield = [[UITextView alloc] initWithFrame:CGRectMake(40, 10, KScreenWidth - 40 - 60, 30)];
     _textfield.delegate = self;
-    _textfield.keyboardType = UIKeyboardTypeNamePhonePad;
-    _textfield.font = [UIFont systemFontOfSize:16];
+    _textfield.clipsToBounds = YES;
+    _textfield.layer.cornerRadius = 4;
+    _textfield.font = MainFont;
     [_replyView addSubview:_textfield];
     
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 55, 10, 50, 30)];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 30)];
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 50, 10, 40, 30)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 30)];
     label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont systemFontOfSize:12];
+    label.font = MainFont;
     label.textColor = [UIColor whiteColor];
-    label.text = @"评 论";
+    label.text = @"发送";
     [button addSubview:label];
-    [button setBackgroundColor:[UIColor colorWithRed:188/255.0f green:196/255.0f blue:200/255.0f alpha:1]];
+    [button setBackgroundColor:NotouchButtonColor];
+    button.userInteractionEnabled = NO;
     button.tag = 2003;
     button.clipsToBounds = YES;
-    button.layer.cornerRadius = 5;
+    button.layer.cornerRadius = 4;
     [button addTarget:self action:@selector(replyAction:) forControlEvents:UIControlEventTouchUpInside];
     [_replyView addSubview:button];
 }
@@ -155,48 +160,80 @@
     _bgView = [[UIImageView alloc] init];
     _bgView.userInteractionEnabled = YES;
     [self.view addSubview:_bgView];
+    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 10)];
+    topView.backgroundColor = GrayColor;
+    [_bgView addSubview:topView];
+    
     //头像
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
-    headerView.clipsToBounds = YES;
-    headerView.layer.cornerRadius = 20;
+    UIButton *headerView = [[UIButton alloc] initWithFrame:CGRectMake(10, 25, 39, 39)];
+    UIImageView *cornView = [[UIImageView alloc] initWithFrame:CGRectMake(7.5, 22.5, 44, 44)];
+    cornView.image = [UIImage imageNamed:@"corner_circle"];
+    
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *dic = [userdefaults objectForKey:X6_UserMessage];
     NSString *companyString = [dic objectForKey:@"gsdm"];
-    if ([[self.dic valueForKey:@"userType"] intValue] == 0) {
-        [headerView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[_dic valueForKey:@"userpic"]]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
+    
+    //头像
+    //通过usertype判断员工还是营业员
+    NSString *headerURLString = nil;
+    NSString *headerpic = [self.dic valueForKey:@"userpic"];
+    if (headerpic.length == 0) {
+        NSArray *array = @[[UIColor colorWithRed:161/255.0f green:136/255.0f blue:127/255.0f alpha:1],
+                           [UIColor colorWithRed:246/255.0f green:94/255.0f blue:141/255.0f alpha:1],
+                           [UIColor colorWithRed:238/255.0f green:69/255.0f blue:66/255.0f alpha:1],
+                           [UIColor colorWithRed:245/255.0f green:197/255.0f blue:47/255.0f alpha:1],
+                           [UIColor colorWithRed:255/255.0f green:148/255.0f blue:61/255.0f alpha:1],
+                           [UIColor colorWithRed:107/255.0f green:181/255.0f blue:206/255.0f alpha:1],
+                           [UIColor colorWithRed:94/255.0f green:151/255.0f blue:246/255.0f alpha:1],
+                           [UIColor colorWithRed:154/255.0f green:137/255.0f blue:185/255.0f alpha:1],
+                           [UIColor colorWithRed:106/255.0f green:198/255.0f blue:111/255.0f alpha:1],
+                           [UIColor colorWithRed:120/255.0f green:192/255.0f blue:110/255.0f alpha:1]];
+        
+        int x = arc4random() % 10;
+        [headerView setBackgroundColor:(UIColor *)array[x]];
+        NSString *lastTwoName = self.dic[@"name"];
+        lastTwoName = [lastTwoName substringWithRange:NSMakeRange(lastTwoName.length - 2, 2)];
+        [headerView setTitle:lastTwoName forState:UIControlStateNormal];
     } else {
-        [headerView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[_dic valueForKey:@"userpic"]]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
+        if ([[self.dic valueForKey:@"userType"] intValue] == 0) {
+            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[self.dic valueForKey:@"userpic"]];
+        } else {
+            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[self.dic valueForKey:@"userpic"]];
+        }
+        NSURL *headerURL = [NSURL URLWithString:headerURLString];
+        if (headerURL) {
+            [headerView sd_setBackgroundImageWithURL:headerURL forState:UIControlStateNormal placeholderImage:nil options:SDWebImageLowPriority];
+            [headerView setTitle:@"" forState:UIControlStateNormal];
+        }
+        
     }
     
+
+    
     [_bgView addSubview:headerView];
+    [_bgView addSubview:cornView];
     
     //基本信息
-    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerView.right + 10, headerView.top - 5, KScreenWidth - 100 - 20 - 40, 20)];
+    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerView.right + 10, headerView.top - 2, KScreenWidth - 59 - 18 - 40, 20)];
     nameLabel.text = [self.dic valueForKey:@"name"];
-    nameLabel.font = [UIFont boldSystemFontOfSize:16];
+    nameLabel.font = MainFont;
     [_bgView addSubview:nameLabel];
     
-    UILabel *gwLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabel.left, nameLabel.bottom + 5, nameLabel.width, 10)];
-    gwLabel.text = [NSString stringWithFormat:@"%@  %@",[self.dic valueForKey:@"gw"],[self.dic valueForKey:@"ssgsname"]];
-    gwLabel.textColor = Mycolor;
-    gwLabel.font = [UIFont systemFontOfSize:10];
-    [_bgView addSubview:gwLabel];
-    
-    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabel.left, gwLabel.bottom + 5, nameLabel.width, 10)];
-    timeLabel.text = [self.dic valueForKey:@"fsrq"];
-    timeLabel.font = [UIFont systemFontOfSize:10];
-    timeLabel.textColor = [UIColor grayColor];
+    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(nameLabel.left, nameLabel.bottom + 5, nameLabel.width, 16)];
+    timeLabel.text = [[self.dic valueForKey:@"fsrq"] substringFromIndex:5];
+    timeLabel.font = ExtitleFont;
+    timeLabel.textColor = ExtraTitleColor;
     [_bgView addSubview:timeLabel];
     
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineSpacing = 8;
-    NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16],NSParagraphStyleAttributeName:paragraphStyle};
-    CGSize size = [[self.dic valueForKey:@"content"] boundingRectWithSize:CGSizeMake(KScreenWidth - 40, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
+    NSDictionary *attributes = @{NSFontAttributeName:MainFont,NSParagraphStyleAttributeName:paragraphStyle};
+    CGSize size = [[self.dic valueForKey:@"content"] boundingRectWithSize:CGSizeMake(KScreenWidth - 20, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
     
-    MLEmojiLabel *contentLabel = [[MLEmojiLabel alloc] initWithFrame:CGRectMake(headerView.left + 10, headerView.bottom + 10, KScreenWidth - 40, size.height)];
+    MLEmojiLabel *contentLabel = [[MLEmojiLabel alloc] initWithFrame:CGRectMake(10, headerView.bottom + 10, KScreenWidth - 20, size.height)];
     contentLabel.numberOfLines = 0;
     contentLabel.lineSpacing = 8;
-    contentLabel.font = [UIFont systemFontOfSize:16];
+    contentLabel.font = MainFont;
     contentLabel.emojiText = [self.dic valueForKey:@"content"];
     [_bgView addSubview:contentLabel];
     
@@ -209,7 +246,8 @@
     _replyTableView = [[ReplyTableView alloc] init];
     _replyTableView.hidden = YES;
     _replyTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    
+    _replyTableView.sectionHeaderHeight = 45;
+    _replyTableView.replyCount = [_dic valueForKey:@"replayCount"];
     [_replyTableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(headerAction)];
     [_replyTableView addLegendFooterWithRefreshingTarget:self refreshingAction:@selector(footerAction)];
     _replyTableView.frame = CGRectMake(0, 0 , KScreenWidth, KScreenHeight - 64 - 40);
@@ -224,10 +262,10 @@
     [self.view addSubview:_nodataView];
     
     int filepropwidth,filepropheight;
-    float upheight = 60 + size.height + 10 ;
+    float upheight = 10 + 59 + size.height + 10;
     if (fileprop.count == 0) {
         _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight);
-        _nodataView.frame = CGRectMake(0, _bgView.bottom, KScreenWidth, KScreenHeight - 60 - size.height - 40);
+        _nodataView.frame = CGRectMake(0, _bgView.bottom, KScreenWidth, KScreenHeight - 59 - size.height - 40);
     } else {
         for (int i = 0; i < fileprop.count; i++) {
             NSArray *endfile = [[fileprop[i] valueForKey:@"name"] componentsSeparatedByString:@"."];
@@ -235,12 +273,12 @@
                 UIButton *wengdanView = [UIButton buttonWithType:UIButtonTypeCustom];
                 wengdanView.frame = CGRectZero;
                 if (fileprop.count == 4) {
-                    _bgView.frame = CGRectMake(0, 0, KScreenWidth,upheight + 165 + 10);
+                    _bgView.frame = CGRectMake(0, 0, KScreenWidth,upheight + PuretureSize * 2 + 5 + 50 + 10);
                     filepropwidth = i / 2;
                     filepropheight = i % 2;
-                    wengdanView = [[UIButton alloc] initWithFrame:CGRectMake(20 + 85 * filepropheight,upheight + 85 * filepropwidth, 80, 80)];
+                    wengdanView = [[UIButton alloc] initWithFrame:CGRectMake(10 + (PuretureSize + 5) * filepropheight,upheight + (PuretureSize + 5) * filepropwidth, PuretureSize, PuretureSize)];
                 } else {
-                    wengdanView = [[UIButton alloc] initWithFrame:CGRectMake(20 + 85 * i, upheight, 80, 80)];
+                    wengdanView = [[UIButton alloc] initWithFrame:CGRectMake(10 + (PuretureSize + 5) * i, upheight, PuretureSize, PuretureSize)];
                 }
                 wengdanView.tag = 5100 + i;
                 [wengdanView addTarget:self action:@selector(wendangtapAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -258,11 +296,11 @@
             } else {
                 XPPhotoViews *XPimageViews = [[XPPhotoViews alloc] init];
                 if (fileprop.count == 4) {
-                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + 170 + 10);
-                    XPimageViews.frame = CGRectMake(20, upheight, 170, 170);
+                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + PuretureSize * 2 + 5 + 10 + 50);
+                    XPimageViews.frame = CGRectMake(10, upheight, PuretureSize * 2 + 5, PuretureSize * 2 + 5);
                 } else {
-                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + 80 + 10);
-                    XPimageViews.frame = CGRectMake(20, upheight, 170, 170);
+                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + PuretureSize + 10 + 50);
+                    XPimageViews.frame = CGRectMake(10, upheight, PuretureSize * 2 + 5, PuretureSize * 2 + 5);
                 }
                 //获取图片url,截取拼接
                 NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
@@ -284,6 +322,15 @@
     }
     
     
+    UILabel *gwLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, _bgView.size.height - 10 - 15 - 20, KScreenWidth - 20, 20)];
+    gwLabel.text = [NSString stringWithFormat:@"%@  %@",[self.dic valueForKey:@"ssgsname"],[self.dic valueForKey:@"gw"]];
+    gwLabel.textColor = ExtraTitleColor;
+    gwLabel.font = ExtitleFont;
+    [_bgView addSubview:gwLabel];
+    
+    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, _bgView.size.height - 10, KScreenWidth, 10)];
+    bottomView.backgroundColor = GrayColor;
+    [_bgView addSubview:bottomView];
     
 }
 
@@ -306,15 +353,23 @@
 {
     //收藏
     _collectButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _collectButton.frame = CGRectMake(KScreenWidth - 10 - 30, 20, 30, 30);
+    _collectButton.frame = CGRectMake(KScreenWidth - 30 - 18, 23, 30, 28);
+    _collectLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth - 35 - 18, 52, 40, 16)];
+    _collectLabel.textColor = ExtraTitleColor;
+    _collectLabel.font = ExtitleFont;
+    _collectLabel.textAlignment = NSTextAlignmentCenter;
+    
     _clickcount = [[_dic valueForKey:@"issc"] intValue];
     if (_clickcount == 0) {
-        [_collectButton setBackgroundImage:[UIImage imageNamed:@"btn_meicang_n"] forState:UIControlStateNormal];
+        [_collectButton setBackgroundImage:[UIImage imageNamed:@"g3_c"] forState:UIControlStateNormal];
+        _collectLabel.text = @"收藏";
     } else if ([[_dic valueForKey:@"issc"] intValue] == 1) {
-        [_collectButton setBackgroundImage:[UIImage imageNamed:@"btn_shoucang_h"] forState:UIControlStateNormal];
+        [_collectButton setBackgroundImage:[UIImage imageNamed:@"g3_b"] forState:UIControlStateNormal];
+        _collectLabel.text = @"已收藏";
     }
     [_collectButton addTarget:self action:@selector(collectionAction:) forControlEvents:UIControlEventTouchUpInside];
     [_bgView addSubview:_collectButton];
+    [_bgView addSubview:_collectLabel];
 }
 
 - (void)collectionAction:(UIButton *)button
@@ -328,7 +383,8 @@
         [XPHTTPRequestTool requestMothedWithPost:collectURL params:params success:^(id responseObject) {
             //收藏成功
             [self writeWithName:@"收藏成功"];
-            [button setBackgroundImage:[UIImage imageNamed:@"btn_shoucang_h"] forState:UIControlStateNormal];
+            [button setBackgroundImage:[UIImage imageNamed:@"g3_b"] forState:UIControlStateNormal];
+            _collectLabel.text = @"已收藏";
         } failure:^(NSError *error) {
             //收藏失败
             [BasicControls showNDKNotifyWithMsg:@"收藏失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
@@ -337,7 +393,8 @@
         [XPHTTPRequestTool requestMothedWithPost:collectURL params:params success:^(id responseObject) {
             //收藏成功
             [self writeWithName:@"已取消收藏"];
-            [button setBackgroundImage:[UIImage imageNamed:@"btn_meicang_n"] forState:UIControlStateNormal];
+            [button setBackgroundImage:[UIImage imageNamed:@"g3_c"] forState:UIControlStateNormal];
+            _collectLabel.text = @"收藏";
         } failure:^(NSError *error) {
             //收藏失败
             NSLog(@"取消收藏失败");
@@ -355,10 +412,6 @@
 {
     //获取键盘的高度
     CGFloat boardHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
-//    if (boardHeight < 300) {
-//        boardHeight = 327.66;
-//    }
-    NSLog(@"%f",boardHeight);
     //获取键盘的大小
     float duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
     [UIView animateWithDuration:duration animations:^{
@@ -439,8 +492,10 @@
     UIButton *button = [_replyView viewWithTag:2003];
     if (_textfield.text.length != 0) {
         [button setBackgroundColor:Mycolor];
+        button.userInteractionEnabled = YES;
     } else {
-        [button setBackgroundColor:[UIColor colorWithRed:188/255.0f green:196/255.0f blue:200/255.0f alpha:1]];
+        [button setBackgroundColor:NotouchButtonColor];
+        button.userInteractionEnabled = NO;
     }
 }
 
@@ -480,6 +535,8 @@
         [self writeWithName:@"回复成功"];
         [_replyTableView.header beginRefreshing];
         _personString = nil;
+        [button setBackgroundColor:NotouchButtonColor];
+        button.userInteractionEnabled = NO;
     } failure:^(NSError *error) {
         NSLog(@"回复失败");
         [BasicControls showNDKNotifyWithMsg:@"回复失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];

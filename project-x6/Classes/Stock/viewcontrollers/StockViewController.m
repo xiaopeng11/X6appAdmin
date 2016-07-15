@@ -35,6 +35,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 {
     UITableView *_tableView;   //联系人页面
     NSMutableArray *_nameArray;
+    NSMutableArray *_newdatalistInname;
     
     UIButton *_contactList;
     UIImageView *_unreadCantact;
@@ -52,11 +53,14 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 
 @property(nonatomic,copy)NSMutableArray *sections;          //获取右侧提示文本数据
 @property(nonatomic,copy)NSMutableArray *sectionDatalist;   //数据按照首字母分类
+
 @property(nonatomic,strong)NSMutableArray *newdatalist;       //搜索后的数据
 @property (strong, nonatomic)UISearchBar *stocksearchBar;
 
 @property(nonatomic,strong)NSArray *selectpersonArray;          //选中的联系人
 @property(nonatomic,copy)NSMutableArray *personsList;
+
+
 
 @end
 
@@ -74,6 +78,9 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     // Do any additional setup after loading the view.
     [self naviTitleWhiteColorWithText:@"联系人"];
     
+    
+    _newdatalistInname = [NSMutableArray array];
+
     // 初始化子视图
     [self initSubViews];
     
@@ -111,7 +118,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     //显示搜索框
     _stocksearchBar.hidden = NO;
     
-    NSLog(@"联系人%@",self.view.subviews);
+//    NSLog(@"联系人%@",self.view.subviews);
     
 }
 
@@ -232,6 +239,15 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     
     NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", _stocksearchBar.text];
     self.newdatalist = [[_nameArray filteredArrayUsingPredicate:searchPredicate] mutableCopy];
+    for (int i = 0; i < _newdatalist.count; i++) {
+        NSString *name = _newdatalist[i];
+        for (NSDictionary *dic in _datalist) {
+            if ([[dic valueForKey:@"name"] isEqualToString:name]) {
+                [self.newdatalist replaceObjectAtIndex:i withObject:dic];
+            }
+        }
+    }
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [_tableView reloadData];
     });
@@ -354,14 +370,12 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         cell = [[PersonsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    cell.datalist = _datalist;
     cell.comdatalist = _kuangjiadatalist;
     //文本
     if (![_stocksearchBar isFirstResponder]) {
-        cell.name = [[_sectionDatalist objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-        
+        cell.dic = [[_newdatalistInname objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     } else {
-        cell.name = _newdatalist[indexPath.row];
+        cell.dic = _newdatalist[indexPath.row];
     }
     
     return cell;
@@ -379,18 +393,9 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         HeaderViewController *headerVC = [[HeaderViewController alloc] init];
         headerVC.type = YES;
         if ([_stocksearchBar isFirstResponder]) {
-            for (NSDictionary *dic in _datalist) {
-                if ([[dic valueForKey:@"name"] isEqualToString:_newdatalist[indexPath.row]]) {
-                    headerVC.dic = dic;
-                }
-            }
-            
+            headerVC.dic = _newdatalist[indexPath.row];
         } else {
-            for (NSDictionary *dic in _datalist) {
-                if ([[dic valueForKey:@"name"] isEqualToString:[_sectionDatalist[indexPath.section] objectAtIndex:indexPath.row]]) {
-                    headerVC.dic = dic;
-                }
-            }
+            headerVC.dic = [_newdatalistInname[indexPath.section] objectAtIndex:indexPath.row];
         }
         [self.navigationController pushViewController:headerVC animated:YES];
     }
@@ -415,7 +420,6 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     }
     [XPHTTPRequestTool requestMothedWithPost:personsURL params:nil success:^(id responseObject) {
         [self hideProgress];
-        NSLog(@"%@",responseObject);
         if (_tableView.header.isRefreshing) {
             [_tableView.header endRefreshing];
         }
@@ -424,7 +428,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
             _datalist = [PersonsModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"userList"] ignoredKeys:@[@"phone",@"ssgs"]];
             _gwdatalist = [GwModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"gwList"]];
             _kuangjiadatalist = [kuangjiaModel mj_keyValuesArrayWithObjectArray:[responseObject valueForKey:@"gsList"]];
-            
+
             NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
             if ([userdefaults objectForKey:X6_Contactlist] == NULL) {
                 dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -442,6 +446,21 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
             
             _sections = [ChineseString IndexArray:_nameArray];    //右侧的提示文本
             _sectionDatalist = [ChineseString LetterSortArray:_nameArray];    //数据分类
+
+            for (NSArray *nameArray in _sectionDatalist) {
+                NSMutableSet *set = [NSMutableSet set];
+                NSMutableArray *newarray = [NSMutableArray array];
+                for (NSString *name in nameArray) {
+                    for (NSDictionary *dic in _datalist) {
+                        if ([name isEqualToString:[dic valueForKey:@"name"]]) {
+                            [set addObject:dic];
+                        }
+                    }
+                }
+                newarray = [[set allObjects] mutableCopy];
+                [_newdatalistInname addObject:newarray];
+            }
+    
             [_tableView reloadData];
         }
         
@@ -568,7 +587,6 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 {
     [self unregisterNotifications];
     [[EaseMob sharedInstance].chatManager addDelegate:self delegateQueue:nil];
-    
 }
 
 -(void)unregisterNotifications
@@ -736,7 +754,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         }
     }
     
-    
+   
     //未读消息数
     UIApplication *application = [UIApplication sharedApplication];
     [application setApplicationIconBadgeNumber:unreadCount];

@@ -54,54 +54,50 @@
 {
     [super layoutSubviews];
     
-    _nameLabel.text = self.name;
+    NSString *userName = [self.dic valueForKey:@"name"];
+    _nameLabel.text = userName;
 
     //判断当前是操作员还是员工
     //图片
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *dic = [userdefaults objectForKey:X6_UserMessage];
-    NSString *companyString = [dic objectForKey:@"gsdm"];
+    NSDictionary *diced = [userdefaults objectForKey:X6_UserMessage];
+    NSString *companyString = [diced objectForKey:@"gsdm"];
     NSString *headerURLString = nil;
-    
-    
-    for (NSDictionary *diced in _datalist) {
-        if ([[diced valueForKey:@"name"] isEqualToString:self.name]) {
-            _companyLabel.frame = CGRectMake(60, 40, KScreenWidth - 60 - 40, 10);
-            _companyLabel.text = [NSString stringWithFormat:@"%@  %@",[diced valueForKey:@"ssgsname"],[diced valueForKey:@"gw"]];
-            NSString *headerVeiewpic = [diced objectForKey:@"userpic"];
-            if (headerVeiewpic.length == 0) {
-                _imageView.hidden = YES;
-                _noheaderViewView.hidden = NO;
-                _headerViewLabel.hidden = NO;
-                NSArray *array = @[[UIColor colorWithRed:161/255.0f green:136/255.0f blue:127/255.0f alpha:1],
-                                   [UIColor colorWithRed:246/255.0f green:94/255.0f blue:141/255.0f alpha:1],
-                                   [UIColor colorWithRed:238/255.0f green:69/255.0f blue:66/255.0f alpha:1],
-                                   [UIColor colorWithRed:245/255.0f green:197/255.0f blue:47/255.0f alpha:1],
-                                   [UIColor colorWithRed:255/255.0f green:148/255.0f blue:61/255.0f alpha:1],
-                                   [UIColor colorWithRed:107/255.0f green:181/255.0f blue:206/255.0f alpha:1],
-                                   [UIColor colorWithRed:94/255.0f green:151/255.0f blue:246/255.0f alpha:1],
-                                   [UIColor colorWithRed:154/255.0f green:137/255.0f blue:185/255.0f alpha:1],
-                                   [UIColor colorWithRed:106/255.0f green:198/255.0f blue:111/255.0f alpha:1],
-                                   [UIColor colorWithRed:120/255.0f green:192/255.0f blue:110/255.0f alpha:1]];
-                
-                int x = arc4random() % 10;
-                _noheaderViewView.backgroundColor = (UIColor *)array[x];
-                _headerViewLabel.text = [self.name substringWithRange:NSMakeRange(self.name.length - 2, 2)];
-                _headerViewLabel.textColor = [UIColor whiteColor];
-            } else {
-                _headerViewLabel.hidden = YES;
-                _noheaderViewView.hidden = YES;
-                _imageView.hidden = NO;
-                if ([[diced valueForKey:@"usertype"] intValue] == 0) {
-                    //操作员
-                    headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[diced objectForKey:@"userpic"]];
-                } else {
-                    //员工
-                    headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[diced objectForKey:@"userpic"]];
-                }
-                [_imageView sd_setImageWithURL:[NSURL URLWithString:headerURLString] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
-            }
+
+    _companyLabel.frame = CGRectMake(60, 40, KScreenWidth - 60 - 40, 10);
+    _companyLabel.text = [NSString stringWithFormat:@"%@  %@",[self.dic valueForKey:@"ssgsname"],[self.dic valueForKey:@"gw"]];
+    NSString *headerVeiewpic = [self.dic objectForKey:@"userpic"];
+    if (headerVeiewpic.length == 0) {
+        _imageView.hidden = YES;
+        _noheaderViewView.hidden = NO;
+        _headerViewLabel.hidden = NO;
+        NSArray *array = @[[UIColor colorWithRed:161/255.0f green:136/255.0f blue:127/255.0f alpha:1],
+                           [UIColor colorWithRed:246/255.0f green:94/255.0f blue:141/255.0f alpha:1],
+                           [UIColor colorWithRed:238/255.0f green:69/255.0f blue:66/255.0f alpha:1],
+                           [UIColor colorWithRed:245/255.0f green:197/255.0f blue:47/255.0f alpha:1],
+                           [UIColor colorWithRed:255/255.0f green:148/255.0f blue:61/255.0f alpha:1],
+                           [UIColor colorWithRed:107/255.0f green:181/255.0f blue:206/255.0f alpha:1],
+                           [UIColor colorWithRed:94/255.0f green:151/255.0f blue:246/255.0f alpha:1],
+                           [UIColor colorWithRed:154/255.0f green:137/255.0f blue:185/255.0f alpha:1],
+                           [UIColor colorWithRed:106/255.0f green:198/255.0f blue:111/255.0f alpha:1],
+                           [UIColor colorWithRed:120/255.0f green:192/255.0f blue:110/255.0f alpha:1]];
+        
+        int x = arc4random() % 10;
+        _noheaderViewView.backgroundColor = (UIColor *)array[x];
+        _headerViewLabel.text = [userName substringWithRange:NSMakeRange(userName.length - 2, 2)];
+        _headerViewLabel.textColor = [UIColor whiteColor];
+    } else {
+        _headerViewLabel.hidden = YES;
+        _noheaderViewView.hidden = YES;
+        _imageView.hidden = NO;
+        if ([[self.dic valueForKey:@"usertype"] intValue] == 0) {
+            //操作员
+            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[self.dic objectForKey:@"userpic"]];
+        } else {
+            //员工
+            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[self.dic objectForKey:@"userpic"]];
         }
+        [_imageView sd_setImageWithURL:[NSURL URLWithString:headerURLString] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
     }
   
     

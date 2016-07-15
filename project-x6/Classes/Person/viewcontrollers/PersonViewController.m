@@ -108,7 +108,6 @@
     }
     cell.dic = _datalist[indexPath.row];
     return cell;
-    
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -129,8 +128,6 @@
             self.view = nil;
         }
     }
-    
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

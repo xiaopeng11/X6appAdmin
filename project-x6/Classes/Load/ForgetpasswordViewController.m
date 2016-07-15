@@ -8,33 +8,34 @@
 
 #import "ForgetpasswordViewController.h"
 
-#define titleWidth (KScreenWidth / 3.0)
-#define TFwidth (KScreenWidth - 80 - 40)
-
 @interface ForgetpasswordViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 
 {
     UIScrollView *_mainScrollView;             //滑动试图
     
-    UITextField *_gsdmTF;                      //公司代码
+    UITextField *_gdsmTF;                      //公司代码
     UITextField *_userNameTF;                  //用户名
     UITextField *_checkTF;                     //验证码
     
     UITextField *_newpsTF;                     //新密码
     UITextField *_checkpsTF;                   //确认密码
     
-    UIButton *_firstnextbutton;                //第一个下一步按钮
-    UIButton *_secondnextbutton;               //第二个下一步按钮
-    UIButton *_loadbutton;                     //重新登陆按钮
+    UIButton *_firstnextbutton;                //下一步按钮
+    UIButton *_surechangePasswordButton;       //确认修改按钮
+    
     UIButton *_acquireButton;                  //短信验证码
     UIButton *_isOrshowButton;                 //是否显示获取验证码按钮
 }
 @property (nonatomic, readwrite, retain)NSTimer *timer;
-@property(nonatomic,strong)UIView *lineView;
 
 @end
 
 @implementation ForgetpasswordViewController
+
+- (void)dealloc
+{
+   [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -42,43 +43,10 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UIImageView *naviView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 64)];
-    naviView.backgroundColor = Mycolor;
-    naviView.userInteractionEnabled = YES;
-    [self.view addSubview:naviView];
-    
-    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 200) / 2.0, 20, 200, 44)];
-    title.text = @"找回密码";
-    title.textColor = [UIColor whiteColor];
-    title.textAlignment = NSTextAlignmentCenter;
-    [naviView addSubview:title];
-    
-    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    backButton.frame = CGRectMake(20, 25, 34, 34);
-    [backButton setImage:[UIImage imageNamed:@"btn-fanhui"] forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(backVC) forControlEvents:UIControlEventTouchUpInside];
-    [naviView addSubview:backButton];
-    
-    //绘制标题试图
-    [self initTitleView];
-    
-    //绘制滑动试图子试图
-    [self initScrollView];
-    
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-//绘制标题试图
-- (void)initTitleView
-{
-    NSArray *titleArray = @[@"申请密码",@"修改密码",@"修改成功"];
-    _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64 + 54, KScreenWidth, KScreenHeight - 64 - 54)];
-    _mainScrollView.contentSize = CGSizeMake(KScreenWidth * 3, KScreenHeight - 64 - 54);
+    _mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight)];
+    _mainScrollView.contentSize = CGSizeMake(KScreenWidth * 3, KScreenHeight);
     _mainScrollView.pagingEnabled = YES;
+    _mainScrollView.backgroundColor = GrayColor;
     _mainScrollView.bounces = NO;
     _mainScrollView.delegate = self;
     _mainScrollView.showsVerticalScrollIndicator = NO;
@@ -86,181 +54,366 @@
     _mainScrollView.scrollEnabled = NO;
     [self.view addSubview:_mainScrollView];
     
-    for (int i = 0; i < 3; i++) {
-        UIView *numbg = [[UIView alloc] initWithFrame:CGRectMake(10 + titleWidth * i, 64 + 15, 20, 20)];
-        numbg.clipsToBounds = YES;
-        numbg.layer.cornerRadius = 10;
-        numbg.tag = 12010 + i;
-        [self.view addSubview:numbg];
+    for (int i = 0; i < 2; i++) {
+        UIImageView *naviView = [[UIImageView alloc] initWithFrame:CGRectMake(KScreenWidth * i, 0, KScreenWidth, 64)];
+        naviView.backgroundColor = Mycolor;
+        naviView.userInteractionEnabled = YES;
+        [_mainScrollView addSubview:naviView];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-        label.tag = 12020 + i;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.text = [NSString stringWithFormat:@"%d",i + 1];
-        [numbg addSubview:label];
+        UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 200) / 2.0, 20, 200, 44)];
+        title.text = @"找回密码";
+        title.font = TitleFont;
+        title.textColor = [UIColor whiteColor];
+        title.textAlignment = NSTextAlignmentCenter;
+        [naviView addSubview:title];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(35 + titleWidth * i, 64 + 15, 70, 20)];
-        titleLabel.text = titleArray[i];
-        titleLabel.font = [UIFont systemFontOfSize:14];
-        titleLabel.tag = 12030 + i;
-        [self.view addSubview:titleLabel];
-        
-        if (i == 0) {
-            numbg.backgroundColor = Mycolor;
-            label.textColor = [UIColor whiteColor];
-            titleLabel.textColor = Mycolor;
-        } else {
-            numbg.backgroundColor = [UIColor colorWithRed:217/255.0f green:217/255.0f blue:217/255.0f alpha:1];
-            label.textColor = [UIColor grayColor];
-            titleLabel.textColor = [UIColor grayColor];
+        UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        backButton.frame = CGRectMake(20, 25, 34, 34);
+        backButton.tag = 22220 + i;
+        [backButton setImage:[UIImage imageNamed:@"btn-fanhui"] forState:UIControlStateNormal];
+        [backButton addTarget:self action:@selector(forgetpasswordbackVC:) forControlEvents:UIControlEventTouchUpInside];
+        [naviView addSubview:backButton];
+    }
+    
+    //绘制滑动试图子试图
+    [self drawforgetpasswordfirstUI];
+    
+    [self drawforgetpasswordsecondUI];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 6.0) {
+        if (self.isViewLoaded && !self.view.window) {
+            self.view = nil;
         }
     }
-    
-    UIView *grayLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 50, KScreenWidth, 4)];
-    grayLineView.backgroundColor = GrayColor;
-    [self.view addSubview:grayLineView];
-    
-    _lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 50, titleWidth, 4)];
-    _lineView.backgroundColor = Mycolor;
-    _lineView.clipsToBounds = YES;
-    _lineView.layer.cornerRadius = 2;
-    [self.view addSubview:_lineView];
 }
 
+#pragma mark - 绘制UI
 //绘制滑动试图子试图
-- (void)initScrollView
+- (void)drawforgetpasswordfirstUI
 {
-    //申请密码
-    NSArray *firstViewtitle = @[@"公司代码",@"用户名",@"验证码"];
-    for (int i = 0; i < 3; i++) {
-        UILabel *firstViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 100 + 50 * i, 80, 30)];
-        firstViewLabel.text = firstViewtitle[i];
-        [_mainScrollView addSubview:firstViewLabel];
+    //第一页背景
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 74, KScreenWidth, 45 * 2 + 44)];
+    bgView.backgroundColor = [UIColor whiteColor];
+    [_mainScrollView addSubview:bgView];
+    
+    //绘制第一个页面textField之间相隔线
+    for (int i = 0 ; i < 2; i++) {
+        [self showLineImageWithFrame:CGRectMake(0, 44 + 45 * i, KScreenWidth, 1) SuperView:bgView];
     }
     
-    _gsdmTF = [[UITextField alloc] initWithFrame:CGRectMake(100, 100, TFwidth, 30)];
-    _gsdmTF.placeholder = @"请输入公司代码";
-    _gsdmTF.borderStyle = UITextBorderStyleRoundedRect;
-    [_mainScrollView addSubview:_gsdmTF];
-    
-    _userNameTF = [[UITextField alloc] initWithFrame:CGRectMake(100, 150, TFwidth, 30)];
-    _userNameTF.placeholder = @"请输入用户名(默认为手机号)";
-    _userNameTF.borderStyle = UITextBorderStyleRoundedRect;
-    [_mainScrollView addSubview:_userNameTF];
-    
-    _checkTF = [[UITextField alloc] initWithFrame:CGRectMake(100, 200, TFwidth / 2.0, 30)];
-    _checkTF.placeholder = @"6位数字验证码";
-    _checkTF.borderStyle = UITextBorderStyleRoundedRect;
-    [_mainScrollView addSubview:_checkTF];
-    
-    _firstnextbutton = [[UIButton alloc] initWithFrame:CGRectMake((KScreenWidth - 150) / 2.0, 250, 150, 40)];
-    _firstnextbutton.clipsToBounds = YES;
-    _firstnextbutton.layer.cornerRadius = 10;
-    [_firstnextbutton setTitle:@"下一步" forState:UIControlStateNormal];
-    [_firstnextbutton setBackgroundColor:Mycolor];
-    [_firstnextbutton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_firstnextbutton addTarget:self action:@selector(nextbutton:) forControlEvents:UIControlEventTouchUpInside];
-    [_mainScrollView addSubview:_firstnextbutton];
-    
-    _acquireButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_acquireButton setTitle:@"获取验证码" forState:UIControlStateNormal];
-    _acquireButton.frame = CGRectMake(_checkTF.right + 10, _checkTF.top, 80, 30);
-    [_acquireButton setTitleColor:ColorRGB(228, 76, 45) forState:UIControlStateNormal];
-    [_acquireButton setBackgroundColor:ColorRGB(240, 240, 240)];
-    _acquireButton.titleLabel.font = [UIFont systemFontOfSize:14];
-    _acquireButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    _acquireButton.layer.cornerRadius = 7;
-    [_acquireButton addTarget:self action:@selector(requestGetRegisterAction:) forControlEvents:UIControlEventTouchUpInside];
-    [_mainScrollView addSubview:_acquireButton];
-    
-    //修改密码
-    NSArray *secondViewtitle = @[@"新密码",@"确认密码"];
-    for (int i = 0; i < 2; i++) {
-        UILabel *secondViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth + 20, 150 + 50 * i, 80, 30)];
-        secondViewLabel.text = secondViewtitle[i];
-        [_mainScrollView addSubview:secondViewLabel];
+    //公司代码
+    {
+        UILabel *gsdmLabel = [BasicControls createLabelWithframe:CGRectMake(10, 0, 70, 44) image:nil];
+        gsdmLabel.text = @"公司代码";
+        gsdmLabel.font = TitleFont;
+        [bgView addSubview:gsdmLabel];
+        
+        _gdsmTF = [BasicControls createTextFieldWithframe:CGRectMake(90, gsdmLabel.top, KScreenWidth - 100, 44) addTarget:self image:nil];
+        _gdsmTF.placeholder = @"请输入公司代码";
+        _gdsmTF.font = TitleFont;
+        _gdsmTF.keyboardType = UIKeyboardTypePhonePad;
+        [bgView addSubview:_gdsmTF];
     }
     
-    _newpsTF = [[UITextField alloc] initWithFrame:CGRectMake(KScreenWidth + 100, 150, TFwidth, 30)];
-    _newpsTF.placeholder = @"请输入新密码";
-    _newpsTF.borderStyle = UITextBorderStyleRoundedRect;
-    [_mainScrollView addSubview:_newpsTF];
+    //手机号
+    {
+        UILabel *phoneLabel = [BasicControls createLabelWithframe:CGRectMake(10, 45, 70, 44) image:nil];
+        phoneLabel.text = @"手机号";
+        phoneLabel.font = TitleFont;
+        [bgView addSubview:phoneLabel];
+        
+        _userNameTF = [BasicControls createTextFieldWithframe:CGRectMake(90, phoneLabel.top, KScreenWidth - 100, 44) addTarget:self image:nil];
+        _userNameTF.placeholder = @"请输入手机号/用户名";
+        _userNameTF.font = TitleFont;
+        _userNameTF.keyboardType = UIKeyboardTypePhonePad;
+        [bgView addSubview:_userNameTF];
+    }
     
-    _checkpsTF = [[UITextField alloc] initWithFrame:CGRectMake(KScreenWidth + 100, 200, TFwidth, 30)];
-    _checkpsTF.placeholder = @"确认新密码";
-    _checkpsTF.borderStyle = UITextBorderStyleRoundedRect;
-    [_mainScrollView addSubview:_checkpsTF];
+    //验证码
+    {
+        UILabel *smsCodeLabel = [BasicControls createLabelWithframe:CGRectMake(10, 90, 70, 44) image:nil];
+        smsCodeLabel.text = @"验证码";
+        smsCodeLabel.font = TitleFont;
+        [bgView addSubview:smsCodeLabel];
+        
+        _checkTF = [BasicControls createTextFieldWithframe:CGRectMake(90, smsCodeLabel.top, KScreenWidth - 115, 44) addTarget:self image:nil];
+        _checkTF.placeholder = @"请输入验证码";
+        _checkTF.font = TitleFont;
+        _checkTF.keyboardType = UIKeyboardTypeNumberPad;
+        [bgView addSubview:_checkTF];
+        
+        _acquireButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_acquireButton setTitle:@"获取验证码" forState:UIControlStateNormal];
+        _acquireButton.frame = CGRectMake(0, _checkTF.top + 10, 80, 25);
+        [_acquireButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_acquireButton setBackgroundColor:Mycolor];
+        _acquireButton.titleLabel.font = ExtitleFont;
+        _acquireButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        _acquireButton.layer.cornerRadius = 4;
+        [_acquireButton addTarget:self action:@selector(getchecksms:) forControlEvents:UIControlEventTouchUpInside];
+        [_checkTF setRightView:_acquireButton];
+        [_checkTF setRightViewMode:UITextFieldViewModeAlways];
+    }
     
-    _secondnextbutton = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth + ((KScreenWidth - 150) / 2.0), 250, 150, 40)];
-    _secondnextbutton.clipsToBounds = YES;
-    _secondnextbutton.layer.cornerRadius = 10;
-    [_secondnextbutton setTitle:@"下一步" forState:UIControlStateNormal];
-    [_secondnextbutton setBackgroundColor:Mycolor];
-    [_secondnextbutton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_secondnextbutton addTarget:self action:@selector(nextbutton:) forControlEvents:UIControlEventTouchUpInside];
-    [_mainScrollView addSubview:_secondnextbutton];
-    
-    
-    //修改成功
-    UILabel *successLabel = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth * 2 + 20, 200, KScreenWidth - 40, 40)];
-    successLabel.text = @"密码修改成功,请重新登陆！";
-    successLabel.textAlignment = NSTextAlignmentCenter;
-    [_mainScrollView addSubview:successLabel];
-    
-    _loadbutton = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth * 2 + ((KScreenWidth - 150) / 2.0), 250, 150, 40)];
-    _loadbutton.clipsToBounds = YES;
-    _loadbutton.layer.cornerRadius = 10;
-    [_loadbutton setTitle:@"重新登陆" forState:UIControlStateNormal];
-    [_loadbutton setBackgroundColor:Mycolor];
-    [_loadbutton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_loadbutton addTarget:self action:@selector(backVC) forControlEvents:UIControlEventTouchUpInside];
-    [_mainScrollView addSubview:_loadbutton];
-
+    //下一步按钮
+    {
+        _firstnextbutton = [BasicControls createButtonWithTitle:@"下一步" frame:CGRectMake(10, 258, KScreenWidth - 20, 45) image:nil];
+        [_firstnextbutton setBackgroundColor:Mycolor];
+        [_firstnextbutton addTarget:self action:@selector(forgetnextAction:) forControlEvents:UIControlEventTouchUpInside];
+        _firstnextbutton.layer.cornerRadius = 4;
+        [_mainScrollView addSubview:_firstnextbutton];
+    }
 }
 
-#pragma makr - 返回事件
-- (void)backVC
+- (void)drawforgetpasswordsecondUI
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    //第二页背景
+    UIView *nextBgview = [[UIView alloc] initWithFrame:CGRectMake(KScreenWidth, 74, KScreenWidth, 45 + 44)];
+    nextBgview.backgroundColor = [UIColor whiteColor];
+    [_mainScrollView addSubview:nextBgview];
+    
+    //绘制第二个页面textField之间相隔线
+    [self showLineImageWithFrame:CGRectMake(20, 44, KScreenWidth, 1) SuperView:nextBgview];
+    
+    //用户名
+    {
+        UILabel *pwLabel = [BasicControls createLabelWithframe:CGRectMake(10, 0, 70, 44) image:nil];
+        pwLabel.text = @"新密码";
+        pwLabel.font = TitleFont;
+        [nextBgview addSubview:pwLabel];
+        
+        _newpsTF = [BasicControls createTextFieldWithframe:CGRectMake(90, pwLabel.top, KScreenWidth - 100, 44) addTarget:self image:nil];
+        _newpsTF.placeholder = @"请输入6~18位有效登陆密码";
+        _newpsTF.font = TitleFont;
+        [nextBgview addSubview:_newpsTF];
+    }
+    
+    //登陆密码
+    {
+        UILabel *surepwLabel = [BasicControls createLabelWithframe:CGRectMake(10, 45, 70, 44) image:nil];
+        surepwLabel.text = @"确认密码";
+        surepwLabel.font = TitleFont;
+        [nextBgview addSubview:surepwLabel];
+        
+        _checkpsTF = [BasicControls createTextFieldWithframe:CGRectMake(90, surepwLabel.top, KScreenWidth - 100, 44) addTarget:self image:nil];
+        _checkpsTF.placeholder = @"请输入6~18位有效登陆密码";
+        _checkpsTF.font = TitleFont;
+        [nextBgview addSubview:_checkpsTF];
+    }
+    
+    //注册按钮
+    {
+        _surechangePasswordButton = [BasicControls createButtonWithTitle:@"确认修改" frame:CGRectMake(KScreenWidth + 10, 213, KScreenWidth - 20, 40) image:nil];
+        _surechangePasswordButton.layer.cornerRadius = 4;
+        [_surechangePasswordButton setBackgroundColor:Mycolor];
+        [_surechangePasswordButton addTarget:self action:@selector(surechange:) forControlEvents:UIControlEventTouchUpInside];
+        [_mainScrollView addSubview:_surechangePasswordButton];
+    }
+
 }
 
 #pragma mark - 按钮事件
-- (void)nextbutton:(UIButton *)button
-{
-    if ([button isEqual:_firstnextbutton]) {
-        [self changetoptitleIndex:1];
-    } else if ([button isEqual:_secondnextbutton]){
-        [self changetoptitleIndex:2];
-    }
-}
-
 //获取验证码
-- (void)requestGetRegisterAction:(UIButton *)button
+- (void)getchecksms:(UIButton *)button
 {
-    if (_userNameTF.text.length == 0) {
-        [BasicControls showAlertWithMsg:@"请输入手机号" addTarget:nil];
-        return;
-    } else if (_userNameTF.text.length < 11) {
-        [BasicControls showAlertWithMsg:@"请输入11位有效手机号" addTarget:nil];
+    [self.view endEditing:YES];
+    //输入框逻辑处理1
+    if (![self manageforgetpsWithphone]) {
         return;
     }
-    UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"验证码已发" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
-    alertView.tag = 100002;
-    [alertView show];
-    //网络请求获取验证码
-    _acquireButton.enabled = NO;
-    [_acquireButton setTitle:@"60s" forState:UIControlStateNormal];
-    [_acquireButton setUserInteractionEnabled:NO];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(updateTimerText:) userInfo:nil repeats:YES];
+    //数据请求
+    [self forgetpasswordAction];
 }
 
-#pragma mark - 获取验证码倒计时
+//下一步
+- (void)forgetnextAction:(UIButton *)button
+{
+    [self.view endEditing:YES];
+    
+    if (![self manageWithgsdmTFAnduserNameTFAndsmscode]) {
+            return;
+    }
+    //检查验证吗是否正确
+    [self cecksmsisok];
+}
+
+//确认修改密码
+- (void)surechange:(UIButton *)button
+{
+    [self.view endEditing:YES];
+    //输入框逻辑处理1
+    if (![self manageWithnewpswTFAndchecknewpswTF]) {
+        return;
+    }
+    //数据请求
+    [self changePassword];
+}
+
+
+//返回
+- (void)forgetpasswordbackVC:(UIButton *)button
+{
+    if (button.tag == 22220) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        //滑倒左
+        [self changetoptitleIndex:0];
+    }
+}
+
+#pragma mark - 逻辑处理
+//输入框逻辑处理1
+- (BOOL)manageforgetpsWithphone
+{
+    if (_gdsmTF.text.length == 0) {
+        [BasicControls showAlertWithMsg:@"请输入公司代码" addTarget:nil];
+        return NO;
+    }
+    
+    if (_userNameTF.text.length == 0) {
+        [BasicControls showAlertWithMsg:@"请输入用户名／手机号" addTarget:nil];
+        return NO;
+    }
+    return YES;
+}
+
+//输入框逻辑处理2
+- (BOOL)manageWithgsdmTFAnduserNameTFAndsmscode
+{
+    if (_gdsmTF.text.length == 0) {
+        [BasicControls showAlertWithMsg:@"请输入公司代码" addTarget:nil];
+        return NO;
+    }
+    if (_userNameTF.text.length == 0) {
+        [BasicControls showAlertWithMsg:@"请输入用户名/手机号" addTarget:nil];
+        return NO;
+    }
+    if (_checkTF.text.length != 4) {
+        [BasicControls showAlertWithMsg:@"请输入4位验证码" addTarget:nil];
+        return NO;
+    }
+    return YES;
+}
+
+//输入框逻辑处理3
+- (BOOL)manageWithnewpswTFAndchecknewpswTF
+{
+    if (_newpsTF.text.length == 0) {
+        [BasicControls showAlertWithMsg:@"请输入新密码" addTarget:nil];
+        return NO;
+    }
+    if (_checkpsTF.text.length == 0) {
+        [BasicControls showAlertWithMsg:@"请输入确认密码" addTarget:nil];
+        return NO;
+    }
+    if (![_checkpsTF.text isEqualToString:_newpsTF.text]) {
+        [BasicControls showAlertWithMsg:@"密码不一致，请重新输入!" addTarget:nil];
+        return NO;
+    }
+    return YES;
+}
+
+#pragma mark - 数据请求
+//获取验证码
+- (void)forgetpasswordAction
+{
+    NSString *forget_getsmscode = [NSString stringWithFormat:@"%@%@",X6basemain_API,X6forgetps_getsmscode];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:_userNameTF.text forKey:@"uname"];
+    [params setObject:_gdsmTF.text forKey:@"gsdm"];
+    [params setObject:@"0" forKey:@"utype"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager POST:forget_getsmscode parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@",responseObject);
+        if ([[responseObject valueForKey:@"type"] isEqualToString:@"success"]) {
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"验证码已发" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            alertView.tag = 000007;
+            [alertView show];
+            //网络请求获取验证码
+            _acquireButton.enabled = NO;
+            NSString *title = [NSString stringWithFormat:@"%@s",[responseObject valueForKey:@"message"]];
+            [_acquireButton setTitle:title forState:UIControlStateNormal];
+            [_acquireButton setUserInteractionEnabled:NO];
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(updateTimerText:) userInfo:nil repeats:YES];
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"获取失败");
+    }];
+}
+
+//验证吗是否正确
+- (void)cecksmsisok
+{
+    NSString *forget_checksmscode = [NSString stringWithFormat:@"%@%@",X6basemain_API,X6forgetps_checksmscode];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:_checkTF.text forKey:@"yzm"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager POST:forget_checksmscode parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if ([[responseObject valueForKey:@"type"] isEqualToString:@"success"]) {
+            [self.timer invalidate];
+            self.timer = nil;
+            [self changetoptitleIndex:1];
+        } else {
+            [BasicControls showAlertWithMsg:[responseObject valueForKey:@"message"] addTarget:nil];
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    }];
+}
+
+//修改密码
+- (void)changePassword
+{
+    NSString *forgetps = [NSString stringWithFormat:@"%@%@",X6basemain_API,X6forgetps];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:_gdsmTF.text forKey:@"gsdm"];
+    [params setObject:_userNameTF.text forKey:@"uname"];
+    [params setObject:_newpsTF.text forKey:@"pwd"];
+    [params setObject:@"0" forKey:@"utype"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager POST:forgetps parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if ([[responseObject valueForKey:@"type"] isEqualToString:@"success"]) {
+            UIAlertController *cantReigister = [UIAlertController alertControllerWithTitle:@"提示" message:@"密码修改成功！" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            [cantReigister addAction:sureAction];
+            [self presentViewController:cantReigister animated:YES completion:nil];
+        } else {
+            [BasicControls showAlertWithMsg:[responseObject valueForKey:@"message"] addTarget:nil];
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    }];
+}
+
+#pragma mark - UI动作
+//绘制textField之间相隔线
+- (void)showLineImageWithFrame:(CGRect)frame SuperView:(UIView *)superView
+{
+    UIImageView *imageview = [BasicControls createImageViewWithframe:frame image:nil];
+    imageview.backgroundColor = LineColor;
+    [superView addSubview:imageview];
+}
+
+//改变顶部位置位置
+-(void)changetoptitleIndex:(float)index
+{
+    [_mainScrollView setContentOffset:CGPointMake(KScreenWidth * index, 0)];
+}
+
+
+//获取验证码倒计时
 -(void)updateTimerText:(NSTimer*)theTimer
 {
+    
     NSString *countdown = _acquireButton.titleLabel.text;
     if([countdown isEqualToString:@"0s"])
     {
         [self.timer invalidate];
+        self.timer = nil;
         _acquireButton.enabled = YES;
         [_acquireButton setTitle:@"获取验证码" forState:UIControlStateNormal];
         [_acquireButton setUserInteractionEnabled:YES];
@@ -279,31 +432,4 @@
     }
 }
 
-//改变顶部位置位置
--(void)changetoptitleIndex:(float)index
-{
-    [UIView animateWithDuration:.3 animations:^{
-        CGRect rect = _lineView.frame;
-        rect.origin.x = index * titleWidth;
-        _lineView.frame = rect;
-    } completion:nil];
-    
-    [_mainScrollView setContentOffset:CGPointMake(KScreenWidth * index, 0)];
-    
-    for (int i = 0; i < 3; i++) {
-        UIView *numbg = [self.view viewWithTag:12010 + i];
-        UILabel *label = [self.view viewWithTag:12020 + i];
-        UILabel *titleLabel = [self.view viewWithTag:12030 + i];
-        
-        if (i == index) {
-            numbg.backgroundColor = Mycolor;
-            label.textColor = [UIColor whiteColor];
-            titleLabel.textColor = Mycolor;
-        } else {
-            numbg.backgroundColor = [UIColor colorWithRed:217/255.0f green:217/255.0f blue:217/255.0f alpha:1];
-            label.textColor = [UIColor grayColor];
-            titleLabel.textColor = [UIColor grayColor];
-        }
-    }
-}
 @end

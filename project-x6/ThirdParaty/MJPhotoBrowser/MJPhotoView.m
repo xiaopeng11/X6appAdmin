@@ -197,8 +197,9 @@
 #pragma mark - 手势处理
 - (void)handleSingleTap:(UITapGestureRecognizer *)tap {
     _doubleTap = NO;
-    [self performSelector:@selector(hide) withObject:nil afterDelay:0.2];
+    [self performSelector:@selector(hide) withObject:nil afterDelay:0];
 }
+
 - (void)hide
 {
     if (_doubleTap) return;
@@ -210,12 +211,12 @@
     // 清空底部的小图
     _photo.srcImageView.image = nil;
     
-    CGFloat duration = 0.15;
+    CGFloat duration = 0;
     if (_photo.srcImageView.clipsToBounds) {
         [self performSelector:@selector(reset) withObject:nil afterDelay:duration];
     }
     
-    [UIView animateWithDuration:duration + 0.1 animations:^{
+    [UIView animateWithDuration:duration + 0 animations:^{
         _imageView.frame = [_photo.srcImageView convertRect:_photo.srcImageView.bounds toView:nil];
         
         // gif图片仅显示第0张
@@ -245,6 +246,7 @@
 }
 
 - (void)handleDoubleTap:(UITapGestureRecognizer *)tap {
+    
     _doubleTap = YES;
     
     CGPoint touchPoint = [tap locationInView:self];

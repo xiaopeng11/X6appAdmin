@@ -11,6 +11,8 @@
 #import "SelectTableViewCell.h"
 #import "WriteViewController.h"
 #import "MianDynamicViewController.h"
+#import "kuangjiaModel.h"
+
 @interface CompanysViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     UITableView *_companysTableview;
@@ -73,7 +75,14 @@
         [sectionSet addObject:[dic valueForKey:@"lx"]];
     }
     
+    //排序
     NSMutableArray *sections = [[sectionSet allObjects] mutableCopy];
+    [sections sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        return [obj1 intValue] > [obj2 intValue];
+    }];
+    
+    [sections removeLastObject];
+    
     for (int i = 0; i < sections.count; i++) {
         NSMutableArray *section = [NSMutableArray array];
         for (NSDictionary *dic in _kuangjiadatalist) {
@@ -102,7 +111,7 @@
         [NewSections addObject:NewSection];
     }
     
-    
+    [_nameArray exchangeObjectAtIndex:1 withObjectAtIndex:2];
  
     //将岗位数组转换成模型对象数组
     NSMutableArray *newarrays = [NSMutableArray array];
@@ -127,7 +136,7 @@
     }
 
     _sectionNames = [NSArray array];
-    _sectionNames = @[@"总部",@"区域",@"分店",@"其他",@"仓库"];
+    _sectionNames = @[@"总部",@"分公司",@"区域",@"门店"];
     
 }
 

@@ -76,4 +76,9 @@
 - (void)passwordTodayDatalistWithDataList:(NSMutableArray *)datalist
                                       Key:(NSString *)key
                                      Jmdx:(NSString *)jmdx;
+
+
+//合计
+- (double)leijiaNumDataList:(NSMutableArray *)dataList
+                       Code:(NSString *)code;
 @end

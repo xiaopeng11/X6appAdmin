@@ -14,4 +14,6 @@
 @property(nonatomic,copy)NSNumber *col2;     //客户代码
 @property(nonatomic,copy)NSString *col3;     //客户名称
 @property(nonatomic,copy)NSNumber *col4;     //金额
+@property(nonatomic,copy)NSString *col5;     //科目
+
 @end

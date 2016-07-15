@@ -19,7 +19,7 @@
  
         //默认日期格式为yyyy-MM-dd
         self.dateFormatter = [[NSDateFormatter alloc] init];
-        [self.dateFormatter setLocale:[[NSLocale alloc]initWithLocaleIdentifier:@"zh_CN"]];//location设置为中国
+        [self.dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];//location设置为中国
         [self.dateFormatter setDateFormat:@"yyyy-MM-dd"];
         
         self.date = [self.dateFormatter dateFromString:dateString];

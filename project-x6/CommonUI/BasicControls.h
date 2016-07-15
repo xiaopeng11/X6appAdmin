@@ -38,4 +38,7 @@
 
 + (BOOL)isNewVersion;
 
+
++ (UIView *)drawLineWithFrame:(CGRect)frame;
+
 @end

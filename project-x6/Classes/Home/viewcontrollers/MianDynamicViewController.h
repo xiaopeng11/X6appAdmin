@@ -18,6 +18,7 @@
     double _page;                       //页码
     double _pages;                      //所有的数据
     UIButton *_collectButton;           //收藏
+    UILabel *_collectLabel;             //收藏文字
     UIImageView *_bgView;
     ReplyTableView *_replyTableView;    //回复列表
     UILabel *_reLabel;
@@ -28,6 +29,6 @@
 @property(nonatomic,strong)NSDictionary *dic;    //动态详情数据
 @property(nonatomic,strong)NSArray *datalist;    //回复列表数据
 @property(nonatomic,strong)NoDataView *nodataView;
-
+@property(nonatomic,copy)UIColor *color;
 
 @end

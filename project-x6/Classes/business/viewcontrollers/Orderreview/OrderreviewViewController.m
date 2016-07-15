@@ -40,7 +40,7 @@
     // Do any additional setup after loading the view.
     
     if (self.isWholesale) {
-        [self naviTitleWhiteColorWithText:@"批发订单订单审核"];
+        [self naviTitleWhiteColorWithText:@"批发订单审核"];
     } else {
         [self naviTitleWhiteColorWithText:@"订单审核"];
     }
@@ -243,12 +243,18 @@
 {
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-    NSString *orderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_examineOrder];
+    NSString *orderURL;
+    if (_isWholesale) {
+        orderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_wholesaleexamineOrder];
+    } else {
+        orderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_examineOrder];
+    }
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:noti.object forKey:@"id"];
     [XPHTTPRequestTool requestMothedWithPost:orderURL params:params success:^(id responseObject) {
         if ([responseObject[@"type"] isEqualToString:@"error"]) {
             [self writeWithName:responseObject[@"message"]];
+            
         } else {
             NSLog(@"审核成功");
             NSMutableArray *deleteArray = [NSMutableArray array];
@@ -274,7 +280,12 @@
 {
     NSUserDefaults *userdefaluts = [NSUserDefaults standardUserDefaults];
     NSString *baseURL = [userdefaluts objectForKey:X6_UseUrl];
-    NSString *orderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_revokeOrder];
+    NSString *orderURL;
+    if (_isWholesale) {
+        orderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_wholesalerevokeOrder];
+    } else {
+        orderURL = [NSString stringWithFormat:@"%@%@",baseURL,X6_revokeOrder];
+    }
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     NSString *shenheid = [NSString stringWithFormat:@"%@",noti.object];
     [params setObject:shenheid forKey:@"id"];

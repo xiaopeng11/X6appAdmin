@@ -76,14 +76,14 @@
         _myacountLabel = (UILabel *)[self.contentView viewWithTag:4710 + i];
         _acountNameLabel = (UILabel *)[self.contentView viewWithTag:4720 + i];
         if (i == 0) {
-            _acountNameLabel.text = @"本期收入:";
-            _myacountLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_dic valueForKey:@"col2"] floatValue]];
+            _acountNameLabel.text = @"今日收入:";
+            _myacountLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_dic valueForKey:@"col2"] doubleValue]];
         } else if (i == 1) {
-            _acountNameLabel.text = @"本期支出:";
-            _myacountLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_dic valueForKey:@"col3"] floatValue]];
+            _acountNameLabel.text = @"今日支出:";
+            _myacountLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_dic valueForKey:@"col3"] doubleValue]];
         } else if (i == 2) {
             _acountNameLabel.text = @"余额:";
-            _myacountLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_dic valueForKey:@"col4"] floatValue]];
+            _myacountLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_dic valueForKey:@"col4"] doubleValue]];
         }
     }
 }

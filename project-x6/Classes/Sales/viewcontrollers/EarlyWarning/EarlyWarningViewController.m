@@ -41,7 +41,7 @@
                       @{@"title":@"bb_jxc_ckyc",@"image":@"btn_chukuyichang_h",@"text":@"出库异常"},
                       @{@"title":@"bb_jxc_lsyc",@"image":@"btn_lingshou_h",@"text":@"零售异常"},
                       @{@"title":@"bb_jxc_klyj",@"image":@"btn_kulingyuqi_h",@"text":@"库龄预警"},
-                      @{@"title":@"bb_jxc_yskyj",@"image":@"btn_yingshouyuqi_h",@"text":@"应收逾期"}];
+                      @{@"title":@"bb_jxc_yskyj",@"image":@"btn_yuqishoukuan",@"text":@"应收逾期"}];
     
     NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
     NSArray *qxList = [userdefault objectForKey:X6_UserQXList];

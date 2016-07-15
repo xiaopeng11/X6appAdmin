@@ -143,13 +143,17 @@
     [super viewWillDisappear:animated];
     [_OutboundSearchController.searchBar setHidden:YES];
     [_OutboundSearchController setActive:NO];
-    
+
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
         [_datepicker.subView removeFromSuperview];
     }
 }
-
 #pragma mark - UITableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {

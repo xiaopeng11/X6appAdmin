@@ -118,7 +118,7 @@ static CGFloat widthCallback(void *refCon) {
     
     self.delegate = self;
     self.numberOfLines = 0;
-    self.font = [UIFont systemFontOfSize:14.0];
+    self.font = [UIFont systemFontOfSize:15.0];
     self.textColor = [UIColor blackColor];
     self.backgroundColor = [UIColor clearColor];
     

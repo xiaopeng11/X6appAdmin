@@ -67,7 +67,6 @@
             [view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         }
     }
-//    [self.view.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self intBusinessUI];
 }
 
@@ -78,7 +77,7 @@
     NSArray *arrayimage = @[@{@"title":@"sz_gys",@"image":@"btn_gongyingshan"},
                             @{@"title":@"sz_kh",@"image":@"btn_kehu"},
                             @{@"title":@"cz_cgddsh",@"image":@"btn_dingdan"},
-                            @{@"title":@"cz_pfddsh",@"image":@"btn_shezhi"},
+                            @{@"title":@"cz_pfddsh",@"image":@"btn_pifadingdanshenhe"},
                             @{@"title":@"cz_ywkdk",@"image":@"btn_cunkuan"},
                             @{@"title":@"sz_yjszkhj",@"image":@"btn_shezhi"},
                             ];

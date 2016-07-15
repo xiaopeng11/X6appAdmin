@@ -113,4 +113,14 @@
         return NO;
     }
 }
+
+
+
+#pragma mark - 绘制风格线
++ (UIView *)drawLineWithFrame:(CGRect)frame
+{
+    UIView *lineview = [[UIView alloc] initWithFrame:frame];
+    lineview.backgroundColor = LineColor;
+    return lineview;
+}
 @end

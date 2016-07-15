@@ -28,6 +28,13 @@
 
 @implementation GwsViewController
 
+- (void)dealloc
+{
+    _gwsArray = nil;
+    _selectgws = nil;
+    _arrays = nil;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];

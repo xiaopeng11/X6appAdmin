@@ -54,7 +54,7 @@
         [_OrderbgView addSubview:_lineView];
         
         //供应商
-        _gysImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 51, 20, 16)];
+        _gysImageView = [[UIImageView alloc] initWithFrame:CGRectMake(18, 45, 25, 25)];
         [_OrderbgView addSubview:_gysImageView];
         _gysLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, KScreenWidth - 80 - 20, 20)];
         _gysLabel.font = [UIFont systemFontOfSize:15];
@@ -139,24 +139,20 @@
             _messageLabel.text = [NSString stringWithFormat:@"金额:￥%@",[_dic valueForKey:@"col8"]];
         }
     }
-    
-    
 }
 
 - (void)orderAction
 {
-    NSLog(@"点击了审核按钮");
-//    [_orderButton respondsToSelector:@selector(revokeorderAction)];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"orderAction" object:[_dic valueForKey:@"col0"]];
-    
+    if ([[_dic valueForKey:@"isexam"] boolValue] == 1) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"orderAction" object:[_dic valueForKey:@"col0"]];
+    }
 }
 
 - (void)revokeorderAction
 {
-    NSLog(@"点击了撤销审核按钮");
-    [_orderButton respondsToSelector:@selector(orderAction)];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"revokeAction" object:[_dic valueForKey:@"col0"]];
+    if ([[_dic valueForKey:@"isexam"] boolValue] != 1) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"revokeAction" object:[_dic valueForKey:@"col0"]];
+    }
 }
 
 @end

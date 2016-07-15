@@ -12,10 +12,12 @@
 
 #import "ChatViewController.h"
 #import "Persontableviewed.h"
+
+#define ThirdPcentWidth ((KScreenWidth - 2) / 3)
 @interface HeaderViewController ()
 
 {
-    UIImageView *_bgView;
+    UIView *_bgView;
     Persontableviewed *_personTableView;
     double _page;
     double _pages;
@@ -40,7 +42,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self naviTitleWhiteColorWithText:[NSString stringWithFormat:@"%@的动态",[_dic valueForKey:@"name"]]];
+    [self naviTitleWhiteColorWithText:@"个人中心"];
     
     
     //获取数据
@@ -72,14 +74,16 @@
 #pragma mark - 初始化表示图
 - (void)initSubViews
 {
-    _bgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 240)];
+    _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 169)];
     _bgView.userInteractionEnabled = YES;
-    _bgView.image = [UIImage imageNamed:@"btn_beijing_n"];
+    _bgView.backgroundColor = [UIColor whiteColor];
 
     //头像设置
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth - 100) / 2.0, 10, 100, 100)];
-    headerView.clipsToBounds = YES;
-    headerView.layer.cornerRadius = 50;
+    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 20, 39, 39)];
+    
+    UIImageView *cornView = [[UIImageView alloc] initWithFrame:CGRectMake(7.5, 17.5, 44, 44)];
+    cornView.image = [UIImage imageNamed:@"corner_circle"];
+
     //头像数据
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *dic = [userdefaults objectForKey:X6_UserMessage];
@@ -101,46 +105,52 @@
     
     [headerView sd_setImageWithURL:[NSURL URLWithString:picURLString] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
     [_bgView addSubview:headerView];
-    
+    [_bgView addSubview:cornView];
+
     //个人信息
     NSArray *personDetail;
-    if (_type) {
-        if ([[_dic valueForKey:@"usertype"] integerValue] == 1) {
-            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  营业员",[_dic valueForKey:@"ssgsname"]]];
-        } else {
-            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  系统管理员",[_dic valueForKey:@"ssgsname"]]];
-        }
-    } else {
-        if ([[_dic valueForKey:@"userType"] integerValue] == 1) {
-            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  营业员",[_dic valueForKey:@"ssgsname"]]];
-        } else {
-            personDetail = @[[_dic valueForKey:@"name"],[NSString stringWithFormat:@"%@  系统管理员",[_dic valueForKey:@"ssgsname"]]];
-        }
-    }
+    personDetail = @[[_dic valueForKey:@"name"],[_dic valueForKey:@"phone"],[NSString stringWithFormat:@"%@  %@",[_dic valueForKey:@"ssgsname"],[_dic valueForKey:@"gw"]]];
     
-    
-    for (int i = 0; i < 2; i++) {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, headerView.bottom + 5 + 25 * i, KScreenWidth, 20)];
+    for (int i = 0; i < 3; i++) {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(59, 8 + 25 * i, KScreenWidth - 69, 22)];
         label.text = personDetail[i];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.font = [UIFont systemFontOfSize:16];
-       
+        if (i < 2) {
+            label.font = MainFont;
+            label.textColor = [UIColor blackColor];
+        } else {
+            label.font = ExtitleFont;
+            label.textColor = ExtraTitleColor;
+        }
         [_bgView addSubview:label];
     }
 
+    //绘制分割线
+    UIView *firstLineView = [BasicControls drawLineWithFrame:CGRectMake(0, 84, KScreenWidth, 1)];
+    [_bgView addSubview:firstLineView];
+    
+    for (int i = 1; i < 3; i++) {
+        UIView *secondLineView = [BasicControls drawLineWithFrame:CGRectMake(ThirdPcentWidth * i, 84, 1, 45)];
+        [_bgView addSubview:secondLineView];
+    }
 
     //个人信息功能－打电话，关注，即时消息
-    NSArray *buttonLabel = @[@"电话",@"消息",@"关注"];
-    NSArray *buttonImages = @[@"btn_dianhua_n",@"btn_xinxi_h",@"btn_guanzhu_h"];
+    NSArray *buttonLabel = @[@"拨号",@"消息",@"关注"];
+    NSArray *buttonImages = @[@"g4_a",@"g4_b",@"g4_c"];
     for (int i = 0; i < buttonImages.count; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.tag = 1300 + i;
-        button.frame = CGRectMake(KScreenWidth / 2.0 - 120 + 90 * i, headerView.bottom + 10 + 50, 30, 30);
+        button.frame = CGRectMake(ThirdPcentWidth * i, 85, 45, 45);
         [button setImage:[UIImage imageNamed:buttonImages[i]] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(HeaderbuttonAction:) forControlEvents:UIControlEventTouchUpInside];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(KScreenWidth /2.0 - 125 + 90 * i, button.bottom + 5, 50, 20)];
-        label.font = [UIFont systemFontOfSize:14];
+        
+        UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake((ThirdPcentWidth - 42 - 20) / 2, 4, 42, 42)];
+        buttonImageView.image = [UIImage imageNamed:buttonImages[i]];
+        [button addSubview:buttonImageView];
+        
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(((ThirdPcentWidth - 42 - 20) / 2) + 42 + 13, 4, 20, 42)];
+        label.font = MainFont;
         label.textAlignment = NSTextAlignmentCenter;
         if (i < 2) {
             label.text = buttonLabel[i];
@@ -318,6 +328,13 @@
     }
 }
 
+//#pragma mark - 绘制风格线
+//- (void)drawLineWithFrame:(CGRect)frame SuperView:(UIView *)superView
+//{
+//    UIView *lineview = [[UIView alloc] initWithFrame:frame];
+//    lineview.backgroundColor = LineColor;
+//    [superView addSubview:lineview];
+//}
 
 #pragma mark - 获取数据
 //获取个人动态数据

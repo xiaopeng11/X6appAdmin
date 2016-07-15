@@ -159,6 +159,10 @@
     [self.view addSubview:_todaySalesSearchController.searchBar];
     
     
+    [self noTodaySalesView];
+    [self TodaySalesTabelView];
+    
+    [self getTodaySalesDataWithDate:_dateString];
     
 }
 
@@ -167,23 +171,26 @@
     [super viewWillAppear:animated];
     
     [_todaySalesSearchController.searchBar setHidden:NO];
-    
-    [self noTodaySalesView];
-    [self TodaySalesTabelView];
-    
-    [self getTodaySalesDataWithDate:_dateString];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [_todaySalesSearchController.searchBar setHidden:YES];
+    [_todaySalesSearchController setActive:NO];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
     if (_todaydatepicker.datePicker != nil) {
         [_todaydatepicker.datePicker removeFromSuperview];
         [_todaydatepicker.subView removeFromSuperview];
     }
-    [_todaySalesSearchController.searchBar setHidden:YES];
-    [_todaySalesSearchController setActive:NO];
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -285,8 +292,61 @@
     
     [_TodaySalesTabelView reloadData];
     
+    if (_newtodaySalesDatalist.count != 0) {
+        float totalNum = 0,totalMoney = 0,totalProfit = 0;
+        totalNum = [self leijiaNumDataList:_newtodaySalesDatalist Code:@"col2"];
+        totalMoney = [self leijiaNumDataList:_newtodaySalesDatalist Code:@"col3"];
+        totalProfit = [self leijiaNumDataList:_newtodaySalesDatalist Code:@"col4"];
+        
+        
+        UILabel *numlabel = (UILabel *)[_totalTodaySalesView viewWithTag:4312];
+        UILabel *jinelabel = (UILabel *)[_totalTodaySalesView viewWithTag:4314];
+        UILabel *maolilabel = (UILabel *)[_totalTodaySalesView viewWithTag:4316];
+        numlabel.text = [NSString stringWithFormat:@"%.0f个",totalNum];
+        jinelabel.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
+        
+        NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+        NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+        for (NSDictionary *dic in qxList) {
+            if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrxs"]) {
+                if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
+                    maolilabel.text = [NSString stringWithFormat:@"￥****"];
+                } else {
+                    maolilabel.text = [NSString stringWithFormat:@"￥%.2f",totalProfit];
+                }
+            }
+        }
+
+    }
+    
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    float totalNum = 0,totalMoney = 0,totalProfit = 0;
+    totalNum = [self leijiaNumDataList:_todaySalesDatalist Code:@"col2"];
+    totalMoney = [self leijiaNumDataList:_todaySalesDatalist Code:@"col3"];
+    totalProfit = [self leijiaNumDataList:_todaySalesDatalist Code:@"col4"];
+    
+    
+    UILabel *numlabel = (UILabel *)[_totalTodaySalesView viewWithTag:4312];
+    UILabel *jinelabel = (UILabel *)[_totalTodaySalesView viewWithTag:4314];
+    UILabel *maolilabel = (UILabel *)[_totalTodaySalesView viewWithTag:4316];
+    numlabel.text = [NSString stringWithFormat:@"%.0f个",totalNum];
+    jinelabel.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
+    
+    NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
+    NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
+    for (NSDictionary *dic in qxList) {
+        if ([[dic valueForKey:@"qxid"] isEqualToString:@"bb_jrxs"]) {
+            if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
+                maolilabel.text = [NSString stringWithFormat:@"￥****"];
+            } else {
+                maolilabel.text = [NSString stringWithFormat:@"￥%.2f",totalProfit];
+            }
+        }
+    }
+}
 
 #pragma mark - 标题视图
 - (UIView *)creatTableviewWithMutableArray:(NSMutableArray *)mutableArray Section:(long)section
@@ -432,18 +492,17 @@
             [self totalTodaySalesView];
             
             
-            long long totalNum = 0,totalMoney = 0,totalProfit = 0;
-            for (NSDictionary *dic in _todaySalesDatalist) {
-                totalNum += [[dic valueForKey:@"col2"] longLongValue];
-                totalMoney += [[dic valueForKey:@"col3"] longLongValue];
-                totalProfit += [[dic valueForKey:@"col4"] longLongValue];
-            }
+            float totalNum = 0,totalMoney = 0,totalProfit = 0;
+            totalNum = [self leijiaNumDataList:_todaySalesDatalist Code:@"col2"];
+            totalMoney = [self leijiaNumDataList:_todaySalesDatalist Code:@"col3"];
+            totalProfit = [self leijiaNumDataList:_todaySalesDatalist Code:@"col4"];
+            
             
             UILabel *numlabel = (UILabel *)[_totalTodaySalesView viewWithTag:4312];
             UILabel *jinelabel = (UILabel *)[_totalTodaySalesView viewWithTag:4314];
             UILabel *maolilabel = (UILabel *)[_totalTodaySalesView viewWithTag:4316];
-            numlabel.text = [NSString stringWithFormat:@"%lld个",totalNum];
-            jinelabel.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+            numlabel.text = [NSString stringWithFormat:@"%.0f个",totalNum];
+            jinelabel.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
         
             NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
             NSArray *qxList = [userdefault objectForKey:X6_UserQXList];
@@ -452,7 +511,7 @@
                     if ([[dic valueForKey:@"pcb"] integerValue] == 1) {
                         maolilabel.text = [NSString stringWithFormat:@"￥****"];
                     } else {
-                        maolilabel.text = [NSString stringWithFormat:@"￥%lld",totalProfit];
+                        maolilabel.text = [NSString stringWithFormat:@"￥%.2f",totalProfit];
                     }
                 }
             }

@@ -41,7 +41,7 @@ extern"C"{
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     
-    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatdevelop" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
+    [[EaseSDKHelper shareHelper] easemobApplication:application didFinishLaunchingWithOptions:launchOptions appkey:@"xp1100#x6" apnsCertName:@"x6chatproduct" otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
     
     //注册apns
     [self registerRemoteNotification];
@@ -83,7 +83,7 @@ extern"C"{
     
     [_window makeKeyAndVisible];
     
-    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
+    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
     [_Usertimer setFireDate:[NSDate distantPast]];
     
     return YES;
@@ -252,17 +252,14 @@ extern"C"{
     [baseTar writeWithName:@"收到离线消息"];
 }
 
-
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler
 {
-    
     [JPUSHService handleRemoteNotification:userInfo];
     NSDictionary *alert = [userInfo objectForKey:@"aps"];
     NSString *string = [alert objectForKey:@"alert"];
     BaseTabBarViewController *baseTar = (BaseTabBarViewController *)self.window.rootViewController;
 
     [UIApplication sharedApplication].applicationIconBadgeNumber += 1;
- 
     
     if (application.applicationState == UIApplicationStateActive) {
         if (![string isEqualToString:@"您有一条新消息"]) {
@@ -276,7 +273,6 @@ extern"C"{
         
     } else if (application.applicationState == UIApplicationStateInactive) {
         completionHandler(UIBackgroundFetchResultNewData);
-        NSLog(@"程序活跃状态");
         if ([string isEqualToString:@"您有一条新消息"]) {
             baseTar.selectedIndex = 1;
         } else {
@@ -289,15 +285,8 @@ extern"C"{
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    //    if (_mainController) {
-    //        [_mainController didReceiveLocalNotification:notification];
-    //    }
-    NSLog(@"收到本地通知");
     [JPUSHService showLocalNotificationAtFront:notification identifierKey:nil];
-
 }
-
-
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
 {
@@ -311,7 +300,6 @@ extern"C"{
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {

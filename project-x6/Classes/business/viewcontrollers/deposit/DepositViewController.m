@@ -117,9 +117,9 @@
     }
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     if (_datepicker.datePicker != nil) {
         [_datepicker.datePicker removeFromSuperview];
         [_datepicker.subView removeFromSuperview];

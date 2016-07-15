@@ -18,10 +18,10 @@
         
         _itemWidth = 0;
         _itemFont = [UIFont boldSystemFontOfSize:16];
-        _textColor = [UIColor colorWithRed:142/255.0 green:142/255.0 blue:142/255.0 alpha:1];
+        _textColor = [UIColor blackColor];
         _selectedColor = Mycolor;
-        _linePercent = 0.8;
-        _lineHieght = 2.5;
+        _linePercent = 0.7;
+        _lineHieght = 3;
     }
     return self;
 }

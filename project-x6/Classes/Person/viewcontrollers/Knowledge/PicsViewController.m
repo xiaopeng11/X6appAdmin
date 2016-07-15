@@ -70,10 +70,8 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    if ([_searchVC.searchBar isFirstResponder]) {
-        [_searchVC.searchBar resignFirstResponder];
-    }
     [_searchVC.searchBar setHidden:YES];
+    [_searchVC setActive:NO];
 }
 
 #pragma mark - UI

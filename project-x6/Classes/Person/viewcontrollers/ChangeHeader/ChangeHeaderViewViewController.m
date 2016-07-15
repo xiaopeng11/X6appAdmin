@@ -101,14 +101,12 @@
     NSString *Path = [ImageFile stringByAppendingPathComponent:@"image.png"];
     [self unloadFileWithUuid:_uuid Filepath:Path FileName:@"image.png" group:nil];
     
-
 }
 
 
 #pragma mark - 重写返回按钮
 - (void)backAction:(UIButton *)button
 {
-    
     //关闭当前视图
     [self dismissViewControllerAnimated:YES completion:nil];
 }

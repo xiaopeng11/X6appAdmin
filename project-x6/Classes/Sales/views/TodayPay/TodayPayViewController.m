@@ -127,12 +127,17 @@
     [super viewWillDisappear:animated];
     [self.todayPaySearchController.searchBar setHidden:YES];
     [_todayPaySearchController setActive:NO];
-    
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
     if (_datePicker.datePicker != nil) {
         [_datePicker.datePicker removeFromSuperview];
         [_datePicker.subView removeFromSuperview];
     }
 }
+
 
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
@@ -153,9 +158,21 @@
     
     [_todayPayTableView reloadData];
     
+    if (_newtodayPayDatalist.count != 0) {
+        double totalMoney = 0;
+        totalMoney = [self leijiaNumDataList:_newtodayPayDatalist Code:@"col3"];
+        UILabel *label = (UILabel *)[_totalTodayPayView viewWithTag:4511];
+        label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
+    }
 }
 
-
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    double totalMoney = 0;
+    totalMoney = [self leijiaNumDataList:_todayPayDatalist Code:@"col3"];
+    UILabel *label = (UILabel *)[_totalTodayPayView viewWithTag:4511];
+    label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
+}
 
 
 #pragma mark - UITableViewDelegate
@@ -278,12 +295,10 @@
             _todayPayTableView.hidden = NO;
             [self totalTodayPayView];
             _totalTodayPayView.hidden = NO;
-            long long totalMoney = 0;
-            for (NSDictionary *dic in _todayPayDatalist) {
-                totalMoney += [[dic valueForKey:@"col3"] longLongValue];
-            }
+            double totalMoney = 0;
+            totalMoney = [self leijiaNumDataList:_todayPayDatalist Code:@"col3"];
             UILabel *label = (UILabel *)[_totalTodayPayView viewWithTag:4511];
-            label.text = [NSString stringWithFormat:@"￥%lld",totalMoney];
+            label.text = [NSString stringWithFormat:@"￥%.2f",totalMoney];
 
             NSArray *sorttodaypayArray = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"col3" ascending:NO]];
             [_todayPayDatalist sortUsingDescriptors:sorttodaypayArray];

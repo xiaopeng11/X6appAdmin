@@ -45,9 +45,19 @@
 #import "MJRefresh.h"
 
 //颜色
-#define Mycolor [UIColor colorWithRed:92/255.0f green:186/255.0f blue:230/255.0f alpha:1]
-#define GrayColor [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1]
-#define LineColor [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:.6]
+#define Mycolor [UIColor colorWithRed:18/255.0f green:183/255.0f blue:245/255.0f alpha:1]          //主色调
+#define GrayColor [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1]       //灰色背景
+#define LineColor [UIColor colorWithRed:220/255.0f green:220/255.0f blue:220/255.0f alpha:1]       //灰色边线
+#define ExtraTitleColor [UIColor colorWithRed:153/255.0f green:153/255.0f blue:153/255.0f alpha:1] //副标题
+#define PriceColor [UIColor colorWithRed:244/255.0f green:91/255.0f blue:91/255.0f alpha:1]        //价格红色
+
+
+#define NotouchButtonColor [UIColor colorWithRed:136/255.0f green:219/255.0f blue:250/255.0f alpha:1]//没有点击的按钮颜色
+
+//字号
+#define TitleFont [UIFont systemFontOfSize:17]    //标题
+#define ExtitleFont [UIFont systemFontOfSize:13]  //副标题
+#define MainFont [UIFont systemFontOfSize:15]  //注释
 
 //AFNetworking.h
 #import "AFNetworking.h"
@@ -106,8 +116,6 @@
 #define isIOS5          (([iosVersion floatValue] >= 5.0f && [iosVersion floatValue] < 6.0f) ? YES : NO)
 #define _iOS7_Or_Later_   ([iosVersion floatValue] >= 7.0f)
 
-
-
 /************************定义各类尺寸的宏**************************/
 /************************定义各类尺寸的宏**************************/
 
@@ -118,9 +126,7 @@
 #define TabBarHeight     49.0
 
 
-
-
-
+#define PuretureSize ((KScreenWidth - 30) / 3)
 /************************定义各种颜色的宏**************************/
 /************************定义各种颜色的宏**************************/
 

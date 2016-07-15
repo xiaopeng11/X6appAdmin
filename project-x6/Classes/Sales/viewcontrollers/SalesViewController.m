@@ -96,7 +96,7 @@
                             @{@"title":@"bb_pfxl",@"image":@"btn_pifaxiaoliang_h"},
                             @{@"title":@"bb_pfhz",@"image":@"btn_pifahuizong_h"},
                             @{@"title":@"bb_pfysmx",@"image":@"btn_yingshoumingxi_h"},
-                            @{@"title":@"bb_jrsk",@"image":@"btn_jinricunkuan_h"}
+                            @{@"title":@"bb_jrsk",@"image":@"btn_shoukuan"}
                             ];
     
     NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
@@ -325,8 +325,7 @@
         
     } failure:^(NSError *error) {
         NSLog(@"获取条数失败");
-    }];
-    
+    }];    
 }
 
 

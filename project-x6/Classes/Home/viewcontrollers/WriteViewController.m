@@ -158,7 +158,7 @@
     _downSwip = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(downSwip:)];
     _downSwip.direction = UISwipeGestureRecognizerDirectionDown;
     
-//    工具栏式图
+    //工具栏式图
     _toolView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 64 - 50, KScreenWidth, 50)];
     _toolView.backgroundColor = GrayColor;
     [self.view addSubview:_toolView];

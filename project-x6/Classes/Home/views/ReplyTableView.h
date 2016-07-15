@@ -12,4 +12,5 @@
 
 @property(nonatomic,assign)long fabuName;
 @property(nonatomic,strong)NSArray *datalist;
+@property(nonatomic,copy)NSString *replyCount;
 @end

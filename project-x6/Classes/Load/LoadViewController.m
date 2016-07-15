@@ -8,7 +8,7 @@
 
 #import "LoadViewController.h"
 #import "BaseTabBarViewController.h"
-#import "AppDelegate.h"
+#import "BaseNavigationController.h"
 
 #import "JPUSHService.h"
 
@@ -23,7 +23,6 @@
 
 - (void)dealloc
 {
-    NSLog(@"登录页面释放");
     self.view = nil;
 
 }
@@ -31,9 +30,16 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = GrayColor;
-    //添加键盘弹出事件
+    [self drawViews];
+
     
 }
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleDefault;
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -48,43 +54,34 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self drawViews];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+
 }
 
 #pragma mark - view
 - (void)drawViews
 {
-    UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 64)];
-    titleView.backgroundColor = Mycolor;
-    [self.view addSubview:titleView];
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, KScreenWidth, 44)];
-    titleLabel.text = @"欢迎使用X6平台";
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.textColor = [UIColor whiteColor];
-    [titleView addSubview:titleLabel];
-    
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth - 100) / 2.0, 20 + 64, 100, 100)];
-    headerView.clipsToBounds = YES;
-    headerView.layer.cornerRadius = 50;
-    NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *userInformation = [userdefaults objectForKey:X6_UserMessage];
-    //公司代码
-    NSString *gsdm = [userInformation objectForKey:@"gsdm"];
-    //员工头像地址
-    NSString *ygImageUrl = [userdefaults objectForKey:X6_UserHeaderView];
-    NSString *info_imageURL = [userInformation objectForKey:@"userpic"];
-    if ([userdefaults objectForKey:X6_UserHeaderView] != nil) {
-        [headerView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,ygImageUrl]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
-    } else {
-        [headerView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@/%@",X6_czyURL,gsdm,info_imageURL]] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
-    }
-    
+    //默认头像
+    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake((KScreenWidth - 72) / 2.0,75, 72, 73)];
+    headerView.image = [UIImage imageNamed:@"p1_a"];
     [self.view addSubview:headerView];
+    
+    //欢迎使用提示语
+    UILabel *welcomelabel = [[UILabel alloc] initWithFrame:CGRectMake((KScreenWidth - 260) / 2.0, 173, 260, 36)];
+    welcomelabel.text = @"欢迎使用X6平台";
+    welcomelabel.font = TitleFont;
+    welcomelabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:welcomelabel];
     
     //输入框
     NSArray *placeholders = @[@" 请输入公司代码",@" 请输入用户名",@" 请输入密码"];
+    NSArray *textfieldImageNames = @[@"p1_b",@"p1_c",@"p1_d"];
     for (int i = 0; i < placeholders.count; i++) {
-        UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(15, 184 + 20 + 61 * i, KScreenWidth - 30, 60)];
+        UIImageView *textfieldImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, welcomelabel.bottom + 45 + 14 + 48 * i, 19, 19)];
+        textfieldImageView.image = [UIImage imageNamed:textfieldImageNames[i]];
+        [self.view addSubview:textfieldImageView];
+        
+        UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(textfieldImageView.right + 10, welcomelabel.bottom + 45 + 48 * i, KScreenWidth - 70, 47)];
         textField.borderStyle = UITextBorderStyleNone;
         textField.delegate = self;
         NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
@@ -110,52 +107,46 @@
         }
         [self.view addSubview:textField];
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 184 + 20 + 60 * i + 60, KScreenWidth - 30, 1)];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(35, textField.bottom, KScreenWidth - 70, 1)];
         lineView.backgroundColor = LineColor;
         [self.view addSubview:lineView];
-        
     }
     
-    UIButton *userRegisterButton = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 70, 25, 60, 34)];
-    userRegisterButton.backgroundColor = [UIColor clearColor];
-    [userRegisterButton setTitle:@"立即注册" forState:UIControlStateNormal];
-    userRegisterButton.titleLabel.font = [UIFont systemFontOfSize:13];
-    [userRegisterButton addTarget:self action:@selector(RegisterAction) forControlEvents:UIControlEventTouchUpInside];
-    [titleView addSubview:userRegisterButton];
     
-    
-    UIButton *forgetPas = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 115, 394 + 44, 100, 34)];
-    forgetPas.backgroundColor = [UIColor clearColor];
-    UILabel *forgetPasLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 34)];
-    forgetPasLabel.text = @"忘记密码?";
-    forgetPasLabel.textColor = Mycolor;
-    forgetPasLabel.textAlignment = NSTextAlignmentRight;
-    forgetPasLabel.font = [UIFont systemFontOfSize:13];
-    [forgetPas addSubview:forgetPasLabel];
-    [forgetPas addTarget:self action:@selector(forgetPassword) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:forgetPas];
-    
-    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 394 , KScreenWidth - 30, 44)];
+    UIButton *loadButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 398 + 35, KScreenWidth - 70, 45)];
     loadButton.backgroundColor = Mycolor;
     loadButton.clipsToBounds = YES;
-    loadButton.layer.cornerRadius = 15;
+    loadButton.layer.cornerRadius = 4;
     [loadButton setTitle:@"登陆" forState:UIControlStateNormal];
+    loadButton.titleLabel.font = TitleFont;
     [loadButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [loadButton setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
     [loadButton addTarget:self action:@selector(loadtabAction) forControlEvents:UIControlEventTouchUpInside];
     loadButton.layer.cornerRadius = 5;
     [self.view addSubview:loadButton];
+  
+    UIButton *userRegisterButton = [[UIButton alloc] initWithFrame:CGRectMake(35, loadButton.bottom + 10, 70, 30)];
+    userRegisterButton.backgroundColor = [UIColor clearColor];
+    [userRegisterButton setTitle:@"立即注册" forState:UIControlStateNormal];
+    [userRegisterButton setTitleColor:Mycolor forState:UIControlStateNormal];
+    userRegisterButton.titleLabel.font = ExtitleFont;
+    [userRegisterButton addTarget:self action:@selector(RegisterAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:userRegisterButton];
     
- 
-    UIButton *userHelp = [[UIButton alloc] initWithFrame:CGRectMake((KScreenWidth - 100) / 2.0, KScreenHeight - 50, 100, 40)];
+    UIButton *forgetPas = [[UIButton alloc] initWithFrame:CGRectMake(KScreenWidth - 105, userRegisterButton.top, 70, 30)];
+    forgetPas.backgroundColor = [UIColor clearColor];
+    [forgetPas setTitle:@"忘记密码?" forState:UIControlStateNormal];
+    [forgetPas setTitleColor:Mycolor forState:UIControlStateNormal];
+    forgetPas.titleLabel.font = ExtitleFont;
+    [forgetPas addTarget:self action:@selector(forgetPassword) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:forgetPas];
+
+    UIButton *userHelp = [[UIButton alloc] initWithFrame:CGRectMake((KScreenWidth - 70) / 2.0, KScreenHeight - 60, 70, 30)];
     userHelp.backgroundColor = [UIColor clearColor];
-    UILabel *userHelpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 34)];
-    userHelpLabel.text = @"使用帮助";
-    userHelpLabel.textColor = Mycolor;
-    userHelpLabel.textAlignment = NSTextAlignmentCenter;
-    userHelpLabel.font = [UIFont systemFontOfSize:13];
-    [userHelp addSubview:userHelpLabel];
-    [userHelp addTarget:self action:@selector(userHelp) forControlEvents:UIControlEventTouchUpInside];
+    [userHelp setTitle:@"使用帮助" forState:UIControlStateNormal];
+    [userHelp setTitleColor:Mycolor forState:UIControlStateNormal];
+    userHelp.titleLabel.font = ExtitleFont;
+    [userHelp addTarget:self action:@selector(userhelp) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:userHelp];
 
 }
@@ -292,6 +283,7 @@
               }
          }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            
         }];
     }
 }
@@ -300,23 +292,21 @@
 - (void)RegisterAction
 {
     UserRegisterViewController *userRegisterVC = [[UserRegisterViewController alloc] init];
-    userRegisterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     [self presentViewController:userRegisterVC animated:YES completion:nil];
 }
 
 #pragma mark - 忘记密码
 - (void)forgetPassword
 {
-    NSLog(@"忘记密码");
     ForgetpasswordViewController *forgetPSVC = [[ForgetpasswordViewController alloc] init];
-    forgetPSVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     [self presentViewController:forgetPSVC animated:YES completion:nil]; 
 }
 
-#pragma amrk - 使用帮助
-- (void)userHelp
+#pragma mark - 使用帮助
+- (void)userhelp
 {
     NSLog(@"使用帮助");
 }
+
 
 @end

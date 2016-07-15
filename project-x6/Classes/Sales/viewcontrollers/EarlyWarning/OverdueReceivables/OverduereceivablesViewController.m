@@ -178,7 +178,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 120;
+    return 145;
 }
 
 #pragma makr - UITableViewDataSource
@@ -261,8 +261,8 @@
     _NewOverduereceivablesDatalist = [[set allObjects] mutableCopy];
     [_OverduereceivablesTableView reloadData];
     
-    float totalMoney = 0;
     if (_NewOverduereceivablesDatalist.count != 0) {
+        float totalMoney = 0;
         for (NSDictionary *dic in _NewOverduereceivablesDatalist) {
             totalMoney += [[dic valueForKey:@"col5"] floatValue];
         }

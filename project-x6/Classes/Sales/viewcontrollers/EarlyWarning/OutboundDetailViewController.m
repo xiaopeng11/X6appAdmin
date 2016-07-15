@@ -205,8 +205,6 @@
         [self hideProgress];
         NSLog(@"出库异常明细获取失败");
     }];
-    
-    
 }
 
 /**
