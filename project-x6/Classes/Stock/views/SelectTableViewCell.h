@@ -10,7 +10,6 @@
 #import "GwsModel.h"
 @interface SelectTableViewCell : UITableViewCell
 {
-    UIImageView *imageView;
     UILabel *label;
 }
 

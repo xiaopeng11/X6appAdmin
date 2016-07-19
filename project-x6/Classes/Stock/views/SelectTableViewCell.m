@@ -24,12 +24,9 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        //
-        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 30, 30)];
-        [self.contentView addSubview:imageView];
         
-        label = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, KScreenWidth - 80 - 60, 40)];
-        label.font = [UIFont systemFontOfSize:20];
+        label = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, KScreenWidth - 80 - 60, 25)];
+        label.font = MainFont;
         [self.contentView addSubview:label];
         
         
@@ -44,20 +41,14 @@
 {
     [super layoutSubviews];
     
-    if (_iscompany) {
-        imageView.image = [UIImage imageNamed:@"btn_kuangjia_h"];
-    } else {
-        imageView.image = [UIImage imageNamed:@"btn_gangwei_h"];
-    }
-    
     label.text = self.model.name;
     
     if (_type == YES) {
-        _button.frame = CGRectMake(KScreenWidth - 60, 10, 40, 40);
+        _button.frame = CGRectMake(0, 0, 50, 45);
         if (self.model.check == NO) {
-            [_button setImage:[UIImage imageNamed:@"icon_image_no"] forState:UIControlStateNormal];
+            [_button setImage:[UIImage imageNamed:@"quan_a"] forState:UIControlStateNormal];
         } else {
-            [_button setImage:[UIImage imageNamed:@"icon_image_yes"] forState:UIControlStateNormal];
+            [_button setImage:[UIImage imageNamed:@"quan_b"] forState:UIControlStateNormal];
         }
     }
    

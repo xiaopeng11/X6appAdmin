@@ -74,6 +74,7 @@
 
 //图片缓存
 #import "UIImageView+WebCache.h"
+#import "UIButton+WebCache.h"
 
 
 #import "NSMutableArray+InsertFrameKey.h"

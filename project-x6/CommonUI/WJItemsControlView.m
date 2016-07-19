@@ -17,7 +17,7 @@
     if(self){
         
         _itemWidth = 0;
-        _itemFont = [UIFont boldSystemFontOfSize:16];
+        _itemFont = MainFont;
         _textColor = [UIColor blackColor];
         _selectedColor = Mycolor;
         _linePercent = 0.7;

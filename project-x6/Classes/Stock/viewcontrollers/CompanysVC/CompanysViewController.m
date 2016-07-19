@@ -29,6 +29,7 @@
 
 @implementation CompanysViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -48,7 +49,7 @@
     
     if (_type == YES) {
         //确定联系人按钮
-        self.selectPersons = YES;
+//        self.selectPersons = YES;
     }
 
 }
@@ -159,12 +160,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60;
+    return 45;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 30;
 }
 
 #pragma mark - UITableViewDataSource
@@ -182,7 +183,7 @@
         [cell.button addTarget:self action:@selector(cellButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         cell.button.tag = indexPath.section * 1000 + indexPath.row;
     }
-   
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.model = [_arrays[indexPath.section] objectAtIndex:indexPath.row];
     return cell;
 }
@@ -210,11 +211,11 @@
     GwsModel *cellmodel = [_arrays[section] objectAtIndex:row];
     if (![cellmodel check]) {
         cellmodel.check = YES;
-        [button setImage:[UIImage imageNamed:@"icon_image_yes"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"quan_a"] forState:UIControlStateNormal];
         [_selectcompanys addObject:[_nameArray[section] objectAtIndex:row]];
     } else {
         cellmodel.check = NO;
-        [button setImage:[UIImage imageNamed:@"icon_image_no"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"quan_b"] forState:UIControlStateNormal];
         [_selectcompanys removeObject:[_nameArray[section] objectAtIndex:row]];
     }
 }
@@ -222,6 +223,9 @@
 #pragma mark - 重写确定联系人按钮事件
 - (void)sureAction:(UIButton *)button
 {
+    
+    [button removeFromSuperview];
+
     NSLog(@"确定返回公司信息%@",[_selectcompanys description]);
     NSMutableArray *personList = [NSMutableArray array];
     NSMutableArray *compans = [NSMutableArray array];
@@ -246,6 +250,7 @@
             for (NSDictionary *dic in _datalist) {
                 if ([[dic valueForKey:@"ssgs"] isEqualToString:bm]) {
                     NSMutableDictionary *diced = [NSMutableDictionary dictionary];
+                    [diced setObject:[dic valueForKey:@"name"] forKey:@"name"];
                     [diced setObject:[dic valueForKey:@"id"] forKey:@"id"];
                     [diced setObject:[dic valueForKey:@"usertype"] forKey:@"usertype"];
                     [personList addObject:diced];

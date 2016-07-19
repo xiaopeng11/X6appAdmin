@@ -26,21 +26,21 @@
         //添加确定按钮
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setTitle:@"确定" forState:UIControlStateNormal];
-        button.frame = CGRectMake(0, 27, 60, 30);
+        button.frame = CGRectMake(10, KScreenHeight - 45, KScreenWidth - 20, 45);
         [button setBackgroundColor:Mycolor];
         button.clipsToBounds = YES;
-        button.layer.cornerRadius = 5;
+        button.layer.cornerRadius = 4;
         [button addTarget:self action:@selector(sureAction:) forControlEvents:UIControlEventTouchUpInside];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+        [self.view addSubview:button];
     }
 }
 
 #pragma mark - 返回联系人信息
 - (void)sureAction:(UIButton *)button
 {
+    [button removeFromSuperview];
     NSLog(@"确定返回联系人信息");
 }
-
 
 /**
  *  提示

@@ -80,6 +80,21 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     
     
     _newdatalistInname = [NSMutableArray array];
+    
+    if (_type == YES) {
+        [self addsurebutton];
+    } else {
+        //添加会话按钮
+        _contactList = [UIButton buttonWithType:UIButtonTypeCustom];
+        _contactList.frame = CGRectMake(0, 31, 22, 22);
+        [_contactList setBackgroundImage:[UIImage imageNamed:@"l1_d"] forState:UIControlStateNormal];
+        [_contactList setBackgroundImage:[UIImage imageNamed:@"l1_d1"] forState:UIControlStateHighlighted];
+        [_contactList addTarget:self action:@selector(contactList:) forControlEvents:UIControlEventTouchUpInside];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_contactList];
+        
+        [self registerNotifications];
+        [self setupUnreadMessageCount];
+    }
 
     // 初始化子视图
     [self initSubViews];
@@ -87,22 +102,18 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     //获取数据
     [self getPersonsData];
     
-    if (_type == YES) {
-        self.selectPersons = YES;
-    } else {
-        //添加会话按钮
-        _contactList = [UIButton buttonWithType:UIButtonTypeCustom];
-        _contactList.frame = CGRectMake(0, 27, 27, 21);
-        [_contactList setBackgroundImage:[UIImage imageNamed:@"btn_xixiaotixing_n"] forState:UIControlStateNormal];
-        [_contactList addTarget:self action:@selector(contactList:) forControlEvents:UIControlEventTouchUpInside];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_contactList];
-        
-    }
-    
-    [self registerNotifications];
-    [self setupUnreadMessageCount];
-    
-    
+
+}
+
+- (void)addsurebutton
+{
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10, KScreenHeight - 45, KScreenWidth - 20, 45)];
+    [button setTitle:@"确定" forState:UIControlStateNormal];
+    [button setBackgroundColor:Mycolor];
+    button.clipsToBounds = YES;
+    button.layer.cornerRadius = 4;
+    [button addTarget:self action:@selector(sureAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view bringSubviewToFront:button];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -118,12 +129,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     //显示搜索框
     _stocksearchBar.hidden = NO;
     
-//    NSLog(@"联系人%@",self.view.subviews);
-    
 }
-
-
-
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -138,8 +144,6 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
             NSLog(@"点击了叫啊叫啊叫");
         }
     }
-    //隐藏搜索框
-    NSLog(@"联系人页面移除");
     
 }
 #pragma mark - 初始化子视图
@@ -158,37 +162,37 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     NSArray *buttonImages = nil;
     if (_type == YES) {
         feileiTitle = @[@"按岗位",@"按公司框架"];
-        buttonImages = @[@"btn_gangwei_h",@"btn_kuangjia_h"];
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44) style:UITableViewStylePlain];
+        buttonImages = @[@"l1_a",@"l1_b"];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 44 - 45) style:UITableViewStylePlain];
         _tableView.allowsMultipleSelectionDuringEditing = YES;
         [_tableView setEditing:YES];
     } else {
         feileiTitle = @[@"按岗位",@"按公司框架",@"群组"];
-        buttonImages = @[@"btn_gangwei_h",@"btn_kuangjia_h",@"btn_qun_h"];
+        buttonImages = @[@"l1_a",@"l1_b",@"l1_c"];
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, KScreenWidth, KScreenHeight - 64 - 49 - 44) style:UITableViewStylePlain];
         [_tableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(getPersonsData)];
         
     }
     //添加分类
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 50 * feileiTitle.count)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, (45 * (feileiTitle.count - 1)) + 44)];
     for (int i = 0; i < feileiTitle.count; i++) {
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 50 * i, KScreenWidth, 50)];
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 45 * i, KScreenWidth, 44)];
         [button addTarget:self action:@selector(PersonbuttonAction:) forControlEvents:UIControlEventTouchUpInside];
         button.tag = 1400 + i;
         [view addSubview:button];
         
-        UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 30)];
+        UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(10, 7, 30, 30)];
         imageview.image = [UIImage imageNamed:buttonImages[i]];
         [button addSubview:imageview];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 10, 100, 30)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 7, 100, 30)];
         label.text = feileiTitle[i];
+        label.font = MainFont;
         [button addSubview:label];
         
         if (i < feileiTitle.count - 1) {
-            UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 49, KScreenWidth - 20, 1)];
-            lineView.backgroundColor = LineColor;
-            [button addSubview:lineView];
+            UIView *lineViews = [BasicControls drawLineWithFrame:CGRectMake(0, 44, KScreenWidth, 1)];
+            [button addSubview:lineViews];
         }
         
     }
@@ -197,7 +201,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    
+    _tableView.sectionHeaderHeight = 30;
     [self.view addSubview:_tableView];
     
     _tableView.tableHeaderView = view;
@@ -340,11 +344,16 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
     }
 }
 
-//组名
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (![_stocksearchBar isFirstResponder]) {
-        return _sections[section];
+        UIView *stockView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 30)];
+        stockView.backgroundColor = GrayColor;
+        UILabel *stockLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 20, 20)];
+        stockLabel.font = MainFont;
+        stockLabel.text = _sections[section];
+        [stockView addSubview:stockLabel];
+        return stockView;
     } else {
         return nil;
     }
@@ -517,7 +526,8 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 {
     //确定联系人列表
     //判断岗位列表和公司框架列表
-    
+    [button removeFromSuperview];
+
     _selectpersonArray = [NSArray array];
     _selectpersonArray = [_tableView indexPathsForSelectedRows];
     //处理数据
@@ -526,7 +536,7 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
         if ([_stocksearchBar isFirstResponder]) {
             [self getPersondatalistWithArray:_newdatalist Section:YES];
         } else {
-            [self getPersondatalistWithArray:_sectionDatalist Section:NO];
+            [self getPersondatalistWithArray:_newdatalistInname Section:NO];
         }
     } else {
         if ([_stocksearchBar isFirstResponder]) {
@@ -555,20 +565,17 @@ static const CGFloat kDefaultPlaySoundInterval = 3.0;
 - (void)getPersondatalistWithArray:(NSArray *)array Section:(BOOL)section
 {
     for (NSIndexPath *indec in _selectpersonArray) {
-        NSString *name;
+        NSDictionary *personDic;
         if (section == YES) {
-            name = array[indec.row];
+            personDic = array[indec.row];
         } else {
-            name = [array[indec.section] objectAtIndex:indec.row];
+            personDic = [array[indec.section] objectAtIndex:indec.row];
         }
-        for (NSDictionary *dic in _datalist) {
-            if ([[dic valueForKey:@"name"] isEqualToString:name]) {
-                NSMutableDictionary *diced = [NSMutableDictionary dictionary];
-                [diced setObject:[dic valueForKey:@"id"] forKey:@"id"];
-                [diced setObject:[dic valueForKey:@"usertype"] forKey:@"usertype"];
-                [_personsList addObject:diced];
-            }
-        }
+        NSMutableDictionary *diced = [NSMutableDictionary dictionary];
+        [diced setObject:[personDic valueForKey:@"name"] forKey:@"name"];
+        [diced setObject:[personDic valueForKey:@"id"] forKey:@"id"];
+        [diced setObject:[personDic valueForKey:@"usertype"] forKey:@"usertype"];
+        [_personsList addObject:diced];
     }
 }
 

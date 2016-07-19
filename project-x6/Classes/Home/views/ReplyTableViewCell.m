@@ -7,7 +7,6 @@
 //
 
 #import "ReplyTableViewCell.h"
-#import "UIButton+WebCache.h"
 
 @implementation ReplyTableViewCell
 

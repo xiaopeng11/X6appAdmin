@@ -11,14 +11,14 @@
 #import "PersonsModel.h"
 
 #import "ChatViewController.h"
-#import "Persontableviewed.h"
+#import "HomeTableView.h"
 
 #define ThirdPcentWidth ((KScreenWidth - 2) / 3)
 @interface HeaderViewController ()
 
 {
     UIView *_bgView;
-    Persontableviewed *_personTableView;
+    HomeTableView *_personTableView;
     double _page;
     double _pages;
 }
@@ -74,45 +74,64 @@
 #pragma mark - 初始化表示图
 - (void)initSubViews
 {
-    _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 169)];
+    _bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, 130)];
     _bgView.userInteractionEnabled = YES;
     _bgView.backgroundColor = [UIColor whiteColor];
-
-    //头像设置
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 20, 39, 39)];
     
+    //头像
+    UIButton *headerView = [[UIButton alloc] initWithFrame:CGRectMake(10, 20, 39, 39)];
     UIImageView *cornView = [[UIImageView alloc] initWithFrame:CGRectMake(7.5, 17.5, 44, 44)];
     cornView.image = [UIImage imageNamed:@"corner_circle"];
-
-    //头像数据
+    
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *dic = [userdefaults objectForKey:X6_UserMessage];
     NSString *companyString = [dic objectForKey:@"gsdm"];
-    NSString *picURLString;
-    if (_type) {
-        if ([[_dic valueForKey:@"usertype"] intValue] == 0) {
-            picURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[_dic valueForKey:@"userpic"]];
-        } else {
-            picURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[_dic valueForKey:@"userpic"]];
-        }
+    
+    //头像
+    //通过usertype判断员工还是营业员
+    NSString *headerURLString = nil;
+    NSString *headerpic = [self.dic valueForKey:@"userpic"];
+    if (headerpic.length == 0) {
+        NSArray *array = @[[UIColor colorWithRed:161/255.0f green:136/255.0f blue:127/255.0f alpha:1],
+                           [UIColor colorWithRed:246/255.0f green:94/255.0f blue:141/255.0f alpha:1],
+                           [UIColor colorWithRed:238/255.0f green:69/255.0f blue:66/255.0f alpha:1],
+                           [UIColor colorWithRed:245/255.0f green:197/255.0f blue:47/255.0f alpha:1],
+                           [UIColor colorWithRed:255/255.0f green:148/255.0f blue:61/255.0f alpha:1],
+                           [UIColor colorWithRed:107/255.0f green:181/255.0f blue:206/255.0f alpha:1],
+                           [UIColor colorWithRed:94/255.0f green:151/255.0f blue:246/255.0f alpha:1],
+                           [UIColor colorWithRed:154/255.0f green:137/255.0f blue:185/255.0f alpha:1],
+                           [UIColor colorWithRed:106/255.0f green:198/255.0f blue:111/255.0f alpha:1],
+                           [UIColor colorWithRed:120/255.0f green:192/255.0f blue:110/255.0f alpha:1]];
+        
+        int x = arc4random() % 10;
+        [headerView setBackgroundColor:(UIColor *)array[x]];
+        NSString *lastTwoName = self.dic[@"name"];
+        lastTwoName = [lastTwoName substringWithRange:NSMakeRange(lastTwoName.length - 2, 2)];
+        [headerView setTitle:lastTwoName forState:UIControlStateNormal];
     } else {
-        if ([[_dic valueForKey:@"userType"] intValue] == 0) {
-            picURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[_dic valueForKey:@"userpic"]];
+        if ([[self.dic valueForKey:@"userType"] intValue] == 0) {
+            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_czyURL,companyString,[self.dic valueForKey:@"userpic"]];
         } else {
-            picURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[_dic valueForKey:@"userpic"]];
+            headerURLString = [NSString stringWithFormat:@"%@%@/%@",X6_ygURL,companyString,[self.dic valueForKey:@"userpic"]];
         }
+        NSURL *headerURL = [NSURL URLWithString:headerURLString];
+        if (headerURL) {
+            [headerView sd_setBackgroundImageWithURL:headerURL forState:UIControlStateNormal placeholderImage:nil options:SDWebImageLowPriority];
+            [headerView setTitle:@"" forState:UIControlStateNormal];
+        }
+        
     }
     
-    [headerView sd_setImageWithURL:[NSURL URLWithString:picURLString] placeholderImage:[UIImage imageNamed:@"pho-moren"]];
     [_bgView addSubview:headerView];
     [_bgView addSubview:cornView];
+
 
     //个人信息
     NSArray *personDetail;
     personDetail = @[[_dic valueForKey:@"name"],[_dic valueForKey:@"phone"],[NSString stringWithFormat:@"%@  %@",[_dic valueForKey:@"ssgsname"],[_dic valueForKey:@"gw"]]];
     
     for (int i = 0; i < 3; i++) {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(59, 8 + 25 * i, KScreenWidth - 69, 22)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(59, 8 + 22 * i, KScreenWidth - 69, 20)];
         label.text = personDetail[i];
         if (i < 2) {
             label.font = MainFont;
@@ -139,27 +158,24 @@
     for (int i = 0; i < buttonImages.count; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.tag = 1300 + i;
-        button.frame = CGRectMake(ThirdPcentWidth * i, 85, 45, 45);
-        [button setImage:[UIImage imageNamed:buttonImages[i]] forState:UIControlStateNormal];
+        button.frame = CGRectMake(ThirdPcentWidth * i, 85, ThirdPcentWidth, 45);
+        
         [button addTarget:self action:@selector(HeaderbuttonAction:) forControlEvents:UIControlEventTouchUpInside];
-        
-        
-        UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake((ThirdPcentWidth - 42 - 20) / 2, 4, 42, 42)];
-        buttonImageView.image = [UIImage imageNamed:buttonImages[i]];
-        [button addSubview:buttonImageView];
-        
-        
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(((ThirdPcentWidth - 42 - 20) / 2) + 42 + 13, 4, 20, 42)];
-        label.font = MainFont;
-        label.textAlignment = NSTextAlignmentCenter;
-        if (i < 2) {
-            label.text = buttonLabel[i];
-        } else {
-            label.tag = 12313;
-        }
 
+        [button setImage:[UIImage imageNamed:buttonImages[i]] forState:UIControlStateNormal];//给button添加image
+        button.imageEdgeInsets = UIEdgeInsetsMake(0,0,0,13);//设置image在button上的位置（上top，左left，下bottom，右right）这里可以写负值，对上写－5，那么image就象上移动5个像素
+        
+        [button setTitle:buttonLabel[i] forState:UIControlStateNormal];//设置button的title
+        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        button.titleLabel.font = MainFont;//title字体大小
+        button.titleLabel.textAlignment = NSTextAlignmentCenter;//设置title的字体居中
+        button.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);//设置title在button上的位置（上top，左left，下bottom，右right）
+
+        
+        
+        
+        
         [_bgView addSubview:button];
-        [_bgView addSubview:label];
     }
     
 }
@@ -167,8 +183,7 @@
 - (void)initTableView
 {
     //显示列表
-    _personTableView = [[Persontableviewed alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
-    _personTableView.name = [_dic valueForKey:@"name"];
+    _personTableView = [[HomeTableView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenHeight - 64) style:UITableViewStylePlain];
     _personTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     [_personTableView addLegendHeaderWithRefreshingTarget:self refreshingAction:@selector(HeaderViewheaderAction)];
@@ -236,17 +251,11 @@
                         NSMutableArray *contactList = [userdefaults objectForKey:X6_Contactlist];
                         NSLog(@"%@",contactList);
                         [self.navigationController pushViewController:chatVC animated:YES];
-                        
-                       
-                        
                     });
                 } else {
                     [self.navigationController pushViewController:chatVC animated:YES];
 
                 }
-                
-                
-                
             } else  {
                 [self writeWithName:@"该用户还未登录"];
             }
@@ -266,15 +275,17 @@
             }
             [XPHTTPRequestTool requestMothedWithPost:focusURL params:params success:^(id responseObject) {
                 //关注成功
-                UILabel *concrened = [_bgView viewWithTag:12313];
+                UIButton *concrened = [_bgView viewWithTag:1302];
                 if (_isConcerned == NO) {
                     [self writeWithName:@"关注成功"];
                     _isConcerned = YES;
-                    concrened.text = @"已关注";
+                    [concrened setTitle:@"已关注" forState:UIControlStateNormal];
+                    [concrened setImage:[UIImage imageNamed:@"g4_d"] forState:UIControlStateNormal];
                 } else {
                     [self writeWithName:@"取消关注成功"];
                     _isConcerned = NO;
-                    concrened.text = @"关注";
+                    [concrened setTitle:@"关注" forState:UIControlStateNormal];
+                    [concrened setImage:[UIImage imageNamed:@"g4_c"] forState:UIControlStateNormal];
                 }
             } failure:^(NSError *error) {
 //                [BasicControls showNDKNotifyWithMsg:@"关注失败 请检查您的网络连接" WithDuration:0.5f speed:0.5f];
@@ -297,7 +308,7 @@
 }
 
 #pragma mark - 关闭刷新
-- (void)endrefreshWithTableView:(Persontableviewed *)personTableView
+- (void)endrefreshWithTableView:(HomeTableView *)personTableView
 {
     if (personTableView.header.isRefreshing) {
         //正在下拉刷新
@@ -327,14 +338,6 @@
         
     }
 }
-
-//#pragma mark - 绘制风格线
-//- (void)drawLineWithFrame:(CGRect)frame SuperView:(UIView *)superView
-//{
-//    UIView *lineview = [[UIView alloc] initWithFrame:frame];
-//    lineview.backgroundColor = LineColor;
-//    [superView addSubview:lineview];
-//}
 
 #pragma mark - 获取数据
 //获取个人动态数据
@@ -414,13 +417,15 @@
         [params setObject:[_dic valueForKey:@"userType"] forKey:@"msgusertype"];
     }
     [XPHTTPRequestTool requestMothedWithPost:judgeconcernURL params:params success:^(id responseObject) {
-        UILabel *concrened = [_bgView viewWithTag:12313];
+        UIButton *concrened = [_bgView viewWithTag:1302];
         if ([responseObject[@"message"] isEqualToString:@"exist"]) {
             _isConcerned = YES;
-            concrened.text = @"已关注";
+            [concrened setTitle:@"已关注" forState:UIControlStateNormal];
+            [concrened setImage:[UIImage imageNamed:@"g4_d"] forState:UIControlStateNormal];
         } else {
             _isConcerned = NO;
-            concrened.text = @"关注";
+            [concrened setTitle:@"关注" forState:UIControlStateNormal];
+            [concrened setImage:[UIImage imageNamed:@"g4_c"] forState:UIControlStateNormal];
         }
     } failure:^(NSError *error) {
         

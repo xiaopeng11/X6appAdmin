@@ -106,7 +106,7 @@
     _timer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
     [_timer setFireDate:[NSDate distantPast]];
     
-    _URLtimer = [NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(userURLchange:) userInfo:nil repeats:YES];
+    _URLtimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(userURLchange:) userInfo:nil repeats:YES];
     [_URLtimer setFireDate:[NSDate distantPast]];
     
     //接受通知
@@ -160,7 +160,7 @@
 
 - (void)userURLchange:(NSTimer *)timer
 {
-    NSLog(@"根url");
+    NSLog(@"改变更url");
     NSUserDefaults *userdefault = [NSUserDefaults standardUserDefaults];
     NSDictionary *message = [userdefault objectForKey:X6_UserMessage];
     NSString *gsdm = [message valueForKey:@"gsdm"];
@@ -404,7 +404,7 @@
 {
     if (_scrollView.contentOffset.x == 0 && [_scrollView isEqual:_tableView]) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
-        _URLtimer = [NSTimer scheduledTimerWithTimeInterval:3600 target:self selector:@selector(userURLchange:) userInfo:nil repeats:YES];
+        _URLtimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(userURLchange:) userInfo:nil repeats:YES];
     }
 }
 
@@ -491,7 +491,7 @@
  */
 - (void)insertNaviButton
 {
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImageName:@"g1_a" highImageName:nil target:self action:@selector(writeMessage)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithImageName:@"g1_a" highImageName:@"g1_a1" target:self action:@selector(writeMessage)];
 }
 
 #pragma mark - 写动态

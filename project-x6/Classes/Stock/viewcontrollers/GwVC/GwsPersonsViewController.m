@@ -19,6 +19,7 @@
 @property(nonatomic,copy)NSMutableArray *gwPersons;
 @property(nonatomic,copy)NSArray *selectgwPersons;
 
+
 @end
 
 @implementation GwsPersonsViewController
@@ -46,7 +47,7 @@
     
     if (_type == YES) {
         //导航栏右侧确定按钮
-        self.selectPersons = YES;
+//        self.selectPersons = YES;
 
         _gwsPersonTableview.allowsMultipleSelectionDuringEditing = YES;
         [_gwsPersonTableview setEditing:YES];
@@ -71,6 +72,8 @@
 - (void)sureAction:(UIButton *)button
 {
     
+    [button removeFromSuperview];
+
     _selectgwPersons = [NSArray array];
     _selectgwPersons = [_gwsPersonTableview indexPathsForSelectedRows];
     
@@ -78,21 +81,18 @@
     NSMutableArray *personsList = [NSMutableArray array];
     if (_replytype == YES) {
         for (NSIndexPath *indec in _selectgwPersons) {
-            NSDictionary *gwdic = [_gwdatalist objectAtIndex:indec.row];
+            NSDictionary *gwdic = [_gwPersons objectAtIndex:indec.row];
             [personsList addObject:[gwdic valueForKey:@"name"]];
         }
     } else {
         for (NSIndexPath *indec in _selectgwPersons) {
-            NSDictionary *gwdic = [_gwdatalist objectAtIndex:indec.row];
-            NSString *name = [gwdic valueForKey:@"name"];
-            for (NSDictionary *dic in _datalist) {
-                if ([[dic valueForKey:@"name"] isEqualToString:name]) {
-                    NSMutableDictionary *diced = [NSMutableDictionary dictionary];
-                    [diced setObject:[dic valueForKey:@"id"] forKey:@"id"];
-                    [diced setObject:[dic valueForKey:@"usertype"] forKey:@"usertype"];
-                    [personsList addObject:diced];
-                }
-            }
+            NSDictionary *gwdic = [_gwPersons objectAtIndex:indec.row];
+            NSMutableDictionary *diced = [NSMutableDictionary dictionary];
+            [diced setObject:[gwdic valueForKey:@"name"] forKey:@"name"];
+            [diced setObject:[gwdic valueForKey:@"id"] forKey:@"id"];
+            [diced setObject:[gwdic valueForKey:@"usertype"] forKey:@"usertype"];
+            [personsList addObject:diced];
+
         }
     }
     

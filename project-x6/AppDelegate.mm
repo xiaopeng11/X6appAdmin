@@ -83,7 +83,7 @@ extern"C"{
     
     [_window makeKeyAndVisible];
     
-    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
+    _Usertimer = [NSTimer scheduledTimerWithTimeInterval:180 target:self selector:@selector(getPersonMessage) userInfo:nil repeats:YES];
     [_Usertimer setFireDate:[NSDate distantPast]];
     
     return YES;

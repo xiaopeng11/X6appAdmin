@@ -8,8 +8,6 @@
 
 #import "MianDynamicViewController.h"
 
-#import "UIButton+WebCache.h"
-
 #import "ReplyModel.h"
 #import "ReplyTableView.h"
 #import "XPPhotoViews.h"
@@ -262,9 +260,9 @@
     [self.view addSubview:_nodataView];
     
     int filepropwidth,filepropheight;
-    float upheight = 10 + 59 + size.height + 10;
+    float upheight = 10 + 15 + 39 + 10 + size.height + 15;
     if (fileprop.count == 0) {
-        _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight);
+        _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + 35);
         _nodataView.frame = CGRectMake(0, _bgView.bottom, KScreenWidth, KScreenHeight - 59 - size.height - 40);
     } else {
         for (int i = 0; i < fileprop.count; i++) {
@@ -273,11 +271,12 @@
                 UIButton *wengdanView = [UIButton buttonWithType:UIButtonTypeCustom];
                 wengdanView.frame = CGRectZero;
                 if (fileprop.count == 4) {
-                    _bgView.frame = CGRectMake(0, 0, KScreenWidth,upheight + PuretureSize * 2 + 5 + 50 + 10);
+                    _bgView.frame = CGRectMake(0, 0, KScreenWidth,upheight + PuretureSize * 2 + 5 + 50);
                     filepropwidth = i / 2;
                     filepropheight = i % 2;
                     wengdanView = [[UIButton alloc] initWithFrame:CGRectMake(10 + (PuretureSize + 5) * filepropheight,upheight + (PuretureSize + 5) * filepropwidth, PuretureSize, PuretureSize)];
                 } else {
+                    _bgView.frame = CGRectMake(0, 0, KScreenWidth,upheight + PuretureSize + 50);
                     wengdanView = [[UIButton alloc] initWithFrame:CGRectMake(10 + (PuretureSize + 5) * i, upheight, PuretureSize, PuretureSize)];
                 }
                 wengdanView.tag = 5100 + i;
@@ -296,10 +295,10 @@
             } else {
                 XPPhotoViews *XPimageViews = [[XPPhotoViews alloc] init];
                 if (fileprop.count == 4) {
-                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + PuretureSize * 2 + 5 + 10 + 50);
+                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + PuretureSize * 2 + 5 + 50);
                     XPimageViews.frame = CGRectMake(10, upheight, PuretureSize * 2 + 5, PuretureSize * 2 + 5);
                 } else {
-                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + PuretureSize + 10 + 50);
+                    _bgView.frame = CGRectMake(0, 0, KScreenWidth, upheight + PuretureSize + 50);
                     XPimageViews.frame = CGRectMake(10, upheight, PuretureSize * 2 + 5, PuretureSize * 2 + 5);
                 }
                 //获取图片url,截取拼接
@@ -527,9 +526,9 @@
     } else if (_personString.length == 0) {
         [params setObject:contentString forKey:@"replycontent"];
     }
-    
+    [self showProgressTitle:@"回复中..."];
     [XPHTTPRequestTool requestMothedWithPost:replyURL params:params success:^(id responseObject) {
-        NSLog(@"评论成功");
+        [self hideProgress];
         _textfield.text = nil;
         [_textfield resignFirstResponder];
         [self writeWithName:@"回复成功"];

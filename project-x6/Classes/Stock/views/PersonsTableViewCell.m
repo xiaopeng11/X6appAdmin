@@ -16,32 +16,32 @@
     if (self) {
         //背景颜色
         
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 39, 39)];
         _imageView.clipsToBounds = YES;
-        _imageView.layer.cornerRadius = 20;
+        _imageView.layer.cornerRadius = 19.5;
         _imageView.hidden = YES;
         [self.contentView addSubview:_imageView];
         
         
-        _noheaderViewView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, 40, 40)];
+        _noheaderViewView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, 39, 39)];
         _noheaderViewView.clipsToBounds = YES;
-        _noheaderViewView.layer.cornerRadius = 20;
+        _noheaderViewView.layer.cornerRadius = 19.5;
         _noheaderViewView.hidden = YES;
         [self.contentView addSubview:_noheaderViewView];
         
-        _headerViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-        _headerViewLabel.font = [UIFont systemFontOfSize:15];
+        _headerViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 39)];
+        _headerViewLabel.font = MainFont;
         _headerViewLabel.textAlignment = NSTextAlignmentCenter;
         _headerViewLabel.hidden = YES;
         [_noheaderViewView addSubview:_headerViewLabel];
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 10, 200, 25)];
-        _nameLabel.font = [UIFont systemFontOfSize:18];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, 10.5, 200, 25)];
+        _nameLabel.font = MainFont;
         [self.contentView addSubview:_nameLabel];
         
-        _companyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        _companyLabel.font = [UIFont systemFontOfSize:10];
-        _companyLabel.textColor = Mycolor;
+        _companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(59, 36.5, KScreenWidth - 60 - 40, 16)];
+        _companyLabel.font = ExtitleFont;
+        _companyLabel.textColor = ExtraTitleColor;
         [self.contentView addSubview:_companyLabel];
     
     }
@@ -57,15 +57,14 @@
     NSString *userName = [self.dic valueForKey:@"name"];
     _nameLabel.text = userName;
 
+    _companyLabel.text = [NSString stringWithFormat:@"%@  %@",[self.dic valueForKey:@"ssgsname"],[self.dic valueForKey:@"gw"]];
+
     //判断当前是操作员还是员工
     //图片
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *diced = [userdefaults objectForKey:X6_UserMessage];
     NSString *companyString = [diced objectForKey:@"gsdm"];
     NSString *headerURLString = nil;
-
-    _companyLabel.frame = CGRectMake(60, 40, KScreenWidth - 60 - 40, 10);
-    _companyLabel.text = [NSString stringWithFormat:@"%@  %@",[self.dic valueForKey:@"ssgsname"],[self.dic valueForKey:@"gw"]];
     NSString *headerVeiewpic = [self.dic objectForKey:@"userpic"];
     if (headerVeiewpic.length == 0) {
         _imageView.hidden = YES;

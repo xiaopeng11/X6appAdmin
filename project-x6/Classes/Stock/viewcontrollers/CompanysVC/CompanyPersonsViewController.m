@@ -46,7 +46,7 @@
     
     if (_type == YES) {
         //确定联系人
-        self.selectPersons = YES;
+//        self.selectPersons = YES;
         //可多选
         _companyPersonTableview.allowsMultipleSelectionDuringEditing = YES;
         [_companyPersonTableview setEditing:YES];
@@ -74,7 +74,8 @@
 #pragma mark - sureAction
 - (void)sureAction:(UIButton *)button
 {
-    
+    [button removeFromSuperview];
+
     _selectpersons = [NSArray array];
     _selectpersons = [_companyPersonTableview indexPathsForSelectedRows];
     
@@ -82,20 +83,18 @@
     NSMutableArray *personsList = [NSMutableArray array];
     if (_replytype == YES) {
         for (NSIndexPath *indec in _selectpersons) {
-            NSString *name = [_personNameArray objectAtIndex:indec.row];
-            [personsList addObject:name];
+            NSDictionary *companyDic = [_personNameArray objectAtIndex:indec.row];
+            [personsList addObject:[companyDic valueForKey:@"name"]];
         }
     } else {
         for (NSIndexPath *indec in _selectpersons) {
-            NSString *name = [_personNameArray objectAtIndex:indec.row];
-            for (NSDictionary *dic in _datalist) {
-                if ([[dic valueForKey:@"name"] isEqualToString:name]) {
-                    NSMutableDictionary *diced = [NSMutableDictionary dictionary];
-                    [diced setObject:[dic valueForKey:@"id"] forKey:@"id"];
-                    [diced setObject:[dic valueForKey:@"usertype"] forKey:@"usertype"];
-                    [personsList addObject:diced];
-                }
-            }
+            NSDictionary *companyDic = [_personNameArray objectAtIndex:indec.row];
+            NSMutableDictionary *diced = [NSMutableDictionary dictionary];
+            [diced setObject:[companyDic valueForKey:@"name"] forKey:@"name"];
+            [diced setObject:[companyDic valueForKey:@"id"] forKey:@"id"];
+            [diced setObject:[companyDic valueForKey:@"usertype"] forKey:@"usertype"];
+            [personsList addObject:diced];
+
         }
     }
     

@@ -35,7 +35,6 @@
     _arrays = nil;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -58,7 +57,7 @@
     
     if (_type == YES) {
         //确定按钮
-        self.selectPersons = YES;
+//        self.selectPersons = YES;
     }
 
 }
@@ -116,7 +115,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60;
+    return 45;
 }
 
 #pragma mark - UITableViewDataSource
@@ -131,7 +130,7 @@
     [cell.button addTarget:self action:@selector(cellButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     cell.type = _type;
     cell.button.tag = indexPath.row;
-    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.model = _arrays[indexPath.row];
     return cell;
 }
@@ -157,11 +156,11 @@
     GwsModel *cellmodel = _arrays[button.tag];
     if (![cellmodel check]) {
         cellmodel.check = YES;
-        [button setImage:[UIImage imageNamed:@"icon_image_yes"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"quan_a"] forState:UIControlStateNormal];
         [_selectgws addObject:_gwsArray[button.tag]];
     } else {
         cellmodel.check = NO;
-        [button setImage:[UIImage imageNamed:@"icon_image_no"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"quan_b"] forState:UIControlStateNormal];
         [_selectgws removeObject:_gwsArray[button.tag]];
     }
 }
@@ -169,6 +168,9 @@
 #pragma mark - 重写确定联系人按钮事件
 - (void)sureAction:(UIButton *)button
 {
+    
+    [button removeFromSuperview];
+
     NSMutableArray *personList = [NSMutableArray array];
     if (_replytype == YES) {
         for (NSString *gw in _selectgws) {
@@ -183,6 +185,7 @@
             for (NSDictionary *dic in _datalist) {
                 if ([[dic valueForKey:@"gw"] isEqualToString:gw]) {
                     NSMutableDictionary *diced = [NSMutableDictionary dictionary];
+                    [diced setObject:[dic valueForKey:@"name"] forKey:@"name"];
                     [diced setObject:[dic valueForKey:@"id"] forKey:@"id"];
                     [diced setObject:[dic valueForKey:@"usertype"] forKey:@"usertype"];
                     [personList addObject:diced];

@@ -13,6 +13,8 @@
 //显示菊花
 - (void)showProgress;
 
+- (void)showProgressTitle:(NSString *)title;
+
 //隐藏菊花
 - (void)hideProgress;
 @end

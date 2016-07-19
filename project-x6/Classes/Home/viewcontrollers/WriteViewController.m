@@ -17,13 +17,15 @@
 #import "CompanysViewController.h"
 #import "CompanyPersonsViewController.h"
 
-#define imageWidth ((KScreenWidth - 20 - 20 * 3) / 4.0)
+#define imageWidth ((KScreenWidth - 20 - 15) / 4.0)
 @interface WriteViewController ()<ZLPhotoPickerBrowserViewControllerDataSource,ZLPhotoPickerBrowserViewControllerDelegate,UITextViewDelegate>
 
 
 {
     UITextView *_textView;    //输入式图
 }
+
+@property(nonatomic,strong)UILabel *atPersonsLabel; //@的联系人文本
 @property(nonatomic,copy)UIView *toolView;        //工具栏式图
 @property(nonatomic,strong)UISwipeGestureRecognizer *downSwip;  //下拉手势
 @property(nonatomic,strong)NSMutableArray *assets;    //图片数组
@@ -67,11 +69,37 @@
     return _assets;
 }
 
+- (UILabel *)atPersonsLabel
+{
+    if (_personslist.count != 0) {
+        NSString *personString = [NSString string];
+        for (NSDictionary *personDic in _personslist) {
+            if (personString.length != 0) {
+                personString = [NSString stringWithFormat:@"%@,@%@",personString,personDic[@"name"]];
+            } else {
+                personString = [NSString stringWithFormat:@"@%@",personDic[@"name"]];
+            }
+        }
+        
+        NSDictionary *attributes = @{NSFontAttributeName:MainFont};
+        CGSize size = [personString boundingRectWithSize:CGSizeMake(KScreenWidth - 20, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
+        
+        _atPersonsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 200, KScreenWidth - 20, size.height)];
+        _atPersonsLabel.numberOfLines = 0;
+        _atPersonsLabel.textColor = Mycolor;
+        _atPersonsLabel.font = MainFont;
+        _atPersonsLabel.text = personString;
+        [self.view addSubview:_atPersonsLabel];
+    }
+    
+    return _atPersonsLabel;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [_textView becomeFirstResponder];
-    
+    [self atPersonsLabel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -83,9 +111,9 @@
     [super viewDidLoad];
 
     // Do any additional setup after loading the view.
-    [self naviTitleWhiteColorWithText:@"写动态"];
+    [self naviTitleWhiteColorWithText:@"发布动态"];
     
-    self.view.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+    self.view.backgroundColor = [UIColor whiteColor];
     //添加键盘弹出事件
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardwillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardwillHidden:) name:UIKeyboardWillHideNotification object:nil];
@@ -145,11 +173,25 @@
     _textView.delegate = self;
     _textView.clipsToBounds = YES;
     _textView.layer.cornerRadius = 10;
-    _textView.font = [UIFont systemFontOfSize:18];
+    _textView.font = MainFont;
     [self.view addSubview:_textView];
     
     //图片视图
-    UIView *imageviews = [[UIView alloc] initWithFrame:CGRectMake(10, _textView.bottom, KScreenWidth - 20, imageWidth)];
+    CGSize size;
+    if (_personslist.count != 0) {
+        NSString *personString = [NSString string];
+        for (NSDictionary *personDic in _personslist) {
+            if (personString.length != 0) {
+                personString = [NSString stringWithFormat:@"%@,@%@",personString,personDic[@"name"]];
+            } else {
+                personString = [NSString stringWithFormat:@"@%@",personDic[@"name"]];
+            }
+        }
+        
+        NSDictionary *attributes = @{NSFontAttributeName:MainFont};
+        size = [personString boundingRectWithSize:CGSizeMake(KScreenWidth - 20, 0) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading |NSStringDrawingTruncatesLastVisibleLine attributes:attributes context:nil].size;
+    }
+    UIView *imageviews = [[UIView alloc] initWithFrame:CGRectMake(10, 200 + size.height + 30, KScreenWidth - 20, imageWidth)];
     [self.view addSubview:imageviews];
     self.imagview = imageviews;
     [self reloadImageview];
@@ -159,15 +201,15 @@
     _downSwip.direction = UISwipeGestureRecognizerDirectionDown;
     
     //工具栏式图
-    _toolView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 64 - 50, KScreenWidth, 50)];
+    _toolView = [[UIView alloc] initWithFrame:CGRectMake(0, KScreenHeight - 64 - 45, KScreenWidth, 45)];
     _toolView.backgroundColor = GrayColor;
     [self.view addSubview:_toolView];
     
     //添加按钮
-    NSArray *buttonNames = @[@"camera",@"filedir",@"addperson"];
+    NSArray *buttonNames = @[@"l2_g",@"l2_h",@"g2_c"];
     for (int i = 0; i < buttonNames.count; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(KScreenWidth / 12 + KScreenWidth / 6 * i, 10, 30, 30);
+        button.frame = CGRectMake(34 + 50 * i, 10, 30, 25);
         [button setImage:[UIImage imageNamed:buttonNames[i]] forState:UIControlStateNormal];
         button.tag = 300 + i;
         [button addTarget:self action:@selector(toolAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -175,10 +217,10 @@
     }
     
     UIButton *playButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    playButton.frame = CGRectMake(KScreenWidth - 80, 8, 70, 34);
+    playButton.frame = CGRectMake(KScreenWidth - 60, 5, 50, 35);
     [playButton setBackgroundColor:[UIColor colorWithRed:188/255.0f green:196/255.0f blue:200/255.0f alpha:1]];
     playButton.clipsToBounds = YES;
-    playButton.layer.cornerRadius = 7;
+    playButton.layer.cornerRadius = 5;
     playButton.tag = 1993;
     [playButton setTitle:@"发布" forState:UIControlStateNormal];
     [playButton addTarget:self action:@selector(playAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -219,7 +261,7 @@
         NSInteger col = i % column;
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        button.frame = CGRectMake( 10 + (imageWidth + 10) * col, 1, imageWidth - 1, imageWidth - 1);
+        button.frame = CGRectMake((imageWidth + 5) * col, 1, imageWidth, imageWidth);
         
         if (i == self.assets.count) {
 
@@ -318,14 +360,14 @@
 - (void)toolAction:(UIButton *)button
 {
     //设置代理对象
-    if (button.tag == 300) {
+    if (button.tag == 301) {
         //点击的是拍照
         if (self.assets.count == 4) {
             [self writeWithName:@"当前最多只能发布4张图片"];
         } else {
             [self openCamera];
         }
-    } else if (button.tag == 301) {
+    } else if (button.tag == 300) {
         //点击的是相册
         if (self.assets.count == 4) {
             [self writeWithName:@"当前最多只能发布4张图片"];
@@ -335,6 +377,10 @@
     } else {
         NSLog(@"点击了添加联系人的按钮");
         StockViewController *stockVC = [[StockViewController alloc] init];
+        if (_personslist.count != 0) {
+            [_atPersonsLabel removeFromSuperview];
+            _personslist = nil;
+        }
         stockVC.type = YES;
         [self.navigationController pushViewController:stockVC animated:YES];
     }
@@ -342,8 +388,6 @@
 
 - (void)playAction:(UIButton *)button
 {
-//    NSLog(@"点击了发送消息按钮");
-//    NSLog(@"%@\n %@",self.assets,_textView.text);
     //判断是否有图片，有图片先上传图片，没有图片直接发送消息
     //判断文本字数是否在限制内
     if (_textView.text.length == 0) {
@@ -441,6 +485,7 @@
         NSString *string = [[NSString alloc] initWithData:jsondata encoding:NSUTF8StringEncoding];
         
         [params setObject:string forKey:@"postdata"];
+        [self showProgressTitle:@"发布中..."];
         [XPHTTPRequestTool requestMothedWithPost:sendMessgaeURL params:params success:^(id responseObject) {
             NSLog(@"发布成功");
             [self hideProgress];

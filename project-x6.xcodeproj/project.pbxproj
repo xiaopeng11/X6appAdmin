@@ -69,7 +69,6 @@
 		1856BBCB1C7E96540051A0CB /* WriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856B8931C7E96540051A0CB /* WriteViewController.m */; };
 		1856BBCC1C7E96540051A0CB /* HomeTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856B8961C7E96540051A0CB /* HomeTableView.m */; };
 		1856BBCD1C7E96540051A0CB /* HomeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856B8981C7E96540051A0CB /* HomeTableViewCell.m */; };
-		1856BBCE1C7E96540051A0CB /* Persontableviewed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856B89A1C7E96540051A0CB /* Persontableviewed.m */; };
 		1856BBCF1C7E96540051A0CB /* ReplyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856B89C1C7E96540051A0CB /* ReplyTableView.m */; };
 		1856BBD01C7E96540051A0CB /* ReplyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856B89E1C7E96540051A0CB /* ReplyTableViewCell.m */; };
 		1856BBD11C7E96540051A0CB /* LoadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1856B8A11C7E96540051A0CB /* LoadViewController.m */; };
@@ -518,8 +517,6 @@
 		1856B8961C7E96540051A0CB /* HomeTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTableView.m; sourceTree = "<group>"; };
 		1856B8971C7E96540051A0CB /* HomeTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTableViewCell.h; sourceTree = "<group>"; };
 		1856B8981C7E96540051A0CB /* HomeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTableViewCell.m; sourceTree = "<group>"; };
-		1856B8991C7E96540051A0CB /* Persontableviewed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Persontableviewed.h; sourceTree = "<group>"; };
-		1856B89A1C7E96540051A0CB /* Persontableviewed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Persontableviewed.m; sourceTree = "<group>"; };
 		1856B89B1C7E96540051A0CB /* ReplyTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyTableView.h; sourceTree = "<group>"; };
 		1856B89C1C7E96540051A0CB /* ReplyTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReplyTableView.m; sourceTree = "<group>"; };
 		1856B89D1C7E96540051A0CB /* ReplyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyTableViewCell.h; sourceTree = "<group>"; };
@@ -1680,8 +1677,6 @@
 				1856B8961C7E96540051A0CB /* HomeTableView.m */,
 				1856B8971C7E96540051A0CB /* HomeTableViewCell.h */,
 				1856B8981C7E96540051A0CB /* HomeTableViewCell.m */,
-				1856B8991C7E96540051A0CB /* Persontableviewed.h */,
-				1856B89A1C7E96540051A0CB /* Persontableviewed.m */,
 				1856B89B1C7E96540051A0CB /* ReplyTableView.h */,
 				1856B89C1C7E96540051A0CB /* ReplyTableView.m */,
 				1856B89D1C7E96540051A0CB /* ReplyTableViewCell.h */,
@@ -3915,7 +3910,6 @@
 				18C597951CACC17700550F07 /* EaseBubbleView+File.m in Sources */,
 				18C597A21CACC17700550F07 /* EaseChatBarMoreView.m in Sources */,
 				18544A701C913AAB00F1BD1F /* YMDatePicker.m in Sources */,
-				1856BBCE1C7E96540051A0CB /* Persontableviewed.m in Sources */,
 				18645A541CBCA46400908308 /* IQUIWindow+Hierarchy.m in Sources */,
 				18C597701CACC17700550F07 /* PSTCollectionViewData.m in Sources */,
 				18C597881CACC17700550F07 /* EaseEmojiEmoticons.m in Sources */,
